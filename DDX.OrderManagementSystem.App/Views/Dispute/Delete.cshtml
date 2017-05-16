@@ -1,0 +1,82 @@
+﻿@model DDX.OrderManagementSystem.Domain.ServiceExaminationType
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DDX.OrderManagementSystem.Domain.ServiceExaminationType</title>
+</head>
+<body>
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>DDX.OrderManagementSystem.Domain.ServiceExaminationType</legend>
+    <div class="display-label">Id</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">CreateOn</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+    <div class="display-label">CreateBy</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateBy)
+    </div>
+
+    <div class="display-label">ExamineBy</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExamineBy)
+    </div>
+
+    <div class="display-label">ExamineOn</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExamineOn)
+    </div>
+
+    <div class="display-label">ExamineTitle</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExamineTitle)
+    </div>
+
+    <div class="display-label">ExamineMemo</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExamineMemo)
+    </div>
+
+    <div class="display-label">ExamineType</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExamineType)
+    </div>
+
+    <div class="display-label">ExamineAmount</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExamineAmount)
+    </div>
+
+    <div class="display-label">ExamineCurrencyCode</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExamineCurrencyCode)
+    </div>
+
+    <div class="display-label">Remark</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Remark)
+    </div>
+
+
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("返回列表", "Index")
+    </p>
+}
+
+
+</body>
+</html>

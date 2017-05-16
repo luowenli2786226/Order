@@ -1,0 +1,197 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.WarehouseStockType>
+@{
+    ViewBag.Title = "当日库存";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("TodayList", "WarehouseStock")',
+                showFooter: true,
+              
+            });
+
+
+            $('#ww').combobox({
+                url: '/Warehouse/QListSearch',
+                valueField: 'Id',
+                textField: 'WName',
+                required: true
+            });
+        });
+        $('#ww').combobox("setValue", "0");
+
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "WarehouseStock")';
+            showdlg(url_str, 'c_dlg', ajaxAdd);
+        }
+
+        //编辑框
+        function e_dlg() {
+            var url = '@Url.Action("Edit", "WarehouseStock")/' + id;
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Module")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit);
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "WarehouseStock")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "WarehouseStock")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "WarehouseStock")/' + id;
+
+                delData(url, 'dg');
+            }
+        }
+
+        function exportdt() {
+            var postUrl = "/Order/ExportDown/1";
+            jQuery.ajax({
+                url: "/WarehouseStock/Export/",
+                type: "post",
+                success: function (sss) {
+                    location.href = postUrl;
+                }
+            });
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function GetImg(v, r, i) {
+            if (r.Id != 0)
+                return '<img  src=' + v + '  height="64px" width="64px" />';
+        }
+        function getPrice(v, r, i) {
+            if (r.Id != 0)
+                return v;
+
+        }
+
+        function getTotalPrice(v, r, i) {
+
+                return v.toFixed(2);
+         
+        }
+        function getQty(v, r, i) {
+            if (r.Id != 0)
+                return v;
+            else {
+                return "总计：";
+            }
+        }
+
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            if ($('#ww').combobox("getValue") != 0) {
+                search += "WId&" + $('#ww').combobox("getValue") + "^";
+            }
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+
+        function o_Error() {
+            $.messager.confirm("提示", "确定要重置这些SKU吗？", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/WarehouseStock/EditReset",
+                        type: "post",
+                        data: "o=" + encodeURIComponent($("#ErrorDesc").val()),
+                        success: function (res) {
+                            alert(res.Message);
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="Warehouse" width="100">仓库
+                    </th>
+                    <th field="Pic" width="100" formatter="GetImg">Pic
+                    </th>
+                    <th field="SKU" width="100" sortable="true">商品SKU
+                    </th>
+
+                    <th field="Qty" width="100" formatter="getQty" sortable="true">数量
+                        
+                    </th>
+                    <th field="Price" width="100" formatter="getPrice">单价
+                    </th>
+                    <th field="TotalPrice" width="100"  formatter="getTotalPrice" sortable="true">总金额
+                    </th>
+                    @*<th field="UnPeiQty" width="100"  sortable="true">未配货数量
+                    </th>*@
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            @*<a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>*@
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="exportdt();">导出</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#dlgError').dialog('open');$('#ErrorDesc').val('');">重置包裹</a>
+
+            仓库:<input type="text" id="ww" />
+
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'SKU'">商品SKU</div>
+            <div data-options="name:'Title'">商品名称</div>
+        </div>
+
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+
+        <div id="dlgError" class="easyui-dialog" title="重置订单" style="width: 550px; height: 300px; padding: 10px" closed="true">
+            <table>
+                <tr>
+                    <td></td>
+                    <td>SKU+库存数量(中间用tab的空格)不然无法识别</td>
+                </tr>
+                <tr>
+
+                    <td colspan="2">
+                        <textarea id="ErrorDesc" style="width: 500px; height: 250px"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" value="确定" onclick="o_Error()" /></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>

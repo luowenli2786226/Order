@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="entity.orderonline.api.fpx" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="OrderOnlineServiceImplService" targetNamespace="entity.orderonline.api.fpx" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xs:schema elementFormDefault="unqualified" targetNamespace="entity.orderonline.api.fpx" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="createAndPreAlertOrderService" type="tns:createAndPreAlertOrderService" />
+      <xs:element name="createAndPreAlertOrderServiceResponse" type="tns:createAndPreAlertOrderServiceResponse" />
+      <xs:element name="createOrderService" type="tns:createOrderService" />
+      <xs:element name="createOrderServiceResponse" type="tns:createOrderServiceResponse" />
+      <xs:element name="findOrderService" type="tns:findOrderService" />
+      <xs:element name="findOrderServiceResponse" type="tns:findOrderServiceResponse" />
+      <xs:element name="modifyOrderService" type="tns:modifyOrderService" />
+      <xs:element name="modifyOrderServiceResponse" type="tns:modifyOrderServiceResponse" />
+      <xs:element name="preAlertOrderService" type="tns:preAlertOrderService" />
+      <xs:element name="preAlertOrderServiceResponse" type="tns:preAlertOrderServiceResponse" />
+      <xs:element name="removeOrderService" type="tns:removeOrderService" />
+      <xs:element name="removeOrderServiceResponse" type="tns:removeOrderServiceResponse" />
+      <xs:complexType name="findOrderService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="xs:string" />
+          <xs:element minOccurs="0" name="arg1" type="tns:findOrderRequest" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="findOrderRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="endTime" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="orderNo" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="startTime" type="xs:string" />
+          <xs:element minOccurs="0" name="status" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="findOrderServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="return" type="tns:findOrderResponse" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="findOrderResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ack" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="errors" nillable="true" type="tns:error" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="orderItem" nillable="true" type="tns:orderItem" />
+          <xs:element minOccurs="0" name="timestamp" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="error">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="cnAction" type="xs:string" />
+          <xs:element minOccurs="0" name="cnMessage" type="xs:string" />
+          <xs:element minOccurs="0" name="code" type="xs:string" />
+          <xs:element minOccurs="0" name="defineMessage" type="xs:string" />
+          <xs:element minOccurs="0" name="enAction" type="xs:string" />
+          <xs:element minOccurs="0" name="enMessage" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="orderItem">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="buyerId" type="xs:string" />
+          <xs:element minOccurs="0" name="cargoCode" type="xs:string" />
+          <xs:element minOccurs="0" name="channelHawbCode" type="xs:string" />
+          <xs:element minOccurs="0" name="chargeWeight" type="xs:string" />
+          <xs:element minOccurs="0" name="checkinDate" type="xs:string" />
+          <xs:element minOccurs="0" name="checkoutDate" type="xs:string" />
+          <xs:element minOccurs="0" name="confirmDate" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeAddress1" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeAddress2" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeAddress3" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeCompany" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeEmail" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeFax" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeName" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneePostCode" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeTelephone" type="xs:string" />
+          <xs:element minOccurs="0" name="createDate" type="xs:string" />
+          <xs:element minOccurs="0" name="customerWeight" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="declareInvoiceItem" nillable="true" type="tns:declareInvoiceItem" />
+          <xs:element minOccurs="0" name="destinationCountryCode" type="xs:string" />
+          <xs:element minOccurs="0" name="grossWeight" type="xs:string" />
+          <xs:element minOccurs="0" name="holdSign" type="xs:string" />
+          <xs:element minOccurs="0" name="initialCountryCode" type="xs:string" />
+          <xs:element minOccurs="0" name="insurStatus" type="xs:string" />
+          <xs:element minOccurs="0" name="insurType" type="xs:string" />
+          <xs:element minOccurs="0" name="insurValue" type="xs:string" />
+          <xs:element minOccurs="0" name="modifyDate" type="xs:string" />
+          <xs:element minOccurs="0" name="odaCheckSign" type="xs:string" />
+          <xs:element minOccurs="0" name="odaSign" type="xs:string" />
+          <xs:element minOccurs="0" name="orderNo" type="xs:string" />
+          <xs:element minOccurs="0" name="orderNote" type="xs:string" />
+          <xs:element minOccurs="0" name="paymentCode" type="xs:string" />
+          <xs:element minOccurs="0" name="pieces" type="xs:string" />
+          <xs:element minOccurs="0" name="postDate" type="xs:string" />
+          <xs:element minOccurs="0" name="printDate" type="xs:string" />
+          <xs:element minOccurs="0" name="productCode" type="xs:string" />
+          <xs:element minOccurs="0" name="returnSign" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperAddress" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperCompany" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperFax" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperName" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperPostCode" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperTelephone" type="xs:string" />
+          <xs:element minOccurs="0" name="status" type="xs:string" />
+          <xs:element minOccurs="0" name="trackingNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="transactionId" type="xs:string" />
+          <xs:element minOccurs="0" name="volumeWeight" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="declareInvoiceItem">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="declareNote" type="xs:string" />
+          <xs:element minOccurs="0" name="declarePieces" type="xs:string" />
+          <xs:element minOccurs="0" name="declareUnitCode" type="xs:string" />
+          <xs:element minOccurs="0" name="name" type="xs:string" />
+          <xs:element minOccurs="0" name="unitPrice" type="xs:string" />
+          <xs:element minOccurs="0" name="eName" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="removeOrderService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="arg1" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="removeOrderServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:removeOrderResponse" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="removeOrderResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ack" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="errors" nillable="true" type="tns:error" />
+          <xs:element minOccurs="0" name="referenceNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="timestamp" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="preAlertOrderService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="arg1" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="preAlertOrderServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:preAlertOrderResponse" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="preAlertOrderResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ack" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="errors" nillable="true" type="tns:error" />
+          <xs:element minOccurs="0" name="referenceNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="timestamp" type="xs:string" />
+          <xs:element minOccurs="0" name="trackingNumber" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createOrderService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="arg1" type="tns:createOrderRequest" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createOrderRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="buyerId" type="xs:string" />
+          <xs:element minOccurs="0" name="cargoCode" type="xs:string" />
+          <xs:element minOccurs="0" name="city" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeCompanyName" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeEmail" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeFax" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeName" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneePostCode" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeTelephone" type="xs:string" />
+          <xs:element minOccurs="0" name="customerWeight" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="declareInvoice" nillable="true" type="tns:declareInvoice" />
+          <xs:element minOccurs="0" name="destinationCountryCode" type="xs:string" />
+          <xs:element minOccurs="0" name="initialCountryCode" type="xs:string" />
+          <xs:element minOccurs="0" name="insurType" type="xs:string" />
+          <xs:element minOccurs="0" name="insurValue" type="xs:string" />
+          <xs:element minOccurs="0" name="mctCode" type="xs:string" />
+          <xs:element minOccurs="0" name="orderNo" type="xs:string" />
+          <xs:element minOccurs="0" name="orderNote" type="xs:string" />
+          <xs:element minOccurs="0" name="paymentCode" type="xs:string" />
+          <xs:element minOccurs="0" name="pieces" type="xs:string" />
+          <xs:element minOccurs="0" name="prealertintegrationtype" type="xs:string" />
+          <xs:element minOccurs="0" name="productCode" type="xs:string" />
+          <xs:element minOccurs="0" name="returnSign" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperAddress" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperCity" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperCompanyName" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperFax" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperName" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperPostCode" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperStateOrProvince" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperTelephone" type="xs:string" />
+          <xs:element minOccurs="0" name="stateOrProvince" type="xs:string" />
+          <xs:element minOccurs="0" name="street" type="xs:string" />
+          <xs:element minOccurs="0" name="trackingNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="transactionId" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="declareInvoice">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="declareNote" type="xs:string" />
+          <xs:element minOccurs="0" name="declarePieces" type="xs:string" />
+          <xs:element minOccurs="0" name="declareUnitCode" type="xs:string" />
+          <xs:element minOccurs="0" name="name" type="xs:string" />
+          <xs:element minOccurs="0" name="unitPrice" type="xs:string" />
+          <xs:element minOccurs="0" name="eName" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createOrderServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:createOrderResponse" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createOrderResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ack" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="errors" nillable="true" type="tns:error" />
+          <xs:element minOccurs="0" name="referenceNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="timestamp" type="xs:string" />
+          <xs:element minOccurs="0" name="trackingNumber" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createAndPreAlertOrderService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="arg1" type="tns:createAndPreAlertOrderRequest" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createAndPreAlertOrderRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="buyerId" type="xs:string" />
+          <xs:element minOccurs="0" name="cargoCode" type="xs:string" />
+          <xs:element minOccurs="0" name="city" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeCompanyName" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeEmail" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeFax" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeName" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneePostCode" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeTelephone" type="xs:string" />
+          <xs:element minOccurs="0" name="customerWeight" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="declareInvoice" nillable="true" type="tns:declareInvoice" />
+          <xs:element minOccurs="0" name="destinationCountryCode" type="xs:string" />
+          <xs:element minOccurs="0" name="initialCountryCode" type="xs:string" />
+          <xs:element minOccurs="0" name="insurType" type="xs:string" />
+          <xs:element minOccurs="0" name="insurValue" type="xs:string" />
+          <xs:element minOccurs="0" name="mctCode" type="xs:string" />
+          <xs:element minOccurs="0" name="orderNo" type="xs:string" />
+          <xs:element minOccurs="0" name="orderNote" type="xs:string" />
+          <xs:element minOccurs="0" name="paymentCode" type="xs:string" />
+          <xs:element minOccurs="0" name="pieces" type="xs:string" />
+          <xs:element minOccurs="0" name="prealertintegrationtype" type="xs:string" />
+          <xs:element minOccurs="0" name="productCode" type="xs:string" />
+          <xs:element minOccurs="0" name="returnSign" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperAddress" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperCity" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperCompanyName" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperFax" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperName" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperPostCode" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperStateOrProvince" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperTelephone" type="xs:string" />
+          <xs:element minOccurs="0" name="stateOrProvince" type="xs:string" />
+          <xs:element minOccurs="0" name="street" type="xs:string" />
+          <xs:element minOccurs="0" name="trackingNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="transactionId" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createAndPreAlertOrderServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:createAndPreAlertOrderResponse" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createAndPreAlertOrderResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ack" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="errors" nillable="true" type="tns:error" />
+          <xs:element minOccurs="0" name="referenceNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="timestamp" type="xs:string" />
+          <xs:element minOccurs="0" name="trackingNumber" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="modifyOrderService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="arg1" type="tns:modifyOrderRequest" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="modifyOrderRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="buyerId" type="xs:string" />
+          <xs:element minOccurs="0" name="cargoCode" type="xs:string" />
+          <xs:element minOccurs="0" name="city" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeCompanyName" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeEmail" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeFax" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeName" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneePostCode" type="xs:string" />
+          <xs:element minOccurs="0" name="consigneeTelephone" type="xs:string" />
+          <xs:element minOccurs="0" name="customerWeight" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="declareInvoice" nillable="true" type="tns:declareInvoice" />
+          <xs:element minOccurs="0" name="destinationCountryCode" type="xs:string" />
+          <xs:element minOccurs="0" name="initialCountryCode" type="xs:string" />
+          <xs:element minOccurs="0" name="insurType" type="xs:string" />
+          <xs:element minOccurs="0" name="insurValue" type="xs:string" />
+          <xs:element minOccurs="0" name="orderNo" type="xs:string" />
+          <xs:element minOccurs="0" name="orderNote" type="xs:string" />
+          <xs:element minOccurs="0" name="paymentCode" type="xs:string" />
+          <xs:element minOccurs="0" name="pieces" type="xs:string" />
+          <xs:element minOccurs="0" name="productCode" type="xs:string" />
+          <xs:element minOccurs="0" name="returnSign" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperAddress" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperCompanyName" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperFax" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperName" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperPostCode" type="xs:string" />
+          <xs:element minOccurs="0" name="shipperTelephone" type="xs:string" />
+          <xs:element minOccurs="0" name="stateOrProvince" type="xs:string" />
+          <xs:element minOccurs="0" name="street" type="xs:string" />
+          <xs:element minOccurs="0" name="trackingNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="transactionId" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="modifyOrderServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:modifyOrderResponse" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="modifyOrderResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ack" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="errors" nillable="true" type="tns:error" />
+          <xs:element minOccurs="0" name="referenceNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="timestamp" type="xs:string" />
+          <xs:element minOccurs="0" name="trackingNumber" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="findOrderService">
+    <wsdl:part name="parameters" element="tns:findOrderService" />
+  </wsdl:message>
+  <wsdl:message name="modifyOrderServiceResponse">
+    <wsdl:part name="parameters" element="tns:modifyOrderServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="createOrderService">
+    <wsdl:part name="parameters" element="tns:createOrderService" />
+  </wsdl:message>
+  <wsdl:message name="modifyOrderService">
+    <wsdl:part name="parameters" element="tns:modifyOrderService" />
+  </wsdl:message>
+  <wsdl:message name="createAndPreAlertOrderService">
+    <wsdl:part name="parameters" element="tns:createAndPreAlertOrderService" />
+  </wsdl:message>
+  <wsdl:message name="removeOrderService">
+    <wsdl:part name="parameters" element="tns:removeOrderService" />
+  </wsdl:message>
+  <wsdl:message name="createOrderServiceResponse">
+    <wsdl:part name="parameters" element="tns:createOrderServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="preAlertOrderService">
+    <wsdl:part name="parameters" element="tns:preAlertOrderService" />
+  </wsdl:message>
+  <wsdl:message name="createAndPreAlertOrderServiceResponse">
+    <wsdl:part name="parameters" element="tns:createAndPreAlertOrderServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="findOrderServiceResponse">
+    <wsdl:part name="parameters" element="tns:findOrderServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="preAlertOrderServiceResponse">
+    <wsdl:part name="parameters" element="tns:preAlertOrderServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="removeOrderServiceResponse">
+    <wsdl:part name="parameters" element="tns:removeOrderServiceResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IOrderOnlineService">
+    <wsdl:operation name="findOrderService">
+      <wsdl:input name="findOrderService" message="tns:findOrderService" />
+      <wsdl:output name="findOrderServiceResponse" message="tns:findOrderServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="removeOrderService">
+      <wsdl:input name="removeOrderService" message="tns:removeOrderService" />
+      <wsdl:output name="removeOrderServiceResponse" message="tns:removeOrderServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="preAlertOrderService">
+      <wsdl:input name="preAlertOrderService" message="tns:preAlertOrderService" />
+      <wsdl:output name="preAlertOrderServiceResponse" message="tns:preAlertOrderServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="createOrderService">
+      <wsdl:input name="createOrderService" message="tns:createOrderService" />
+      <wsdl:output name="createOrderServiceResponse" message="tns:createOrderServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="createAndPreAlertOrderService">
+      <wsdl:input name="createAndPreAlertOrderService" message="tns:createAndPreAlertOrderService" />
+      <wsdl:output name="createAndPreAlertOrderServiceResponse" message="tns:createAndPreAlertOrderServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="modifyOrderService">
+      <wsdl:input name="modifyOrderService" message="tns:modifyOrderService" />
+      <wsdl:output name="modifyOrderServiceResponse" message="tns:modifyOrderServiceResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="OrderOnlineServiceImplServiceSoapBinding" type="tns:IOrderOnlineService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="findOrderService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="findOrderService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="findOrderServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createOrderService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="createOrderService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="createOrderServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="preAlertOrderService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="preAlertOrderService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="preAlertOrderServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="removeOrderService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="removeOrderService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="removeOrderServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createAndPreAlertOrderService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="createAndPreAlertOrderService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="createAndPreAlertOrderServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="modifyOrderService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="modifyOrderService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="modifyOrderServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="OrderOnlineServiceImplService">
+    <wsdl:port name="OrderOnlineServiceImplPort" binding="tns:OrderOnlineServiceImplServiceSoapBinding">
+      <soap:address location="http://api.tea-post.com/OrderOnline/ws/OrderOnlineService.dll" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

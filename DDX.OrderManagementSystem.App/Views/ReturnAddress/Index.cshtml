@@ -1,0 +1,150 @@
+﻿
+@model IEnumerable<DDX.OrderManagementSystem.Domain.ReturnAddresType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List","ReturnAddress")',
+            nowrap: false,
+            toolbar: '#toolbar',
+            rownumbers: true,
+            fitColumns: true,
+            singleSelect: true,
+            pagination: true,
+            fit: true,
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+
+    });
+
+    //新建
+    function c_dlg() {
+        var url_str = '@Url.Action("Create", "ReturnAddress")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "ReturnAddress")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "ReturnAddress")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "ReturnAddress")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "ReturnAddress")/' + id;
+                delData(url, 'dg');
+            }
+        }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+   
+    function doSearch() {
+        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        $("#dg").datagrid("load", {
+            search: search
+
+        });
+    }
+</script>
+<div region="center">
+<table id="dg">  
+        <thead>  
+        <tr>
+@*            <th field="Id" width="100">
+                主键
+            </th>*@
+
+            <th field="RetuanName" width="100" sortable="true">
+                发件人
+            </th>
+
+            <th field="Phone" width="100" sortable="true">
+                手机
+            </th>
+
+            <th field="Tel" width="100" sortable="true">
+                电话
+            </th>
+
+            <th field="PostCode" width="100" sortable="true">
+                邮编
+            </th>
+
+            <th field="Street" width="100" sortable="true">
+                街道
+            </th>
+
+            <th field="County" width="100" sortable="true">
+                区
+            </th>
+
+            <th field="City" width="100" sortable="true">
+                市
+            </th>
+
+            <th field="Province" width="100" sortable="true">
+                省
+            </th>
+
+            <th field="Country" width="100" sortable="true">
+                国家
+            </th>
+
+            <th field="CountryCode" width="100" sortable="true">
+                国家代码
+            </th>
+
+
+    	</tr>
+		</thead>
+		</table>
+        <div id="toolbar">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+        <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'RetuanName'">发件人</div>
+            <div data-options="name:'Street'">街道</div>
+            <div data-options="name:'CountryCode'">国家代码</div>
+    </div>   
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+
+</div>
+</body>

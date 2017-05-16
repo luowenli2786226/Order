@@ -1,0 +1,125 @@
+﻿@model DDX.OrderManagementSystem.Domain.PurchasePlanExamineRecordType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+        $('#e_ExamineOn').datebox();
+
+        $('#e_ExamineBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        $('#e_CreateBy').datebox();
+
+        $('#e_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "PurchasePlanExamineRecord", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineTetle,"审批名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExamineTetle,new{@id="e_ExamineTetle"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineOn,"审批时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExamineOn,new{@id="e_ExamineOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineBy,"审批人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExamineBy,new{@id="e_ExamineBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineContent,"审批评语:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExamineContent,new{@id="e_ExamineContent"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineStatus,"审批状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExamineStatus,new{@id="e_ExamineStatus"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineAmount,"审批总金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExamineAmount,new{@id="e_ExamineAmount"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineCount,"审批总计划数:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExamineCount,new{@id="e_ExamineCount"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"创建人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

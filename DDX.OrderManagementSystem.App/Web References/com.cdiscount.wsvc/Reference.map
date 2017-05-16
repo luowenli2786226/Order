@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="https://wsvc.cdiscount.com/MarketplaceAPIService.svc?xsd=xsd1" filename="MarketplaceAPIService.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="https://wsvc.cdiscount.com/MarketplaceAPIService.svc?xsd=xsd2" filename="MarketplaceAPIService0.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="https://wsvc.cdiscount.com/MarketplaceAPIService.svc?xsd=xsd3" filename="MarketplaceAPIService1.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="https://wsvc.cdiscount.com/MarketplaceAPIService.svc?xsd=xsd0" filename="MarketplaceAPIService2.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="https://wsvc.cdiscount.com/MarketplaceAPIService.svc?wsdl=wsdl0" filename="MarketplaceAPIService.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="https://wsvc.cdiscount.com/MarketplaceAPIService.svc?xsd=xsd6" filename="MarketplaceAPIService3.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="https://wsvc.cdiscount.com/MarketplaceAPIService.svc?xsd=xsd4" filename="MarketplaceAPIService4.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="https://wsvc.cdiscount.com/MarketplaceAPIService.svc?xsd=xsd5" filename="MarketplaceAPIService5.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="https://wsvc.cdiscount.com/MarketplaceAPIService.svc?wsdl" filename="MarketplaceAPIService0.wsdl" />
+  </Results>
+</DiscoveryClientResultsFile>

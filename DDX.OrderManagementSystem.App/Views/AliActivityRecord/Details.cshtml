@@ -1,0 +1,133 @@
+﻿@model DDX.OrderManagementSystem.Domain.AliActivityType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>DDX.OrderManagementSystem.Domain.AliActivityType</title>
+</head>
+<body>
+<fieldset>
+    <legend>DDX.OrderManagementSystem.Domain.AliActivityType</legend>
+    <div class="display-label">主键ID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">活动名称</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Title)
+    </div>
+
+    <div class="display-label">活动类型</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ActivityType)
+    </div>
+
+    <div class="display-label">产品ID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PID)
+    </div>
+
+    <div class="display-label">SKU</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SKU)
+    </div>
+
+    <div class="display-label">产品图片</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PUrl)
+    </div>
+
+    <div class="display-label">原价</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BasePrice)
+    </div>
+
+    <div class="display-label">折扣</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ZK)
+    </div>
+
+    <div class="display-label">重量</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Wight)
+    </div>
+
+    <div class="display-label">运费</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Freight)
+    </div>
+
+    <div class="display-label">活动价格</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ActivityPrice)
+    </div>
+
+    <div class="display-label">成本价</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CostPrice)
+    </div>
+
+    <div class="display-label">预计销量</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExpectedSales)
+    </div>
+
+    <div class="display-label">实际销量</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ActualSales)
+    </div>
+
+    <div class="display-label">盈亏情况</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProfitAndLoss)
+    </div>
+
+    <div class="display-label">买家限购数</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LimitedNumber)
+    </div>
+
+    <div class="display-label">报名理由</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Reason)
+    </div>
+
+    <div class="display-label">活动效果分析</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Result)
+    </div>
+
+    <div class="display-label">开始时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BeginDate)
+    </div>
+
+    <div class="display-label">结束时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EndDate)
+    </div>
+
+    <div class="display-label">Status</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Status)
+    </div>
+
+    <div class="display-label">IsAudit</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsAudit)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

@@ -1,0 +1,111 @@
+﻿@model DDX.OrderManagementSystem.App.ModelData<DDX.OrderManagementSystem.Domain.JiangChengType>
+@{
+    ViewBag.Title = "表彰栏";
+}
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg_attend').datagrid({
+            url: '@Url.Action("ListToday", "Attend")'
+        });
+    });
+
+    function work(value) {
+
+    }
+
+    var id = 0;
+    function showJC(v) {
+        id = v;
+        $('#l_dlg').dialog('open');
+    }
+
+    function jcsubmit() {
+        jQuery.ajax({
+            url: "/JiangCheng/DoJC/",
+            type: "post",
+            data: "id=" + id + "&c=" + $('#JCContent').val() + "&m=" + $('#JCMemo').val() + "&t=" + $('#JCType').combobox("getText"),
+            success: function (res) {
+                if (!res.IsSuccess) {
+                    alert(res.ErrorMsg);
+                } else {
+                    $('#l_dlg').dialog('close');
+                    location.reload();
+                }
+            }
+        });
+
+    }
+</script>
+<body class="easyui-layout">
+    <div class="easyui-layout" style="width: 580px;; height:590px;">
+
+        <div data-options="region:'west',split:true,title:'宁波',collapsible:false" style="width: 295px;">
+           
+            @if (Model.m0.Id != 0)
+            {
+                <div style="text-align: center">
+                    <a href="javascript:void(0)" onclick="showJC(@Model.m0.Id);" >
+                        <img src="@Model.m0.Pic" height="150" onmouseover="this.src='/Images/user/jin2.jpg'" onmouseout="this.src='/Images/user/jin.jpg'" /></a>
+                </div>
+                <p style=" text-indent:2em; padding:0px; margin:0px; }"><h4>@Model.m0.Content<h4></p>
+                <div style="color: red;font-size: 20px;" >@Model.m0.JCBy @Model.m0.JCType @Model.m0.JCContent<br />
+                    评语：@Model.m0.JCMemo
+                </div>
+            }
+            else
+            {
+                <h1>无</h1>
+            }
+        </div>
+
+        <div data-options="region:'center',title:'义乌'" style="padding: 10px">
+          @if (Model.m1.Id != 0)
+            {
+                <div style="text-align: center">
+                    <a href="javascript:void(0)" onclick="showJC(@Model.m1.Id);" >
+                        <img src="@Model.m1.Pic" height="150" onmouseover="this.src='/Images/user/2.jpg'" onmouseout="this.src='/Images/user/w.jpg'" /></a>
+                </div>
+                <p style=" text-indent:2em; padding:0px; margin:0px; }"><h4>@Model.m1.Content<h4></p>
+                <div style="color: red;font-size: 20px;" >@Model.m1.JCBy @Model.m1.JCType @Model.m1.JCContent<br />
+                    评语：@Model.m1.JCMemo
+                </div>
+            }
+            else
+            {
+                <h1>无</h1>
+            }
+        </div>
+    </div>
+     <div id="l_dlg" class="easyui-dialog" title="奖惩" style="width: 400px; height: 250px; padding: 10px" closed="true">
+            <table>
+                <tr>
+                    <td>类型:</td>
+                    <td>
+                        <select   class="easyui-combobox" id="JCType"  panelHeight="auto" style="width: 300px;">
+                            <option value="0" selected>奖励</option>
+                            <option value="1">惩罚</option>
+                        </select></td>
+                </tr>
+                <tr>
+                    <td>奖惩内容</td>
+                    <td>
+                    <input type="text" id="JCContent"  style="width: 300px;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>奖惩原因:</td>
+                    <td> <textarea id="JCMemo" style="width: 300px;"></textarea>
+                        </td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td>
+                        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" onclick="jcsubmit()">确定</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+</body>

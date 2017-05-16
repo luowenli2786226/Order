@@ -1,0 +1,99 @@
+﻿@model DDX.OrderManagementSystem.Domain.UserRoleType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+        $('#e_CreateOn').datebox();
+
+        $('#e_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "UserRole", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserId,"用户主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserId,new{@id="e_UserId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.RoleId,"角色主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.RoleId,new{@id="e_RoleId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Description,"描述:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Description,new{@id="e_Description"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DeletionStateCode,"删除标记:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DeletionStateCode,new{@id="e_DeletionStateCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SortCode,"排序码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SortCode,new{@id="e_SortCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建日期:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"创建用户:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

@@ -1,0 +1,64 @@
+﻿@model DDX.OrderManagementSystem.Domain.PermissionScopeType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "PermissionScope", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ResourceCategory,"什么类型的(主体):")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ResourceCategory,new{@id="e_ResourceCategory"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ResourceId,"什么资源(主体):")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ResourceId,new{@id="e_ResourceId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TargetCategory,"对什么类型的:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TargetCategory,new{@id="e_TargetCategory"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TargetId,"对什么资源:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TargetId,new{@id="e_TargetId"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

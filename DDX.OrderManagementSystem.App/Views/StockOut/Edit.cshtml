@@ -1,0 +1,179 @@
+﻿@model DDX.OrderManagementSystem.Domain.StockOutType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        // $('#e_OrderNo').validatebox({ required: true });
+        $('#e_WId').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'Id',
+            textField: 'WName',
+            url: '/Warehouse/QList',
+            fit: true,
+            columns: [[
+                { field: 'Id', title: 'Id', width: 100 },
+                { field: 'WCode', title: '仓库代码', width: 100 },
+                { field: 'WName', title: '仓库名称', width: 100 },
+                { field: 'Address', title: '仓位地址', width: 100 }
+
+            ]]
+        })
+
+
+        $('#e_OutType').combobox({
+
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/StockOut',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            editable: false,
+            panelHeight: 'auto'
+        });
+        $('#e_SKU').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'SKU',
+            textField: 'SKU',
+            url: '/Product/ListQ',
+            fit: true,
+            columns: [[
+                { field: 'SKU', title: 'SKU', width: 100 },
+                { field: 'ProductName', title: 'Title', width: 200 },
+                { field: 'Standard', title: '规格', width: 100 }
+
+            ]]
+
+        })
+        $('#e_SKU').combogrid("setText", '@ViewData["sku"]');
+        $('#e_Qty').numberbox({
+            required: true,
+            onChange: function () {
+                Qtynozero();
+            }
+        });
+    });
+
+    function Qtynozero() {
+       
+        var num = $('#e_Qty').attr("value");
+        if (num != "" & num <= 0) {
+            alert("数量输入有误");
+            $('#e_Qty').numberbox("setValue", "");
+        }
+    }
+</script>
+
+@using (Html.BeginForm("Create", "StockOut", FormMethod.Post, new { id = "e_form" }))
+{
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                @*	<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td> *@
+                <td style="display: none">
+                    @Html.TextBoxFor(model => model.Id, new { @id = "e_Id" })
+                </td>
+            </tr>
+
+
+            @*<tr>
+                <td>
+                    @Html.LabelFor(model => model.OrderNo, "订单编号:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.OrderNo, new { @id = "e_OrderNo" })
+                </td>
+            </tr>*@
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.WId, "仓库:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.WId, new { @id = "e_WId" })
+                </td>
+                <td style="display: none">
+                    @Html.TextBoxFor(model => model.WName, new { @id = "e_WName" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.OutType, "出库类型:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.OutType, new { @id = "e_OutType" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.OutType, "系统单号:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.OrderNo, new { @id = "e_OrderNo" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SKU, "SKU:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SKU, new { @id = "e_SKU" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Qty, "数量:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Qty, new { @id = "e_Qty" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Qty, "备注:")
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Memo, new { @id = "e_Memo" })
+                </td>
+            </tr>
+            <tr>
+                @*			<td>
+            @Html.LabelFor(model => model.SourceQty,"原有库存:")
+		</td>*@
+                <td style="display: none">
+                    @Html.TextBoxFor(model => model.SourceQty, new { @id = "e_SourceQty" })
+                </td>
+            </tr>
+
+
+            <tr>
+                @*		<td>
+            @Html.LabelFor(model => model.CreateBy,"出库人:")
+		</td>*@
+                <td style="display: none">
+                    @Html.TextBoxFor(model => model.CreateBy, new { @id = "e_CreateBy" })
+                </td>
+            </tr>
+
+            <tr>
+                @*		<td>
+            @Html.LabelFor(model => model.CreateOn,"出库时间:")
+		</td>*@
+                <td style="display: none">
+                    @Html.TextBoxFor(model => model.CreateOn, new { @id = "e_CreateOn" })
+                </td>
+            </tr>
+
+
+
+        </table>
+    </fieldset>
+}

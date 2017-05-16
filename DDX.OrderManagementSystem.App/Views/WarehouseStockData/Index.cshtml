@@ -1,0 +1,168 @@
+﻿
+@model IEnumerable<HanRuiOMS.Domain.WarehouseStockDataType>
+@{
+    ViewBag.Title = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List","StockInData")',
+            nowrap: false,
+            rownumbers: true,
+            singleSelect: true,
+            pagination: true,
+            height: 580,
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100],
+        });
+
+    });
+
+
+	//新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create","StockInData")';
+            com.showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+             var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "StockInData")/' + id;
+                com.showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            com.formPost('c_form', '@Url.Action("Create", "StockInData")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            com.formPost('e_form', '@Url.Action("Edit", "StockInData")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "StockInData")/' + id;
+               
+                com.delData(url, 'dg');
+
+            }
+        }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+     function doSearch() {
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+      }
+   
+
+</script>
+  <div class="z-toolbar">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+		
+           
+        </div> 
+		<div class="container_12" style="position: relative;">
+		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+		<div id="mm" style="width: 120px">
+                        <div data-options="name:'Id'">标识</div>
+            <div data-options="name:'InId'">入库ID</div>
+            <div data-options="name:'InNo'">入库序列号</div>
+            <div data-options="name:'State'">入库状态</div>
+            <div data-options="name:'PId'">产品ID</div>
+            <div data-options="name:'SKU'">产品SKU</div>
+            <div data-options="name:'MainSKU'">产品名称</div>
+            <div data-options="name:'WId'">仓库ID</div>
+            <div data-options="name:'WName'">仓库</div>
+            <div data-options="name:'Qty'">入库数量</div>
+            <div data-options="name:'NowQty'">现有数量</div>
+            <div data-options="name:'Remark'">备注</div>
+            <div data-options="name:'Freight'">运费</div>
+            <div data-options="name:'Amount'">金额</div>
+            <div data-options="name:'ProductionOn'">生产日期</div>
+            <div data-options="name:'ExpirationOn'">到期时间</div>
+            <div data-options="name:'InType'">入库类型</div>
+            <div data-options="name:'CreateBy'">创建人</div>
+            <div data-options="name:'CreateOn'">创建时间</div>
+
+        </div>
+		  </div>
+<table id="dg">  
+        <thead>  
+        <tr>
+            <th field="Id" width="100" hidden="true">
+                标识
+            </th>
+
+
+            <th field="SKU" width="100">
+                SKU
+            </th>
+
+            <th field="MainSKU" width="100">
+                产品名称
+            </th>
+
+
+            <th field="WName" width="100">
+                仓库
+            </th>
+
+            <th field="Qty" width="100">
+                入库数量
+            </th>
+
+        
+
+            <th field="Remark" width="100">
+                备注
+            </th>
+
+          
+            <th field="ProductionOn" width="100">
+                生产日期
+            </th>
+
+            <th field="ExpirationOn" width="100">
+                到期时间
+            </th>
+
+       
+
+
+    	</tr>
+		</thead>
+		</table>
+    
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+
+
+</body>

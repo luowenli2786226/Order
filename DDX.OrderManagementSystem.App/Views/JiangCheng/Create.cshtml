@@ -1,0 +1,67 @@
+﻿@model DDX.OrderManagementSystem.Domain.JiangChengType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+
+        $('#c_Area').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["宁波", "宁波"], ["义乌", "义乌"]],
+            width: 100
+        });
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "JiangCheng", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Pic,"照片:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Pic,new{@id="c_Pic"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.NickName,"名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.NickName,new{@id="c_NickName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Content,"内容:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Content,new{@id="c_Content"})
+		</td>
+	</tr>
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.Area,"地区:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Area,new{@id="c_Area"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

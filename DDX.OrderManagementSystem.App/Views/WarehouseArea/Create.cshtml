@@ -1,0 +1,48 @@
+﻿@model DDX.OrderManagementSystem.Domain.WarehouseAreaType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+        $('#c_WId').combogrid({
+            required: true,
+            editable: false,
+            panelWidth: 330,
+            idField: 'Id',
+            textField: 'WName',
+            url: '/Warehouse/QList',
+            fit: true,
+            columns: [[
+                { field: 'Id', title: 'Id', width: 100, hidden: true },
+                { field: 'WCode', title: '仓库代码', width: 100 },
+                { field: 'WName', title: '仓库名称', width: 100 },
+                { field: 'Address', title: '仓位地址', width: 100 }
+            ]]
+        });
+        $('#c_WId').combogrid("setValue", 1);
+    });
+</script>
+
+@using (Html.BeginForm("Create", "WarehouseArea", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td >
+            @Html.LabelFor(model => model.WId, "仓库:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WId, new { @id = "c_WId" })
+
+		</td>
+        <td style="display: none">
+            @Html.TextBoxFor(model => model.WName, new { @id = "c_WName" })
+        </td>
+	</tr>
+
+</table>
+</fieldset>
+}

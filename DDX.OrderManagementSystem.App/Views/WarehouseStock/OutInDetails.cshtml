@@ -1,0 +1,61 @@
+﻿@model DDX.OrderManagementSystem.Domain.WarehouseStockType
+
+@{
+   Layout = null;
+}
+
+<body class="easyui-layout">
+    <script type="text/javascript">
+        $(function () {
+            $('#dg_detail').datagrid({
+                url: '@Url.Action("ListDetails", "WarehouseStock")',
+                queryParams: {
+                    sku: '@ViewData["sku"]',
+                    Warehouse: '@ViewData["Warehouse"]'
+                },
+                nowrap: false,             
+                rownumbers: true,
+                pageSize: 20,
+                pagination: true,
+                pageNumber: 1,
+                pageList: [20, 40, 60, 80, 100, 200],
+                singleselect: true,
+                width: 700,
+                height: 300,
+                columns: [[
+                    {
+                        field: 'CreateOn', title: '操作时间', width: 160,
+                        formatter: function (value, row, index) {
+                            if (value) {
+                                return getDate(value);
+                            }
+
+                        }
+                    },
+                    { field: 'OutInType', title: '操作类型', width: 80 },
+                    { field: 'OrderNo', title: '相关订单号', width: 80 },
+                    { field: 'WName', title: '仓库', width: 80, sortable: true},
+                    {
+                        field: 'Qty', title: '数量', width: 80,
+                        styler: function (value, row, index) {
+                            if (row.Type == "入库") {
+                                return 'color:green;';
+                            }
+                            else (row.Type = "出库")
+                            {
+                                return 'color:red;';
+                            }
+                        }
+                    },
+                    { field: 'SourceQty', title: '原有库存', width: 80 },
+                    { field: 'CreateBy', title: '操作人', width: 80 },
+                    { field: 'Type', title: '出入库类型', width: 80,hidden:true},
+                ]]
+            });
+        });
+    </script>
+    <div region="center">
+        <table id="dg_detail">         
+        </table>
+    </div>
+</body>

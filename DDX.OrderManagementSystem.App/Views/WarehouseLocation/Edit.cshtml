@@ -1,0 +1,82 @@
+﻿@model DDX.OrderManagementSystem.Domain.WarehouseLocationType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "WarehouseLocation", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Wid,"Wid:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Wid,new{@id="e_Wid"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WName,"仓库名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WName,new{@id="e_WName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Code,"库位名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Code,new{@id="e_Code"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Remark,"备注:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Remark,new{@id="e_Remark"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SortCode,"排序:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SortCode,new{@id="e_SortCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ParentId,"上级:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ParentId,new{@id="e_ParentId"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

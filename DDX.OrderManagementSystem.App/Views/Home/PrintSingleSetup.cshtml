@@ -1,0 +1,117 @@
+﻿@{
+    ViewBag.Title = "PrintSingleSetup";
+}
+<script>
+
+    $(function () {
+        $('#PrintTemp').combobox({
+            url: '/PrintTemplate/QList',
+            valueField: 0,
+            textField: 1,
+            required: true,
+            width: 300,
+            panelHeight: '200'
+        });
+        $('#ReturnAddress').combobox({
+            url: '/ReturnAddress/QList',
+            valueField: 'Id',
+            textField: 'Street',
+            required: true,
+            width: 300,
+            panelHeight: '200'
+        });
+    })
+
+
+    function showPrintWindow() {
+        ////超过15天未发货且未审批的订单不能打印
+        //$.ajax({
+        //    type: "POST",
+        //    url: "/Order/AllowDelivery",
+        //    data: "OrderNoList=" + $("#txtData").val(),
+        //    success: function (msg) {
+        //        $("#txtData").val(msg);
+        //        if ($("#txtData").val() != "") {
+        //            $.ajax({
+        //                type: "POST",
+        //                url: "/Home/SetPrintData",
+        //                data: "&r=" + $("#ReturnAddress").combobox("getValue") + "&ids=" + $("#txtData").val(),
+        //                success: function (msg) {
+        //                    if (msg.IsSuccess != "") {
+        //                        $('#printdata').val(msg.Result);
+        //                        window.open('/Home/PrintDetail/' + $("#PrintTemp").combobox("getValue"));
+        //                    }
+        //                }
+        //            });
+        //        }
+        //    }
+        //});
+        //超过15天未发货且未审批的订单不能打印
+        $.ajax({
+            type: "POST",
+            url: "/Order/AllowDelivery",
+            data: "OrderNoList=" + $("#txtData").val(),
+            success: function (msg) {
+                if (msg > 0) {
+                    alert("订单" + msg + "超过规定天数未发货，需要审批！")
+                }
+                else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/SetPrintSingleData",
+                        data: "&r=" + $("#ReturnAddress").combobox("getValue") + "&ids=" + $("#txtData").val(),
+                        success: function (msg) {
+                            if (msg.IsSuccess != "") {
+                                $('#printdata').val(msg.Result);
+                                window.open('/Home/PrintDetail/' + $("#PrintTemp").combobox("getValue"));
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        //$.ajax({
+        //    type: "POST",
+        //    url: "/Home/SetPrintData",
+        //    data: "&r=" + $("#ReturnAddress").combobox("getValue") + "&ids=" + $("#txtData").val(),
+        //    success: function (msg) {
+        //        if (msg.IsSuccess != "") {
+        //            $('#printdata').val(msg.Result);
+        //            window.open('/Home/PrintDetail/' + $("#PrintTemp").combobox("getValue"));
+        //        }
+        //    }
+        //});
+    }
+</script>
+<body class="easyui-layout">
+    <div region="center">
+
+        <input type="hidden" id="printdata" />
+        <table>
+
+            <tr>
+                <td>打印数据</td>
+                <td>
+                    <textarea style="width: 600px; height: 300px;" id="txtData">@ViewData["ids"]</textarea></td>
+            </tr>
+            <tr>
+                <td>打印模板</td>
+                <td>
+                    <input type="text" id="PrintTemp" /></td>
+            </tr>
+            <tr>
+                <td>回邮地址</td>
+                <td>
+                    <input type="text" id="ReturnAddress" />
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="button" onclick="showPrintWindow()" value="打印" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+

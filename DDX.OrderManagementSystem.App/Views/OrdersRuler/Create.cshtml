@@ -1,0 +1,2258 @@
+﻿@model DDX.OrderManagementSystem.Domain.OrdersRulersType
+
+@{
+    Layout = null;
+}
+<style type="text/css">
+    .test_box {
+        width: 270px;
+        min-height: 300px;
+        max-height: 300px;
+        _height: 300px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 3px;
+        outline: 0;
+        border: 1px solid #a0b3d6;
+        font-size: 12px;
+        word-wrap: break-word;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-user-modify:read-only;
+    }
+    .UnChooseCondition {
+               width: 270px;
+        max-height: 500px;
+        _height: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 3px;
+        outline: 0;
+        border: 0;
+        font-size: 12px;
+        word-wrap: break-word;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-user-modify:read-only;
+
+
+    }
+     .country {
+               width: 270px;
+        max-height: 500px;
+        _height: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 3px;
+        outline: 0;
+        border: 0;
+        font-size: 12px;
+        word-wrap: break-word;
+        overflow-x: hidden;
+        overflow-y: auto;
+
+
+    }
+    a {
+        color: blue;
+        cursor: pointer;
+    }
+</style>
+@*<script src="~/Scripts/easyUI/jquery-1.8.0.min.js"></script>*@
+<script src="~/Scripts/easyUI/jquery.easyui.min.js"></script>
+<link href="~/Scripts/easy/themes/default/easyui.css" rel="stylesheet" />
+@*<link href="~/Scripts/easy/themes/icon.css" rel="stylesheet" />*@
+
+<script type="text/javascript">
+    var SKU = "";
+    $(function () {
+        $("#actionwarehouse").combogrid({
+            required: true,
+            editable: false,
+            panelWidth: 410,
+            idField: 'Id',
+            textField: 'WName',
+            url: '/Warehouse/QList',
+            fit: true,
+            columns: [[
+                { field: 'Id', title: 'Id', width: 100 },
+                { field: 'WCode', title: '仓库代码', width: 100 },
+                { field: 'WName', title: '仓库名称', width: 100 },
+                { field: 'Address', title: '仓位地址', width: 100 }
+            ]]
+        });
+        $("#warehousetree").combogrid({
+            editable: false,
+            panelWidth: 410,
+            idField: 'Id',
+            textField: 'WName',
+            url: '/Warehouse/QList',
+            fit: true,
+            columns: [[
+                { field: 'Id', title: 'Id', width: 100 },
+                { field: 'WCode', title: '仓库代码', width: 100 },
+                { field: 'WName', title: '仓库名称', width: 100 },
+                { field: 'Address', title: '仓位地址', width: 100 }
+            ]]
+        });
+        $("input[name=radioaction]:eq(0)").attr("checked", 'checked');
+        $("#ShowActionWare").show();
+
+        $("#actionLogic").combogrid({
+            url: '@Url.Action("ALLList", "LogisticsMode")',
+            idField: 'LogisticsCode',
+            textField: 'LogisticsName',
+            panelWidth: 300,
+            mode: 'remote',
+            fit: true,
+            columns: [[
+                 { field: 'Id', title: '主键', width: 30},
+                 { field: 'LogisticsName', title: '承运商', width: 120 },
+                 { field: 'LogisticsCode', title: '承运商代码', width: 150 }
+                 
+            ]]
+        });
+        //加载物流方式
+        $("#Ourslogics").combogrid({
+            url: '@Url.Action("ALLList", "LogisticsMode")',
+            idField: 'LogisticsCode',
+            textField: 'LogisticsName',
+            panelWidth: 300,
+            mode: 'remote',
+            fit: true,
+            columns: [[
+                 { field: 'Id', title: '主键', width: 30 },
+                 { field: 'LogisticsName', title: '承运商', width: 120 },
+                 { field: 'LogisticsCode', title: '承运商代码', width: 150 }
+
+            ]]
+        });
+        
+        $('#chkstock').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: checks,
+            width: 100
+        });
+
+        $('#countrytree').combotree({
+            width: 280,
+            url: '/OrdersRuler/ParentCountryList',
+            multiple: true
+
+        });
+
+        $('#categorytree').combotree({
+            width:280,
+            url: '/ProductCategory/ParentList',
+            valueField: 'FullName',
+            textField: 'FullName',
+            multiple: true
+
+        });
+        
+        $('#accounttree').combotree({
+            width: 280,
+            url: '/OrdersRuler/ParentAccountList',
+            multiple: true
+
+        })
+        //加载币种
+        $("input[name=txtcurrency]").combobox({
+            url: '/OrdersRuler/GetCurrency',
+            valueField: 'CurrencyCode',
+            textField: 'CurrencyName',
+            width: 150
+        });
+       
+        //加载可选条件
+        ShowUnChooseCondition();
+
+        @* //获取当前的平台大类
+        $.ajax({
+            type: "post",
+            url: '@Url.Action("PlatFormList", "OrdersRuler")',
+            data: "",
+            datatype: "json",
+            success: function (msg) {
+                var str = "<ul>";
+                $.each(msg.data, function (ids, obj) {
+                    //str += "<li  id='platformchk" + obj.DicValue + "'><input type='checkbox' name='chkdetail' onclick=\"ShowDetail('" + obj.DicValue + "')\"/>" + obj.FullName + "</li>";
+                    str += "<li  id='platformchk" + obj.DicValue + "'><input type='checkbox' name='chkaccount' value='" + obj.DicValue + "'/>" + obj.FullName + "</li>";
+                })
+                str += "</ul></div>";
+                $("#ShowAccount_dlg").html(str);
+            }
+
+        });
+       //获取当前的区域州大类
+        $.ajax({
+            type: "post",
+            url: '@Url.Action("ParentCountryList", "OrdersRuler")',
+            data: "",
+            datatype: "json",
+            success: function (msg) {
+                var str = "<ul>";
+                $.each(msg.data, function (ids, obj) {
+                    //str += "<li  id='platformchk" + obj.DicValue + "'><input type='checkbox' name='chkdetail' onclick=\"ShowDetail('" + obj.DicValue + "')\"/>" + obj.FullName + "</li>";
+                    str += "<li  id='pcountrychk" + obj.Id + "'><input type='checkbox' name='chkpcountry' value='" + obj.Id + "'/>" + obj.Name + "</li>";
+                })
+                str += "</ul></div>";
+                $("#countrydiv").html(str);
+            }
+
+        });*@
+        //获得指定仓库
+       @* $.ajax({
+            type: "post",
+            url: '@Url.Action("QList", "Warehouse")',
+            data: "",
+            datatype: "json",
+            success: function (msg) {
+                var str = "<ul>";
+                $.each(msg, function (ids, obj) {
+                    str += "<li  id='warehousechk" + obj.WCode + "'><input type='checkbox' value='" + obj.WName + "' name='chkwarehouse'>" + obj.WName + "</li>";
+                })
+                str += "</ul>";
+                $("#ShowWarehouse_dlg").html(str);
+            }
+
+        });*@
+        //获取商品标签
+        $('#producttag').combobox({
+            url: '/Home/GetProductAttributeEnum/',
+            valueField: 'id',
+            textField: 'text',
+            width: 100,
+            panelHeight: 'auto'
+        });
+        //获得商品SKU
+        $('#c_SKU').combogrid({
+            panelWidth: 550,
+            width: 550,
+            mode: 'remote',
+            idField: 'SKU',
+            textField: 'SKU',
+            required: true,
+            url: '/Product/ListQ',
+            fit: true,
+            columns: [[
+                { field: 'SKU', title: 'SKU', width: 100 },
+                { field: 'ProductName', title: 'Title', width: 200 },
+                { field: 'Standard', title: '规格', width: 100 },
+                { field: 'Price', title: '单价', width: 100 }
+            ]],
+            onSelect: function (rec) {
+                if (SKU == "") {
+                    SKU = $('#c_SKU').combogrid('getValues');
+                }
+                else {
+                    SKU = SKU + "或" + $('#c_SKU').combogrid('getValues');
+                }
+                $('#txtskulist').val(SKU);
+            }
+        });
+        $('#c_SKUNum').combogrid({
+            panelWidth: 550,
+            width: 550,
+            mode: 'remote',
+            idField: 'SKU',
+            textField: 'SKU',
+            required: true,
+            url: '/Product/ListQ',
+            fit: true,
+            columns: [[
+                { field: 'SKU', title: 'SKU', width: 100 },
+                { field: 'ProductName', title: 'Title', width: 200 },
+                { field: 'Standard', title: '规格', width: 100 },
+                { field: 'Price', title: '单价', width: 100 }
+            ]],
+            onSelect: function (rec) {
+                if (SKU == "") {
+                    SKU = $('#c_SKUNum').combogrid('getValues');
+                }
+                else {
+                    SKU = SKU + "或" + $('#c_SKUNum').combogrid('getValues');
+                }
+                $('#txtskulistNum').val(SKU);
+            }
+        });
+        $('#chkstock').combobox("setValue", "0");
+
+    })
+    $("#chkvolum1").click(function () {
+        if ($("#chkvolum1").is(":checked")) {
+            $("#txtvolum1").attr("disabled", false);
+        }
+        else { $("#txtvolum1").attr("disabled", true);}
+    })
+    $("#chkvolum2").click(function () {
+        if ($("#chkvolum2").is(":checked")) {
+            $("#txtvolum2").attr("disabled", false);
+        }
+        else { $("#txtvolum2").attr("disabled", true); }
+    })
+    $("#chkvolum3").click(function () {
+        if ($("#chkvolum3").is(":checked")) {
+            $("#txtvolum3").attr("disabled", false);
+        }
+        else { $("#txtvolum3").attr("disabled", true); }
+    })
+    $("#chkvolum4").click(function () {
+        if ($("#chkvolum4").is(":checked")) {
+            $("#txtvolum4").attr("disabled", false);
+        }
+        else { $("#txtvolum4").attr("disabled", true); }
+    })
+    $("#chkvolum5").click(function () {
+        if ($("#chkvolum5").is(":checked")) {
+            $("#txtvolum5").attr("disabled", false);
+        }
+        else { $("#txtvolum5").attr("disabled", true); }
+    })
+    $("#chkvolum6").click(function () {
+        if ($("#chkvolum6").is(":checked")) {
+            $("#txtvolum6").attr("disabled", false);
+        }
+        else { $("#txtvolum6").attr("disabled", true); }
+    })
+    $("#chkvolum7").click(function () {
+        if ($("#chkvolum7").is(":checked")) {
+            $("#txtvolum7").attr("disabled", false);
+        }
+        else {
+            $("#txtvolum7").attr("disabled", true);
+        }
+    })
+    $("#chkvolum8").click(function () {
+        if ($("#chkvolum8").is(":checked")) {
+            $("#txtvolum8").attr("disabled", false);
+        }
+        else { $("#txtvolum8").attr("disabled", true); }
+    })
+    $("#chkvolum9").click(function () {
+        if ($("#chkvolum9").is(":checked")) {
+            $("#txtvolum9").attr("disabled", false);
+        }
+        else { $("#txtvolum9").attr("disabled", true) }
+    })
+    $("#chkvolum10").click(function () {
+        if ($("#chkvolum10").is(":checked")) {
+            $("#txtvolum10").attr("disabled", false);
+        }
+        else { $("#txtvolum10").attr("disabled", true); }
+    })
+    $("#chkpostcode1").click(function () {
+        if ($("#chkpostcode1").is(":checked")) {
+            if ($("#chkpostcode2").is(":checked")) {
+                $("#selectpostcode1").removeAttr("disabled");
+            }
+            $("#txtpostcode1").attr("disabled", false);
+        }
+        else {
+            $("#selectpostcode1").attr("disabled", true);
+        }
+    })
+
+    $("#chkpostcode2").click(function () {
+        if ($("#chkpostcode2").is(":checked")) {
+            if ($("#chkpostcode1").is(":checked")) {
+                $("#selectpostcode1").removeAttr("disabled");
+            }
+            $("#txtpostcode2").attr("disabled", false);
+        }
+        else {
+            $("#selectpostcode1").attr("disabled", true);
+        }
+    }) 
+    $("input[name=chkyichang]").click(function () {
+        // 找到选中行的input
+        var num = $("input[name=chkyichang]").index(this);
+
+        if ($("input[name=chkyichang]").is(":checked")) {
+            $("input[name=txtyichang]").eq(num).attr("disabled", false);
+
+        }
+        else {
+            $("input[name=txtyichang]").eq(num).attr("disabled", true);
+
+        }
+
+    })
+
+
+    //--checkbox控制input方法
+    $("#chkfanwei1").click(function () {
+        if ($("#chkfanwei1").is(":checked")) {
+            $("#txtfanwei1").attr("disabled", false);
+        }
+        else { $("#txtfanwei1").attr("disabled", true); }
+    })
+    $("#chkfanwei2").click(function () {
+        if ($("#chkfanwei2").is(":checked")) {
+            $("#txtfanwei2").attr("disabled", false);
+        }
+        else { $("#txtfanwei2").attr("disabled", true); }
+    })
+    $("#chkfanwei3").click(function () {
+        if ($("#chkfanwei3").is(":checked")) {
+            $("#txtfanwei3").attr("disabled", false);
+        }
+        else { $("#txtfanwei3").attr("disabled", true); }
+    })
+    $("#chkfanwei4").click(function () {
+        if ($("#chkfanwei4").is(":checked")) {
+            $("#txtfanwei4").attr("disabled", false);
+        }
+        else { $("#txtfanwei4").attr("disabled", true); }
+    })
+    $("#chkfanwei5").click(function () {
+        if ($("#chkfanwei5").is(":checked")) {
+            $("#txtfanwei5").attr("disabled", false);
+        }
+        else { $("#txtfanwei5").attr("disabled", true); }
+    })
+    $("#chkfanwei6").click(function () {
+        if ($("#chkfanwei6").is(":checked")) {
+            $("#txtfanwei6").attr("disabled", false);
+        }
+        else { $("#txtfanwei6").attr("disabled", true); }
+    })
+    $("#chkfanwei7").click(function () {
+        if ($("#chkfanwei7").is(":checked")) {
+            $("#txtfanwei7").attr("disabled", false);
+        }
+        else { $("#txtfanwei7").attr("disabled", true); }
+    })
+    $("#chkfanwei8").click(function () {
+        if ($("#chkfanwei8").is(":checked")) {
+            $("#txtfanwei8").attr("disabled", false);
+        }
+        else { $("#txtfanwei8").attr("disabled", true); }
+    })
+    $("#chkfanwei9").click(function () {
+        if ($("#chkfanwei9").is(":checked")) {
+            $("#txtfanwei9").attr("disabled", false);
+        }
+        else { $("#txtfanwei9").attr("disabled", true); }
+    })
+    $("#chkfanwei10").click(function () {
+        if ($("#chkfanwei10").is(":checked")) {
+            $("#txtfanwei10").attr("disabled", false);
+        }
+        else { $("#txtfanwei10").attr("disabled", true); }
+    })
+    $("#chkfanwei11").click(function () {
+        if ($("#chkfanwei11").is(":checked")) {
+            $("#txtfanwei11").attr("disabled", false);
+        }
+        else { $("#txtfanwei11").attr("disabled", true); }
+    })
+    $("#chkfanwei12").click(function () {
+        if ($("#chkfanwei12").is(":checked")) {
+            $("#txtfanwei12").attr("disabled", false);
+        }
+        else { $("#txtfanwei12").attr("disabled", true); }
+    })
+    $("#chktel").click(function () {
+        if ($("#chktel").is(":checked")) {
+            $("#telephonelen").attr("disabled", false);
+            if ($("#chkphone").is(":checked")) {
+                $("#selectphone").removeAttr("disabled");
+            }
+        }
+
+    })
+    $("#chkphone").click(function () {
+        if ($("#chkphone").is(":checked")) {
+            $("#phonelen").attr("disabled", false);
+            if ($("#chktel").is(":checked")) {
+                $("#selectphone").removeAttr("disabled");
+            }
+        }
+    })
+ @*   //选择账号页面显示子账号
+    $("#ShowAccount_dlg").on("click", "input[name=chkaccount]", function () {
+        var platform = $(this).val();
+        if ($(this).is(":checked")) {
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("AccountList", "OrdersRuler")',
+                data: { platform: platform },
+                dataType: "json",
+                success: function (msg) {
+                    var str = "<div id='div" + platform + "'><ul >";
+                    $.each(msg.data, function (ids, obj) {
+                        str += "<li><input type='checkbox' name='chkdetail' value='" + obj.AccountName + "' />" + obj.AccountName + "</li>";
+                    })
+                    str += "</ul>";
+                    $("#platformchk" + platform).append(str);
+                }
+
+            });
+        }
+        else {
+            $("#div" + platform).remove();
+        }
+    })
+    //选择州显示子州
+    $("#ShowCountry_dlg").on("click", "input[name=chkpcountry]", function () {
+        var parentId = $(this).val();
+        if ($(this).is(":checked")) {
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("CountryList", "OrdersRuler")',
+                data: { parentId: parentId },
+                dataType: "json",
+                success: function (msg) {
+                    var str = "<div id='div" + parentId + "'><ul >";
+                    $.each(msg.data, function (ids, obj) {
+                        str += "<li><input type='checkbox' name='chkcountry' value='" + obj.CCountry + "' />" + obj.CCountry + "</li>";
+                    })
+                    str += "</ul>";
+                    $("#pcountrychk" + parentId).append(str);
+                }
+
+            });
+        }
+        else {
+            $("#div" + parentId).remove();
+        }
+     })*@
+    //点击设定动作的时候执行的方法
+    $("input[name=radioaction]").click(function () {
+        var value = $(this).val();
+        if (value == "分配发货仓库") {
+            $("#UnChooseCondition input[type=checkbox]:eq(0)").attr("disabled", 'disabled');
+            $("#ShowActionWare").show();
+            $("#ShowActionLogic").hide();
+        }
+        else if (value == "匹配邮寄方式") {
+            $("#UnChooseCondition input[type=checkbox]:eq(0)").attr("disabled", false);
+            $("#ShowActionLogic").show();
+            $("#ShowActionWare").hide();
+        }
+        else {
+            $("#ShowActionWare").hide();
+            $("#ShowActionLogic").hide();
+        }
+    })
+    //获取可选条件
+    function ShowUnChooseCondition() {
+        $.ajax({
+            type: "post",
+            url: '@Url.Action("GetUnChooseCondition", "OrdersRuler")',
+            data: "",
+            datatype: "json",
+            success: function (msg) {
+                var str = "<ul>";
+                $.each(msg.data, function (ids, obj) {
+                    str += "<li  >" + obj.FullName + "</li>";
+                    $.each(obj.children, function (ids, obj2) {
+                        if (obj2.FullName == "发货仓库为指定仓库")
+                        {
+                            str += "<li ><input type='checkbox' disabled='disabled' onclick=\"copy('" + obj2.Id + "','" + obj2.FullName + "')\" id='chk" + obj2.Id + "'/>" + obj2.FullName + "</li>";
+
+                        }
+                        else
+                        {
+                            str += "<li ><input type='checkbox'  onclick=\"copy('" + obj2.Id + "','" + obj2.FullName + "')\" id='chk" + obj2.Id + "'/>" + obj2.FullName + "</li>";
+
+                        }
+                    })
+                })
+                str += "</ul>";
+                $("#UnChooseCondition").html(str);
+            }
+
+        });
+
+    }
+    //将可选条件添加到已选条件
+    function copy(id, name) {
+        var str = $("#txt").html();
+        //当前checkbox选中的时候，增加一个条件可选
+        if ($('#chk' + id).is(':checked')) {
+            var splitname = name.split('指定');
+            if (splitname.length == 2) {
+                name = '<div id=div' + id + '>' + splitname[0] + '<a href="#" id=a' + id + ' onclick="ShowCondition(\'' + id + '\',\'' + name + '\')">指定' + splitname[1] + '</a></div>';
+            }
+            else if (splitname.length == 3) {
+                name = '<div id=div' + id + '>' + splitname[0] + '<a href="#" id=a' + id + ' onclick="ShowCondition(\'' + id + '\',\'' + name + '\')">指定' + splitname[1] +'指定'+splitname[2]+ '</a></div>';
+            }
+            str = str + name;
+            //$("#txt").append(str);
+            $("#txt").append(name);
+        }
+        else {
+            //移除这个可选条件
+            $("#div" + id).remove();
+        }
+
+    }
+    //显示条件页面
+    function ShowCondition(id, name) {
+        name = name.trim();
+        if (name == "发货仓库为指定仓库") {
+            ShowWarehouse(id);
+        }
+        else if (name == "订单来源为指定平台/站点/账号") {
+            ShowAccount(id);
+        }
+        else if (name == "买家选择的运输类型为指定运输类型") {
+            ShowLogics(id);
+        }
+        else if (name == "订单目的地为指定国家") {
+            ShowCountry(id);
+        }
+        else if (name == "订单收货地址省/州包含指定字符串") {
+            ShowprovinceString(id);
+        }
+        else if (name == "订单收货地址城市包含指定字符串") {
+            ShowcityString(id);
+        }
+        else if (name == "订单收货地址街道包含指定字符串") {
+            ShowStreetString(id);
+        }
+        else if (name == "订单收货地址街道信息字符长度小于指定长度") {
+            ShowStreetLength(id);
+        }
+        else if (name =="订单收货邮编指定格式") {
+            ShowPostcode(id);
+        }
+        else if (name == "订单收货邮编字符小于指定长度") {
+            ShowPostcodeLength(id);
+        }
+
+        else if (name == "订单收件人电话要求指定条件") {
+            ShowTiaojian(id);
+        }
+        else if (name == "订单收件人姓名/地址存在指定异常") {
+            ShowYichang(id);
+        }
+        else if (name == "订单总金额指定范围") {
+            ShowAmountFanwei(id);
+        }
+        else if (name == "订单利润指定范围") {
+            ShowProfitFanwei(id);
+        }
+        else if (name == "订单单笔交易额指定范围") {
+            ShowStatus(id);
+        }
+        else if (name == "买家支付的运费指定范围") {
+            ShowFreight(id);
+
+        }
+        else if (name == "订单货品包含指定货品") {
+            ShowProduct(id);
+        }
+        else if (name == "订单货品总数量指定范围") {
+            ShowNum(id);
+        }
+        else if (name == "订单货品包含指定货品且数量指定范围") {
+            ShowProductNum(id);
+        }
+        else if (name == "订单货品属于指定分类") {
+            ShowCategory(id);
+        }
+        else if (name == "订单货品标签包含指定的商品标签") {
+            ShowProductTag(id);
+        }
+        else if (name == "订单重量指定范围 (g)") {
+            ShowWeightFanwei(id);
+        }
+        else if (name == "订单货品长度指定范围(cm)") {
+            ShowProductLenght(id);
+
+        }
+        else if (name == "订单货品宽度指定范围 (cm)") {
+            ShowProductWidth(id);
+        }
+        else if (name == "订单货品高度指定范围 (cm)") {
+            ShowProductHeight(id);
+
+        }
+        else if (name == "订单货品体积指定范围 (cm³)") {
+            ShowProductVolum(id);
+
+        }
+        else if (name == "订单货品状态包含指定的商品状态") {
+            ShowProductStatus(id);
+        }
+    }
+    //显示对话框
+    function ShowDialog(url, width, height, title, handle, id) {
+        $(url).dialog({
+            width: width,
+            hight: height,
+            title: title,
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: handle
+            }, {
+                text: '取消',
+                handler: function () {
+                    $(url).dialog('close');
+                }
+            }]
+        }).dialog('open');
+    }
+    //显示指定仓库
+    function ShowWarehouse(id) {
+        $('#ShowWarehouse_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定仓库',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+
+                handler: function () {
+                    Wareajaxadd(id);
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowWarehouse_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+    }
+
+    //仓库确定时执行的方法
+    function Wareajaxadd(id) {
+        //点击确定的时候,将当前选定的值更新到已选条件
+        var value = "";
+        var valuedetail = "";
+        var totalvalue = "";
+        var success = true;
+        //遍历仓库的checkbox
+        //if ($("#ShowWarehouse_dlg input[name=chkwarehouse]:checked").length <= 0) {
+        //    success = false;
+        //}
+        //else {
+        //    $("#ShowWarehouse_dlg input[name=chkwarehouse]:checked").each(function () {
+        //        value += $(this).val() + "或";
+        //    })
+        //}
+        //if (success) {
+        //    $("#a" + id).text(value.substring(0, value.length - 1));
+        //    $('#ShowWarehouse_dlg').dialog('close');
+        //}
+        //else {
+        //    alert("请选择仓库");
+        //}
+        if ($("#warehousetree").combogrid('getValue') != "") {
+            actionwarehouse = $("#warehousetree").combogrid('grid').datagrid('getSelected').WCode;
+            $("#a" + id).text(actionwarehouse);
+            $('#ShowWarehouse_dlg').dialog('close');
+        }
+        else {
+            alert("请选择仓库");
+        }
+    }
+
+    //显示账号页面
+    function ShowAccount(id) {
+        $('#ShowAccount_dlg').dialog({
+            width: 400,
+            hight: 600,
+            title: '选择指定平台/站点/账号',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+
+                handler: function () {
+                    //点击确定的时候,将当前选定的值更新到已选条件
+                    var value = "";
+                    var valuedetail = "";
+                    var totalvalue = "";
+                    var success = true;
+                    //遍历平台的checkbox
+                    if ($("#accounttree").combotree('getText').length <= 0) {
+                        success = false;
+                    }
+                    else {
+                    @*if ($("#ShowAccount_dlg input[name=chkaccount]:checked").length <= 0) {
+                        success = false;
+                    }
+                    else {
+                        @* if ($("#ShowAccount_dlg input[name=chkaccount]:checked").length <= 0) {
+                            success = false;
+                        }
+                        else {
+                            $("#ShowAccount_dlg input[name=chkaccount]:checked").each(function () {
+                                value = $(this).val() + ":";
+                                var platform = $(this).val();
+                                valuedetail = "";
+                                //遍历账户div
+                                $("#div" + platform + " input[name=chkdetail]:checked").each(function (ids, obj) {
+                                    valuedetail = valuedetail + $(this).val() + "或";
+
+                                })
+                                totalvalue += value + valuedetail.substring(0, valuedetail.length - 1) + ";";
+                            })
+                        }*@
+                        valuedetail = $("#accounttree").combotree('getText');
+                        
+                    }
+                    if (success) {
+                        $("#a" + id).text(valuedetail);
+                        $('#ShowAccount_dlg').dialog('close');
+                    }
+                    else {
+                        alert("请选择账号");
+                    }
+
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowAccount_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+    }
+    //显示指定运输类型
+    function ShowLogics(id) {
+        //  ShowDialog('#ShowWarehouse_dlg', '600', '600', '选择指定运输类型', addlogics(id));
+        $('#ShowLogics_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定运输类型',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+
+                handler: function () {
+                    if ($("#txtlogisticsmode").text().length <= 0) {
+                        alert("请输入字符串");
+                    }
+                    else {
+                        addlogics(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowLogics_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+    }
+    //运输类型确定时执行的方法
+    function addlogics(id) {
+        var logiscsmode = $("#txtlogisticsmode").text();
+        $("#a" + id).text(logiscsmode);
+        $('#ShowLogics_dlg').dialog('close');
+    }
+    function addlogicsmode() {
+        var addstring = $("#TongbuLogstics").val();
+        var str = $("#txtlogisticsmode").html();
+        if (addstring != "") {
+            name = '<div id=div' + addstring + '><input type="radio"  name=radiologicsstring value=' + addstring + '><span >' + addstring + ',</span></div>';
+            str = str + name;
+            $("#txtlogisticsmode").html(str);
+            $("#TongbuLogstics").val("")
+
+        }
+    }
+    function deletelogicsmode() {
+        var chkcity = $("input[name=radiologicsstring]:checked").val();
+        $("#div" + chkcity).remove();
+    }
+    //显示指定国家
+    function ShowCountry(id) {
+        //ShowDialog('#ShowCountry_dlg', '600', '600', '选择指定国家', addcountry(id));
+          $('#ShowCountry_dlg').dialog({
+            width: 400,
+            hight: 600,
+            title: '选择指定国家',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+
+                handler: function () {
+                    addcountry(id);
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowCountry_dlg').dialog('close');
+                }
+            }]
+          }).dialog('open');
+    }
+    function addcountry(id) {
+        //点击确定的时候,将当前选定的值更新到已选条件
+        var value = "";
+        var valuedetail = "";
+        var totalvalue = "";
+        var success = true;
+        //遍历平台的checkbox
+        if ($("#countrytree").combotree('getText').length <= 0) {
+            success = false;
+        }
+        else {
+            @*if ($("#ShowCountry_dlg input[name=chkpcountry]:checked").length <= 0) {
+                success = false;
+            }
+            else {
+                 $("#ShowCountry_dlg input[name=chkpcountry]:checked").each(function () {
+                    value = $(this).val() + ":";
+                    var platform = $(this).val();
+                    valuedetail = "";
+                    //遍历账户div
+                    $("#div" + platform + " input[name=chkcountry]:checked").each(function (ids, obj) {
+                        valuedetail = valuedetail + $(this).val() + "或";
+
+                    })
+                    totalvalue += value + valuedetail.substring(0, valuedetail.length - 1) + ";";
+                })
+                
+        }*@
+            valuedetail = $("#countrytree").combotree('getText');
+        }
+        if (success) {
+            $("#a" + id).text(valuedetail);
+            $('#ShowCountry_dlg').dialog('close');
+        }
+        else {
+            alert("请选择国家");
+        }
+
+    
+    }
+    //显示省州查找字符串
+    function ShowprovinceString(id) {
+        // ShowDialog('#ShowprovinceString_dlg', '600', '600', '选择指定字符串', addprovinceString(id));
+        $('#ShowprovinceString_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定字符串',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    if ($("#txtSousuoprovince").text().length <= 0) {
+                        alert("请输入字符串");
+                    }
+                    else {
+                        addprovinceString(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowprovinceString_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+    }
+    //省州点击确定后执行的方法
+    function addprovinceString(id) {
+        var txtSousuo = $("#txtSousuoprovince").text();
+        $("#a" + id).text(txtSousuo);
+        $('#ShowprovinceString_dlg').dialog('close');
+    }
+    //省州点击添加执行的方法
+    function addprovince() {
+        // $("input[name=Sousuo]").append(txtaddress + "或");
+        var addstring = $("#provincestr").val();
+        var str = $("#txtSousuoprovince").html();
+        if (addstring != "") {
+            name = '<div id=div'+addstring+'><input type="radio"  name=radiostring value='+addstring+'><span >' + addstring + ',</span></div>';
+            str = str + name;
+            $("#txtSousuoprovince").html(str);
+            $("input[name=provincestr]").val("")
+
+        }
+    }
+    //省州点击删除执行的方法
+    function deleteprovince()
+    {
+        var chkprovince = $("input[name=radiostring]:checked").val();
+        $("#div" + chkprovince).remove();
+       
+    }
+    //显示城市字符串
+    function ShowcityString(id) {
+        //ShowDialog('#ShowCountry_dlg', '600', '600', '选择指定字符串', addprovinceString(id));
+        $('#ShowcityString_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定字符串',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    if ($("#txtSousuoCity").text().length <= 0) {
+                        alert("请输入字符串");
+                    }
+                    else {
+                        AddcityString(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowcityString_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+    }
+    function AddcityString(id)
+    {
+        var txtSousuo = $("#txtSousuoCity").text();
+        $("#a" + id).text(txtSousuo);
+        $('#ShowcityString_dlg').dialog('close');
+    }
+    function addcity() {
+        var txtaddress = $("#citystr").val();
+        // $("input[name=Sousuo]").append(txtaddress + "或");
+        var str = $("#txtSousuoCity").html();
+        if (txtaddress != "") {
+            name = '<div id=div' + txtaddress + '><input type="radio"  name=radcitystr value=' + txtaddress + '><span>' + txtaddress + ',</span></div>';
+            str = str + name;
+            $("#txtSousuoCity").html(str);
+            $("input[name=citystr]").val("")
+        }
+    }
+    function deletecity()
+    {
+        var chkcity = $("input[name=radcitystr]:checked").val();
+        $("#div" + chkcity).remove();
+    }
+    //显示地址字符串
+    function ShowStreetString(id) {
+        // ShowDialog('#ShowStreetString_dlg', '600', '600', '选择指定字符串', addprovinceString(id));
+        $('#ShowStreetString_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定字符串',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    if ($("#txtSousuoStreet").text().length <= 0) {
+                        alert("请输入字符串");
+                    }
+                    else {
+                        addstreetString(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowStreetString_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+    }
+    function addstreet()
+    {
+        var txtaddress = $("#streetstr").val();
+        // $("input[name=Sousuo]").append(txtaddress + "或");
+        var str = $("#txtSousuoStreet").html();
+        if (txtaddress != "") {
+            name = '<div id=div' + txtaddress + '><input type="radio"  name=radstreetstr value=' + txtaddress + '><span>' + txtaddress + ',</span></div>';
+            str = str + name;
+            $("#txtSousuoStreet").html(str);
+            $("input[name=streetstr]").val("")
+        }
+    }
+    function deletestreet()
+    {
+        var chkstreet = $("input[name=radstreetstr]:checked").val();
+        $("#div" + chkstreet).remove();
+
+    }
+    
+
+    function addstreetString(id)
+    {
+        var txtSousuo = $("#txtSousuoStreet").text();
+        $("#a" + id).text(txtSousuo);
+        $('#ShowStreetString_dlg').dialog('close');
+    }
+    //显示地址长度
+    function ShowStreetLength(id) {
+        // ShowDialog('#ShowStreetLength_dlg', '600', '600', '选择指定长度', addprovinceString(id));
+        $('#ShowStreetLength_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定长度',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    if (!$('#txtaddresslength').numberbox('isValid')) {
+                        alert("输入不能为空");
+                    }
+                    else {
+                        AddstreetLength(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowStreetLength_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+    }
+    function AddstreetLength(id) {
+        var length = $("#txtaddresslength").val();
+        $("#a" + id).text(length);
+        $('#ShowStreetLength_dlg').dialog('close');
+
+    }
+    //选择指定格式
+    function ShowPostcode(id) {
+        //ShowDialog('#ShowPostcode_dlg', '600', '600', '选择指定格式', addprovinceString(id));
+        $('#ShowPostcode_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定格式',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    if (($("#chkpostcode1").is(":checked") && $("#txtpostcode1").val()=="") || ($("#chkpostcode2").is(":checked") && $("#txtpostcode2").val() == "") || (!$("#chkpostcode1").is(":checked") && !$("#chkpostcode2").is(":checked")))
+                    {
+                        alert("输入不能为空！");
+                    }
+                    else
+                    {
+                        addPostcode(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowPostcode_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+    }
+    function addPostcode(id)
+    {
+        var str = "";
+        if ($("#chkpostcode1").is(":checked")) {
+            str = "以" + $("#txtpostcode1").val() + "开头";
+        }
+        if ($("#selectpostcode1").attr("disabled") != "disabled" && $("#txtpostcode2").val() != "") {
+            str += $("#selectpostcode1").val();
+        }
+        if ($("#chkpostcode2").is(":checked")) {;
+            str += "包含" + $("#txtpostcode2").val();
+        }
+        $("#a" + id).text(str);
+        $('#ShowPostcode_dlg').dialog('close');
+    }
+    //订单收货邮编指定格式
+    function ShowPostcodeLength(id) {
+        //ShowDialog('#ShowPostcodeLength_dlg', '600', '600', '选择指定格式', addprovinceString(id));
+        $('#ShowPostcodeLength_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定格式',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    if (!$('#postcodelength').numberbox('isValid')) {
+                        alert("输入不能为空");
+                    }
+                    else {
+                        addPostcodeLength(id);
+                    }                   
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowPostcodeLength_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+    function addPostcodeLength(id) {
+        var postcodelength = $("#postcodelength").val();
+        $("#a" + id).text(postcodelength);
+        $('#ShowPostcodeLength_dlg').dialog('close');
+
+    }
+    //订单收件人电话要求指定条件") {
+    function ShowTiaojian(id) {
+        // ShowDialog('#showTiaojian_dlg', '600', '600', '选择指定条件', addprovinceString(id));
+        $('#ShowTiaojian_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定条件',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    if (($("#chktel").is(":checked") && $("#telephonelen").val() == "") || ($("#chkphone").is(":checked") && $("#phonelen").val() == "") || (!$("#chktel").is(":checked") && !$("#chkphone").is(":checked"))) {
+                        alert("输入不能为空！");
+                    }
+                    else {
+                        addTiaojian(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowTiaojian_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+    function addTiaojian(id)
+    {
+        var str = "";
+        if ($("#chktel").is(":checked")) {
+            str = "移动电话可读字符长度≤" + $("#telephonelen").val();
+        }
+        if ($("#selectphone").attr("disabled") != "disabled" && $("#phonelen").val() != "") {
+            str += $("#selectphone").val();
+        }
+        if ($("#chkphone").is(":checked")) {
+            str += "固定电话可读字符长度≤" + $("#phonelen").val();
+        }
+        $("#a" + id).text(str);
+        $('#ShowTiaojian_dlg').dialog('close');
+    }
+    //订单收件人姓名/地址存在指定异常") {
+    function ShowYichang(id) {
+        //  ShowDialog('#ShowYichang_dlg', '600', '600', '选择指定异常', addprovinceString(id));
+        $('#ShowYichang_dlg').dialog({
+            width: 700,
+            hight: 700,
+            title: '选择指定异常',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    var str = [];
+                    var str2 = [];
+                    $("input[name=chkyichang]").each(function () {
+                        var num = $("input[name=chkyichang]").index(this);
+                        if ($(this).is(":checked")) {
+                            str.push($(this).val() + $("input[name=txtyichang]").eq(num).val());
+                            if ($("input[name=txtyichang]").eq(num).val().trim() != "") {
+                                str2.push($("input[name=txtyichang]").eq(num).val());
+                            }
+                        }
+                    })
+                    if (str2 == "") {
+                        alert("输入不能为空！")
+                    }
+                    else {
+                        addYichang(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowYichang_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+    function addYichang(id)
+    {
+        var str = [];
+        $("input[name=chkyichang]").each(function () {
+            var num = $("input[name=chkyichang]").index(this);
+            if ($(this).is(":checked"))
+            {
+                str.push($(this).val() + $("input[name=txtyichang]").eq(num).val());
+            }
+        })
+        $("#a" + id).text(str);
+        $('#ShowYichang_dlg').dialog('close');
+    }
+    //订单总金额指定范围") {
+    function ShowAmountFanwei(id) {
+        //  ShowDialog('#ShowAmountFanwei_dlg', '600', '600', '选择指定范围', addprovinceString(id));
+        $('#ShowAmountFanwei_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定范围',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    if (($("#chkfanwei1").is(":checked") && $("#txtfanwei1").val() == "") || ($("#chkfanwei2").is(":checked") && $("#txtfanwei2").val() == "") || (!$("#chkfanwei1").is(":checked") && !$("#chkfanwei2").is(":checked")) || ($("input[name=txtcurrency]").eq(0).val() == "")) {
+                        alert("输入不能为空！");
+                    }
+                    else if ($("#chkfanwei1").is(":checked") && $("#chkfanwei2").is(":checked"))
+                    {
+                        if ($("#txtfanwei1").val() > $("#txtfanwei2").val()) {
+                            alert("范围不合理！");
+                        }
+                        else {
+                            AddAmountFanwei(id);
+                        }
+                    }
+                    else {
+                        AddAmountFanwei(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowAmountFanwei_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+    function AddAmountFanwei(id)
+    {
+        var currency = $("input[name=txtcurrency]").eq(0).val();
+        var str = currency + ",";
+        if ($("#chkfanwei1").is(":checked")) {
+            str+= $("#selectfanwei1").val() +" "+ $("#txtfanwei1").val();
+        }
+        if ($("#chkfanwei1").is(":checked") && $("#chkfanwei2").is(":checked"))
+        {
+            str += "且";
+        }
+        if ($("#chkfanwei2").is(":checked")) {
+            str += $("#selectfanwei2").val() +" "+ $("#txtfanwei2").val();
+        }
+        $("#a" + id).text(str);
+        $('#ShowAmountFanwei_dlg').dialog('close');
+    }
+    //订单利润指定范围") {
+    function ShowProfitFanwei(id) {
+        // ShowDialog('#ShowProfitFanwei_dlg', '600', '600', '选择指定范围', addprovinceString(id));
+        $('#ShowProfitFanwei_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定范围',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    if (($("#chkfanwei7").is(":checked") && $("#txtfanwei7").val() == "") || ($("#chkfanwei8").is(":checked") && $("#txtfanwei8").val() == "") || (!$("#chkfanwei7").is(":checked") && !$("#chkfanwei8").is(":checked")) || ($("input[name=txtcurrency]").eq(1).val() == "")) {
+                        alert("输入不能为空！");
+                    }
+                    else if ($("#chkfanwei7").is(":checked") && $("#chkfanwei8").is(":checked")) {
+                        if ($("#txtfanwei7").val() > $("#txtfanwei8").val()) {
+                            alert("范围不合理！");
+                        }
+                        else {
+                            AddProfitFanwei(id);
+                        }
+                    }
+                    else {
+                        AddProfitFanwei(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowProfitFanwei_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+    function AddProfitFanwei(id)
+    {
+        var currency = $("input[name=txtcurrency]").eq(1).val();
+        var str = currency + ",";
+        if ($("#chkfanwei7").is(":checked")) {
+            str +=  $("#selectfanwei7").val() + $("#txtfanwei7").val();
+        }
+        if ($("#chkfanwei7").is(":checked") && $("#chkfanwei8").is(":checked"))
+        {
+            str += "且" ;
+        }
+        if ($("#chkfanwei8").is(":checked")) {
+            str += $("#selectfanwei8").val() + $("#txtfanwei8").val();
+        }
+        $("#a" + id).text(str);
+        $('#ShowProfitFanwei_dlg').dialog('close');
+    }
+    //订单单笔交易额指定范围") {
+    function ShowStatus(id) {
+        // ShowDialog('#ShowStatus_dlg', '600', '600', '选择指定范围', addprovinceString(id));
+        $('#ShowOneOrderAmount_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定范围',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    if (($("#chkfanwei11").is(":checked") && $("#txtfanwei11").val() == "") || ($("#chkfanwei12").is(":checked") && $("#txtfanwei12").val() == "") || (!$("#chkfanwei11").is(":checked") && !$("#chkfanwei12").is(":checked")) || ($("input[name=txtcurrency]").eq(2).val() == "")) {
+                        alert("输入不能为空！");
+                    }
+                    else if ($("#chkfanwei11").is(":checked") && $("#chkfanwei12").is(":checked")) {
+                        if ($("#txtfanwei11").val() > $("#txtfanwei12").val()) {
+                            alert("范围不合理！");
+                        }
+                        else {
+                            addStatus(id);
+                        }
+                    }
+                    else {
+                        addStatus(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowOneOrderAmount_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+    function addStatus(id)
+    {
+        var currency = $("input[name=txtcurrency]").eq(2).val();
+        var str = currency + ",";
+        if ($("#chkfanwei11").is(":checked")) {
+            str += $("#selectfanwei11").val() + " " + $("#txtfanwei11").val();
+        }
+        if ($("#chkfanwei11").is(":checked") && $("#chkfanwei12").is(":checked")) {
+            str += "且";
+        }
+        if ($("#chkfanwei12").is(":checked")) {
+            str += $("#selectfanwei12").val() + " " + $("#txtfanwei12").val();
+        }
+        $("#a" + id).text(str);
+        $('#ShowOneOrderAmount_dlg').dialog('close');
+
+    }
+    //买家支付的运费指定范围") {
+    function ShowFreight(id) {
+        //ShowDialog('#ShowFreight_dlg', '600', '600', '选择指定范围', addprovinceString(id));
+        $('#ShowFreight_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定范围',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    if (($("#chkfanwei3").is(":checked") && $("#txtfanwei3").val() == "") || ($("#chkfanwei4").is(":checked") && $("#txtfanwei4").val() == "") || (!$("#chkfanwei3").is(":checked") && !$("#chkfanwei4").is(":checked")) || ($("input[name=txtcurrency]").eq(3).val() == "")) {
+                        alert("输入不能为空！");
+                    }
+                    else if ($("#chkfanwei3").is(":checked") && $("#chkfanwei4").is(":checked")) {
+                        if ($("#txtfanwei3").val() > $("#txtfanwei4").val()) {
+                            alert("范围不合理！");
+                        }
+                        else {
+                            AddFreight(id);
+                        }
+                    }
+                    else {
+                        AddFreight(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowFreight_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+
+    }
+    function AddFreight(id)
+    {
+        var currency = $("input[name=txtcurrency]").eq(3).val();
+        var str = $("input[name=txtcurrency]").eq(3).val()+",";
+        if ($("#chkfanwei3").is(":checked")) {
+            str +=$("#selectfanwei3").val() + $("#txtfanwei3").val();
+        }
+        if ($("#chkfanwei3").is(":checked") && $("#chkfanwei4").is(":checked")) {
+            str += "且";
+        }
+        if ($("#chkfanwei4").is(":checked")) {
+            str += $("#selectfanwei4").val() + $("#txtfanwei4").val();
+        }
+        $("#a" + id).text(str);
+        $('#ShowFreight_dlg').dialog('close');
+    }
+    //订单货品包含指定货品") {
+    function ShowProduct(id) {
+        //  ShowDialog('#ShowProduct_dlg', '600', '600', '选择指定货品', addprovinceString(id));
+        SKU = "";
+        $('#ShowProduct_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定货品',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '重置',
+                handler: function () {
+                    SKU = "";
+                    $("#txtskulist").val("");
+                }
+            }, {
+                text: '确定',
+                handler: function () {
+                    SKU = "";
+                    if ($("#txtskulist").val().length <= 0) {
+                        alert("输入不能为空！");
+                    }
+                    else {
+                        addProduct(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    SKU = "";
+                    $('#ShowProduct_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+    function addProduct(id)
+    {
+        var str = $("#txtskulist").val();
+        $("#a" + id).text(str);
+        $('#ShowProduct_dlg').dialog('close');
+
+    }
+    //订单货品总数量指定范围") {
+    function ShowNum(id) {
+        // ShowDialog('#ShowNum_dlg', '600', '600', '选择指定范围', addprovinceString(id));
+        $('#ShowNum_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定范围',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    if (($("#chkfanwei5").is(":checked") && $("#txtfanwei5").val() == "") || ($("#chkfanwei6").is(":checked") && $("#txtfanwei6").val() == "") || (!$("#chkfanwei5").is(":checked") && !$("#chkfanwei6").is(":checked"))) {
+                        alert("输入不能为空！");
+                    }
+                    else if ($("#chkfanwei5").is(":checked") && $("#chkfanwei6").is(":checked")) {
+                        if ($("#txtfanwei5").val() > $("#txtfanwei6").val()) {
+                            alert("范围不合理！");
+                        }
+                        else {
+                            addNum(id);
+                        }
+                    }
+                    else {
+                        addNum(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowNum_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+    function addNum(id)
+    {
+        var str = "";
+        if ($("#chkfanwei5").is(":checked")) {
+            str = $("#selectfanwei5").val() + $("#txtfanwei5").val();
+        }
+        if ($("#chkfanwei5").is(":checked") && $("#chkfanwei6").is(":checked")) {
+            str += "且";
+        }
+        if ($("#chkfanwei6").is(":checked")) {
+            str += $("#selectfanwei6").val() + $("#txtfanwei6").val();
+        }
+        $("#a" + id).text(str);
+        $('#ShowNum_dlg').dialog('close');
+    }
+    //订单货品包含指定货品且数量指定范围") 
+    function ShowProductNum(id) {
+        //ShowDialog('#ShowProductNum_dlg', '600', '600', '选择指定范围', addprovinceString(id));
+        SKU = "";
+        $('#ShowProductNum_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定范围',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '重置',
+                handler: function () {
+                    SKU = "";
+                    $("#txtskulistNum").val("");
+                }
+            }, {
+                text: '确定',
+                handler: function () {
+                    SKU = "";
+                    if (($("#chkfanwei9").is(":checked") && $("#txtfanwei9").val() == "") || ($("#chkfanwei10").is(":checked") && $("#txtfanwei10").val() == "") || (!$("#chkfanwei9").is(":checked") && !$("#chkfanwei10").is(":checked")) || ($("#txtskulistNum").val().length <= 0)) {
+                        alert("输入不能为空！");
+                    }
+                    else if ($("#chkfanwei9").is(":checked") && $("#chkfanwei10").is(":checked")) {
+                        if ($("#txtfanwei9").val() > $("#txtfanwei10").val()) {
+                            alert("范围不合理！");
+                        }
+                        else {
+                            addProductNum(id);
+                        }
+                    }
+                    else {
+                        addProductNum(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    SKU = "";
+                    $('#ShowProductNum_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+
+    }
+    function addProductNum(id)
+    {
+        var str = $("#txtskulistNum").val() + ",";
+        if ($("#chkfanwei9").is(":checked")) {
+            str += $("#selectfanwei9").val() + $("#txtfanwei9").val();
+        }
+        if ($("#chkfanwei9").is(":checked") && $("#chkfanwei10").is(":checked")) {
+            str += "且";
+        }
+        if ($("#chkfanwei10").is(":checked")) {
+            str +=  $("#selectfanwei10").val() + $("#txtfanwei10").val();
+        }
+        $("#a" + id).text(str);
+        $('#ShowProductNum_dlg').dialog('close');
+    }
+    //订单货品属于指定分类") {
+    function ShowCategory(id) {
+        //ShowDialog('#showCategory_dlg', '600', '600', '选择指定分类', addprovinceString(id));
+        $('#ShowCategory_dlg').dialog({
+            width: 400,
+            hight: 600,
+            title: '选择指定分类',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    addCategory(id);
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowCategory_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+    function addCategory(id)
+    {
+        var valuedetail = "";
+        var success = true;
+        //遍历平台的checkbox
+        if ($("#categorytree").combotree('getText').length <= 0) {
+            success = false;
+        }
+        else {
+            valuedetail = $("#categorytree").combotree('getText');
+        }
+        if (success) {
+            $("#a" + id).text(valuedetail);
+            $('#ShowCategory_dlg').dialog('close');
+        }
+        else {
+            alert("请选择商品种类");
+        }
+    }
+    //订单货品标签包含指定的商品标签") {
+    function ShowProductTag(id) {
+        //ShowDialog('#ShowProductTag_dlg', '600', '600', '选择指定的商品标签', addprovinceString(id));
+        $('#ShowProductTag_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定的商品标签',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    if ($("#producttag").combobox('getValue').length <= 0) {
+                        alert("请输入字符串");
+                    }
+                    else {
+                        addProductTag(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowProductTag_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+
+    }
+    function addProductTag(id)
+    {
+        var productTag = $("#producttag").combobox('getValue');
+        $("#a" + id).text(productTag);
+        $('#ShowProductTag_dlg').dialog('close');
+
+    }
+    //订单重量指定范围 (g)") {
+    function ShowWeightFanwei(id) {
+        //ShowDialog('#ShowWeightFanwei_dlg', '600', '600', '选择指定范围 (cm³)', addprovinceString(id));
+        $('#ShowWeightFanwei_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定范围(cm³)',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    if (($("#chkvolum9").is(":checked") && $("#txtvolum9").val() == "") || ($("#chkvolum10").is(":checked") && $("#txtvolum10").val() == "") || (!$("#chkvolum9").is(":checked") && !$("#chkvolum10").is(":checked"))) {
+                        alert("输入不能为空！");
+                    }
+                    else if ($("#chkvolum9").is(":checked") && $("#chkvolum10").is(":checked")) {
+                        if ($("#txtvolum9").val() > $("#txtvolum10").val()) {
+                            alert("范围不合理！");
+                        }
+                        else {
+                            AddWeightFanwei(id);
+                        }
+                    }
+                    else {
+                        AddWeightFanwei(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowWeightFanwei_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+
+    }
+    function AddWeightFanwei(id) {
+        var str = "";
+        if ($("#chkvolum9").is(":checked")) {
+            str = $("#selectvolum9").val() + $("#txtvolum9").val();
+        }
+        if ($("#chkvolum9").is(":checked") && $("#chkvolum10").is(":checked")) {
+            str += "且";
+        }
+        if ($("#chkvolum10").is(":checked")) {
+            str +=  $("#selectvolum10").val() + $("#txtvolum10").val();
+        }
+        $("#a" + id).text(str);
+        $('#ShowWeightFanwei_dlg').dialog('close');
+    }
+
+    //订单货品长度指定范围(cm)") {
+    function ShowProductLenght(id) {
+        //ShowDialog('#showProductLenght_dlg', '600', '600', '选择指定范围 (cm³)', addprovinceString(id));
+        $('#ShowProductLenght_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定范围 (cm³)',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+
+                    if (($("#chkvolum7").is(":checked") && $("#txtvolum7").val() == "") || ($("#chkvolum8").is(":checked") && $("#txtvolum8").val() == "") || (!$("#chkvolum7").is(":checked") && !$("#chkvolum8").is(":checked"))) {
+                        alert("输入不能为空！");
+                    }
+                    else if ($("#chkvolum7").is(":checked") && $("#chkvolum8").is(":checked")) {
+                        if ($("#txtvolum7").val() > $("#txtvolum8").val()) {
+                            alert("范围不合理！");
+                        }
+                        else {
+                            AddProductLenght(id);
+                        }
+                    }
+                    else {
+                        AddProductLenght(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowProductLenght_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+
+    }
+    function AddProductLenght(id) {
+        // AddFanwei($()
+        var str = "";
+        if ($("#chkvolum7").is(":checked")) {
+            str = $("#selectvolum7").val() + $("#txtvolum7").val();
+        }
+        if ($("#chkvolum7").is(":checked") && $("#chkvolum8").is(":checked")) {
+            str += "且";
+        }
+        if ($("#chkvolum8").is(":checked")) {
+            str +=$("#selectvolum8").val() + $("#txtvolum8").val();
+        }
+        $("#a" + id).text(str);
+        $('#ShowProductLenght_dlg').dialog('close');
+    }
+
+    //订单货品宽度指定范围 (cm)") {
+    function ShowProductWidth(id) {
+        //ShowDialog('#ShowProductWidth_dlg', '600', '600', '选择指定范围 (cm³)', addprovinceString(id));
+        $('#ShowProductWidth_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定范围 (cm³)',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+
+                    if (($("#chkvolum5").is(":checked") && $("#txtvolum5").val() == "") || ($("#chkvolum6").is(":checked") && $("#txtvolum6").val() == "") || (!$("#chkvolum5").is(":checked") && !$("#chkvolum6").is(":checked"))) {
+                        alert("输入不能为空！");
+                    }
+                    else if ($("#chkvolum5").is(":checked") && $("#chkvolum6").is(":checked")) {
+                        if ($("#txtvolum5").val() > $("#txtvolum6").val()) {
+                            alert("范围不合理！");
+                        }
+                        else {
+                            AddProductWidth(id);
+                        }
+                    }
+                    else {
+                        AddProductWidth(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowProductWidth_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+    function AddProductWidth(id) {
+        var str = "";
+        if ($("#chkvolum5").is(":checked")) {
+            str += $("#selectvolum5").val() + $("#txtvolum5").val();
+        }
+        if ($("#chkvolum5").is(":checked") && $("#chkvolum6").is(":checked")) {
+            str += "且";
+        }
+        if ($("#chkvolum6").is(":checked")) {
+            str += $("#selectvolum6").val() + $("#txtvolum6").val();
+        }
+        $("#a" + id).text(str);
+        $('#ShowProductWidth_dlg').dialog('close');
+    }
+
+    //订单货品高度指定范围 (cm)") {
+    function ShowProductHeight(id) {
+        // ShowDialog('#ShowProductHeight_dlg', '600', '600', '选择指定范围 (cm³)', addprovinceString(id));
+        $('#ShowProductHeight_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定范围 (cm³)',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+
+                    if (($("#chkvolum3").is(":checked") && $("#txtvolum3").val() == "") || ($("#chkvolum4").is(":checked") && $("#txtvolum4").val() == "") || (!$("#chkvolum3").is(":checked") && !$("#chkvolum4").is(":checked"))) {
+                        alert("输入不能为空！");
+                    }
+                    else if ($("#chkvolum3").is(":checked") && $("#chkvolum4").is(":checked")) {
+                        if ($("#txtvolum3").val() > $("#txtvolum4").val()) {
+                            alert("范围不合理！");
+                        }
+                        else {
+                            AddProductHeight(id);
+                        }
+                    }
+                    else {
+                        AddProductHeight(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowProductHeight_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+
+    }
+    function AddProductHeight(id) {
+        var str = "";
+        if ($("#chkvolum3").is(":checked")) {
+            str = $("#selectvolum3").val() + $("#txtvolum3").val();
+        }
+        if ($("#chkvolum3").is(":checked") && $("#chkvolum4").is(":checked")) {
+            str += "且";
+        }
+        if ($("#chkvolum4").is(":checked")) {
+            str+=  $("#selectvolum4").val() + $("#txtvolum4").val();
+        }
+        $("#a" + id).text(str);
+        $('#ShowProductHeight_dlg').dialog('close');
+
+    }
+
+    //订单货品体积指定范围 (cm³)") {
+    function ShowProductVolum(id) {
+        // ShowDialog('#ShowProductVolum_dlg', '600', '600', '选择指定范围 (cm³)', addprovinceString(id));
+        $('#ShowProductVolum_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定范围 (cm³)',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+
+                    if (($("#chkvolum1").is(":checked") && $("#txtvolum1").val() == "") || ($("#chkvolum2").is(":checked") && $("#txtvolum2").val() == "") || (!$("#chkvolum1").is(":checked") && !$("#chkvolum2").is(":checked"))) {
+                        alert("输入不能为空！");
+                    }
+                    else if ($("#chkvolum1").is(":checked") && $("#chkvolum2").is(":checked")) {
+                        if ($("#txtvolum1").val() > $("#txtvolum2").val()) {
+                            alert("范围不合理！");
+                        }
+                        else {
+                            AddProductVolum(id);
+                        }
+                    }
+                    else {
+                        AddProductVolum(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowProductVolum_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+
+    }
+    function AddProductVolum(id) {
+        var str = "";
+        if ($("#chkvolum1").is(":checked")) {
+            str+= $("#selectvolum1").val() + $("#txtvolum1").val();
+        }
+        if ($(chk1).is(":checked") && $(chk2).is(":checked")) {
+            str += "且";
+        }
+        if ($("#chkvolum2").is(":checked")) {
+            str+= $("#selectvolum2").val() + $("#txtvolum2").val();
+        }
+        $("#a" + id).text(str);
+        $('#ShowProductVolum_dlg').dialog('close');
+
+    }
+
+    //订单货品状态包含指定的商品状态") {
+    function ShowProductStatus(id) {
+        // ShowDialog('#ShowProductStatus_dlg', '600', '600', '选择指定商品状态', addprovinceString(id));
+        $('#ShowProductStatus_dlg').dialog({
+            width: 600,
+            hight: 600,
+            title: '选择指定商品状态',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    check_val = [];
+                    $("input[name=chkproduct]:checked").each(function () {
+                        check_val.push($(this).val());
+                    })
+                    if (check_val.length <= 0) {
+                        alert("请至少选择以下一个状态！");
+                    }
+                    else {
+                        addProductStatus(id);
+                    }
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#ShowProductStatus_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+    function addProductStatus(id)
+    {
+        check_val = [];
+        $("input[name=chkproduct]:checked").each(function () {
+            check_val.push($(this).val());
+        })
+        $("#a" + id).text(check_val);
+        $('#ShowProductStatus_dlg').dialog('close');
+    }
+    function AddProduct() {
+        var g = $('#c_SKU').combogrid('grid');	// get datagrid object
+        var r = g.datagrid('getSelected');
+        var txtsku = $("#txtskulist").html();
+        var str = "<div>" + r.SKU + "</div>";
+        txtsku += str;
+        $("#txtskulist").html(txtsku)
+    }
+</script>
+@using (Html.BeginForm("Create", "OrdersRuler", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table>
+        <tr>
+            <td style="vertical-align:top">
+                <div style="width:530px;height:300px;top:0px;vertical-align:top"  id="txt" class="easyui-panel" title="已选条件" name="OrderChoose"></div>
+                <div style="height:30px"></div>
+                <div  class="easyui-panel" title="设定动作" style="top:0px">
+                    订单自处理动作： <ul>
+                       <li> <input type="radio" value="分配发货仓库" name="radioaction"/>分配发货仓库</li>
+            <li><input type="radio" value="匹配邮寄方式" name="radioaction"/>匹配邮寄方式</li>
+            <li><input type="radio" value="需人工审核订单" name="radioaction"/>需人工审核订单</li></ul>
+                    <div  id="ShowActionWare" style="display:none">发货分配仓库<input type="text" id="actionwarehouse" name="actionwarehouse" class="easyui-combobox"/></div>
+                    <div id="ShowActionLogic" style="display:none">发货采用的邮寄方式<input type="text" name="actionLogic" id="actionLogic"/></div>
+    </div>
+                <div>规则名称 <input type="text" id='txtrulersname'  name="txtrulersname"/></div>
+                <div>是否扣库存<input type="text" id="chkstock" /></div>
+            </td>
+            <td  style="width:300px ">
+                <div id="UnChooseCondition"   title="可选条件" class="UnChooseCondition"></div>
+            </td>
+        </tr>
+        
+    </table>
+@*<div>
+   <div style="width:400px; float:left;"><div><p>已选条件</p>
+       <div id="txt" class="test_box"  name="OrderChoose" ></div>
+
+                                         </div>
+    <div><p>设定动作</p>
+       订单自处理动作： <ul>
+           <li> <input type="radio" value="分配发货仓库" name="radioaction"/>分配发货仓库</li>
+            <li><input type="radio" value="匹配邮寄方式" name="radioaction"/>匹配邮寄方式</li>
+            <li><input type="radio" value="需人工审核" name="radioaction"/>需人工审核</li>
+
+        </ul>
+        <div  id="ShowActionWare" style="display:none">发货分配仓库<input type="text" id="actionwarehouse" name="actionwarehouse" class="easyui-combobox"/></div>
+        <div id="ShowActionLogic" style="display:none">发货采用的邮寄方式<input type="text" name="actionLogic" id="actionLogic"/></div>
+    </div>
+    <div>规则名称 <input type="text" id='txtrulersname'  name="txtrulersname"/></div>
+       <div>是否扣库存<input type="text" id="chkstock" /></div>
+   </div> 
+    <div style="width:240px; float:left"><p>可选条件</p><div id="UnChooseCondition"  class="UnChooseCondition"></div></div>*@
+   <div id="ShowAccount_dlg" class="easyui-dialog" data-options="closed:true">
+       <input type ="text" id="accounttree"/>
+   </div>
+    <div id="ShowWarehouse_dlg" class="easyui-dialog" data-options="closed:true">
+
+        <input type="text" id="warehousetree" />
+    </div>
+    <div id="ShowLogics_dlg" class="easyui-dialog" data-options="closed:true">
+       运输类型<input type="text" id="TongbuLogstics" />
+        <input type="button" value="添加" onclick="addlogicsmode()" />
+        <input type="button" value="删除" onclick="deletelogicsmode()"/>
+         <div>搜索列表:<div  class="test_box"  id="txtlogisticsmode"></div> 
+    </div></div>
+    <div id="ShowCountry_dlg" class="easyui-dialog" data-options="closed:true">
+        <input type ="text" id="countrytree"/>
+    </div>
+      <div id="ShowprovinceString_dlg" class="easyui-dialog" data-options="closed:true">       
+          指定要在地址(仅省/州名称)中查找的字符：<input type="text"  id="provincestr" name="provincestr"/> 
+          <input type="button"  value="添加" onclick="addprovince()"/>
+          <input type="button"  value="删除" onclick="deleteprovince()"/>
+
+        <div>  搜索列表:<div id="txtSousuoprovince" class="test_box"  ></div></div>
+      </div>
+    <div id="ShowcityString_dlg" class="easyui-dialog" data-options="closed:true">
+         指定要在地址(仅城市名称)中查找的字符：<input type="text"  id="citystr" name="citystr"/> 
+          <input type="button"  value="添加" onclick="addcity()"/>
+          <input type="button"  value="删除" onclick="deletecity()"/>
+
+         <div>搜索列表:<div  class="test_box"  id="txtSousuoCity"></div> 
+    </div></div>
+    <div id="ShowStreetString_dlg" class="easyui-dialog" data-options="closed:true">
+            指定要在地址(仅街道1+街道2，不含国家省市信息)中查找的字符：<input type="text" id="streetstr" name="streetstr"/>
+         <div> <input type="button"  value="添加" onclick="addstreet()"/>
+          <input type="button"  value="删除" onclick="deletestreet()"/></div> 
+
+         <div>搜索列表:<div  class="test_box"  id="txtSousuoStreet"></div> 
+    </div></div>
+    <div id="ShowStreetLength_dlg" class="easyui-dialog" data-options="closed:true">
+     订单地址信息字符长度小于：<input type="text" id="txtaddresslength" class="easyui-numberbox" required="required" data-options="min:1"/>
+    </div>
+    <div id="ShowPostcode_dlg" class="easyui-dialog" data-options="closed:true">
+             订单邮编至少符合以下选中的条件中的任意一个条件：
+              <input type="checkbox" id="chkpostcode1"/>以<input type="text" id="txtpostcode1" disabled="disabled"/> 开头<select id="selectpostcode1"><option>并且</option><option>或者</option></select>
+             <input type="checkbox" id="chkpostcode2"/>包含<input type="text" id="txtpostcode2" disabled="disabled"/>
+    </div>
+    <div id="ShowPostcodeLength_dlg" class="easyui-dialog" data-options="closed:true">
+        订单收货邮编字符小于：<input type="text" id="postcodelength" class="easyui-numberbox" required="required" data-options="min:1"/>
+    </div>
+    <div id="ShowTiaojian_dlg" class="easyui-dialog" data-options="closed:true">
+         订单收件人电话符合以下选中的条件：
+        <input type="checkbox" id="chktel"/>移动电话可读字符长度≤<input type="text" id="telephonelen" disabled="disabled" class="easyui-numberbox" data-options="min:1"/>
+        <select disabled="disabled" id="selectphone"><option>并且</option><option>或者</option></select>
+        <input type="checkbox" id="chkphone"/>固定电话可读字符长度≤<input type="text" id="phonelen" disabled="disabled" class="easyui-numberbox" data-options="min:1"/>
+
+    </div>
+    <div id="ShowYichang_dlg" class="easyui-dialog" data-options="closed:true">
+       <div> 本条件用于筛选异常状况，以下条件符合任何一项，即认为符合本条件。</div> 
+        <div>
+        <input type="checkbox"  name="chkyichang" id="namespace" value="姓名字符中空格数小于"/>  姓名字符中空格数小于<input type="text" disabled="disabled" name="txtyichang" /><span style="color:red" >俄罗斯邮政要求收件人地址为全名，此处可输入2</span>  </div>
+       <div> <input type="checkbox"  name="chkyichang" value="姓名字符数小于" /> 姓名字符数小于<input type="text" disabled="disabled" name="txtyichang"/><span style="color:red">输入1时，相当于收件人姓名为空</span> </div>
+        <div><input type="checkbox"  name="chkyichang" value="地址字符数小于" />  地址字符数小于<input type="text" disabled="disabled" name="txtyichang"/><span style="color:red">地址1+地址2的总字符长度 </span></div>
+      <div>  <input type="checkbox"  name="chkyichang" value="城市名字字符数小于" /> 城市名字字符数小于<input type="text" disabled="disabled" name="txtyichang"/><span style="color:red">输入1时，相当于城市名称为空</span></div>
+       <div> <input type="checkbox"  name="chkyichang" value="州名字字符数小于" /> 省/州名字字符数小于<input type="text" disabled="disabled" name="txtyichang" /><span style="color:red">输入1时，相当于邮编为空</span></div>
+      <div>  <input type="checkbox"  name="chkyichang"  value="电话号码数字字符个数小于" /> 电话号码数字字符个数小于<input type="text" disabled="disabled" name="txtyichang"/><span style="color:red">电话、手机两个号码必须都小于该值才认为该条件成立</span></div>
+
+    </div>
+         <div id="ShowAmountFanwei_dlg" class="easyui-dialog" data-options="closed:true">
+             订单金额转换为币种 <input type="text" name="txtcurrency" /> 之后满足以下全部条件：
+               <input type="checkbox" id="chkfanwei1"/><select id="selectfanwei1"><option>≥</option><option>></option><option>=</option></select><input type="text"  id="txtfanwei1" class="easyui-numberbox" data-options="min:0,precision:5" disabled="disabled"/>
+        <input type="checkbox" id="chkfanwei2"/><select id="selectfanwei2"><option><</option><option>≤</option></select><input type="text"  id="txtfanwei2" class="easyui-numberbox" data-options="min:0,precision:5" disabled="disabled"/>
+
+         </div>
+    <div id="ShowProfitFanwei_dlg" class="easyui-dialog" data-options="closed:true">
+          订单利润转换为币种 <input type="text" name="txtcurrency" /> 之后满足以下全部条件：
+        <input type="checkbox" id="chkfanwei7"/><select id="selectfanwei7"><option>≥</option><option>></option><option>=</option></select><input type="text" disabled="disabled" id="txtfanwei7" class="easyui-numberbox" data-options="precision:5"/>
+        <input type="checkbox" id="chkfanwei8"/><select id="selectfanwei8"><option><</option><option>≤</option></select><input type="text" disabled="disabled" id="txtfanwei8" class="easyui-numberbox" data-options="precision:5"/>
+      @*  <input type="checkbox" />首重不超过<input type="text" />克 收取<input type="text" />元
+        续重每<input type="text" />克 收取<input type="text" />元(匹配邮寄方式之前估算运费，实际运费计算以邮寄方式为准)*@
+    </div>
+    <div id="ShowOneOrderAmount_dlg" class="easyui-dialog" data-options="closed:true">
+        订单单笔交易额转换为币种：<input type="text" name="txtcurrency" />之后满足以下全部条件：
+        <input type="checkbox"id="chkfanwei11" /><select id="selectfanwei11"><option>≥</option><option>></option><option>=</option></select><input type="text" disabled="disabled" id="txtfanwei11"  class="easyui-numberbox" data-options="precision:5"/>
+        <input type="checkbox" id="chkfanwei12"/><select id="selectfanwei12"><option><</option><option>≤</option></select><input type="text"  disabled="disabled" id="txtfanwei12" class="easyui-numberbox" data-options="precision:5"/>
+    </div>
+    <div id="ShowFreight_dlg" class="easyui-dialog" data-options="closed:true">
+         买家支付的运费转换为币种 <input type="text" name="txtcurrency"/> 之后满足以下全部条件：
+               <input type="checkbox" id="chkfanwei3"/><select id="selectfanwei3"><option>≥</option><option>></option><option>=</option></select><input type="text" disabled="disabled" id="txtfanwei3" class="easyui-numberbox" data-options="min:0,precision:5"/>
+        <input type="checkbox" id="chkfanwei4"/><select id="selectfanwei4"><option><</option><option>≤</option></select><input type="text" disabled="disabled" id="txtfanwei4" class="easyui-numberbox" data-options="min:0,precision:5"/>
+
+    </div>
+         <div id="ShowProduct_dlg" class="easyui-dialog" data-options="closed:true">
+             SKU搜索框：
+             <input type="text" id="c_SKU"/>
+             <textarea id="txtskulist" style="width:550px;height:100px"></textarea>
+         </div>
+    <div id="ShowNum_dlg" class="easyui-dialog" data-options="closed:true">
+          订单货品总数量满足以下选中的条件：
+        <input type="checkbox" id="chkfanwei5"/><select id="selectfanwei5"><option>≥</option><option>></option><option>=</option></select><input type="text" disabled="disabled" id="txtfanwei5" class="easyui-numberbox" data-options="min:1" disabled="disabled"/>
+        <input type="checkbox" id="chkfanwei6"/><select id="selectfanwei6"><option><</option><option>></option><option>≤</option></select><input type="text" disabled="disabled" id="txtfanwei6" class="easyui-numberbox" data-options="min:1" disabled="disabled"/>
+
+    </div>
+    <div id="ShowProductNum_dlg" class="easyui-dialog" data-options="closed:true">
+       SKU搜索框：
+        <input type="text" id="c_SKUNum"/>
+        <textarea id="txtskulistNum" style="width:550px;height:100px"></textarea><br />
+        订单货品总数量满足以下选中的条件：
+        <input type="checkbox" id="chkfanwei9"/><select id="selectfanwei9"><option>≥</option><option>></option><option>=</option></select><input type="text" disabled="disabled" id="txtfanwei9" class="easyui-numberbox" data-options="min:1"/>
+        <input type="checkbox" id="chkfanwei10"/><select id="selectfanwei10"><option><</option><option>></option><option>≤</option></select><input type="text" disabled="disabled" id="txtfanwei10" class="easyui-numberbox" data-options="min:1"/>
+    </div>
+    <div id="ShowCategory_dlg" class="easyui-dialog" data-options="closed:true">
+        <input type ="text" id="categorytree"/>
+    </div>
+        <div id="ShowProductTag_dlg" class="easyui-dialog" data-options="closed:true">
+             订单货品中包含带有以下任一标签的货品：
+             请选择添加<input type="text" id="producttag"/>
+         </div>
+    
+    <div id="ShowWeightFanwei_dlg" class="easyui-dialog" data-options="closed:true">
+        订单重量满足以下全部条件：
+                 <input type="checkbox" id="chkvolum9"/><select id="selectvolum9"><option>≥</option><option>></option><option>=</option></select><input type="text" disabled="disabled" id="txtvolum9" class="easyui-numberbox" data-options="min:0,precision:5"/>g
+        <input type="checkbox" id="chkvolum10"/><select id="selectvolum10"><option><</option><option>≤</option></select><input type="text" disabled="disabled" id="txtvolum10" class="easyui-numberbox" data-options="min:0,precision:5"/>g
+
+    </div>
+    <div id="ShowProductLenght_dlg" class="easyui-dialog" data-options="closed:true">
+        订单货品长度满足以下全部条件：
+        <input type="checkbox" id="chkvolum7"/><select id="selectvolum7"><option>≥</option><option>></option><option>=</option></select><input type="text" disabled="disabled" id="txtvolum7" class="easyui-numberbox" data-options="min:0,precision:5"/>cm
+        <input type="checkbox" id="chkvolum8"/><select id="selectvolum8"><option><</option><option>≤</option></select><input type="text" disabled="disabled" id="txtvolum8" class="easyui-numberbox" data-options="min:0,precision:5"/>cm
+
+    </div>
+         <div id="ShowProductWidth_dlg" class="easyui-dialog" data-options="closed:true">
+             订单货品宽度满足以下全部条件：
+             <input type="checkbox" id="chkvolum5"/><select id="selectvolum5"><option>≥</option><option>></option><option>=</option></select><input type="text" disabled="disabled" id="txtvolum5" class="easyui-numberbox" data-options="min:0,precision:5"/>cm
+        <input type="checkbox" id="chkvolum6"/><select id="selectvolum6"><option><</option><option>≤</option></select><input type="text" disabled="disabled" id="txtvolum6" class="easyui-numberbox" data-options="min:0,precision:5"/>cm
+
+         </div>
+    <div id="ShowProductHeight_dlg" class="easyui-dialog" data-options="closed:true">
+        订单货品高度满足以下全部条件：
+         <input type="checkbox" id="chkvolum3"/><select id="selectvolum3"><option>≥</option><option>></option><option>=</option></select><input type="text" disabled="disabled" id="txtvolum3" class="easyui-numberbox" data-options="min:0,precision:5"/>cm
+        <input type="checkbox" id="chkvolum4"/><select id="selectvolum4"><option><</option><option>≤</option></select><input type="text" disabled="disabled" id="txtvolum4" class="easyui-numberbox" data-options="min:0,precision:5"/>cm
+
+    </div>
+    <div id="ShowProductVolum_dlg" class="easyui-dialog" data-options="closed:true">
+        订单货品体积满足以下全部条件：
+        <input type="checkbox" id="chkvolum1"/><select id="selectvolum1"><option>≥</option><option>></option><option>=</option></select><input type="text" disabled="disabled" id="txtvolum1" class="easyui-numberbox" data-options="min:0,precision:5"/>cm³
+        <input type="checkbox" id="chkvolum2"/><select id="selectvolum2"><option><</option><option>≤</option></select><input type="text" disabled="disabled" id="txtvolum2" class="easyui-numberbox" data-options="min:0,precision:5"/>cm³
+    </div>
+    <div id="ShowProductStatus_dlg" class="easyui-dialog" data-options="closed:true">
+        订单货品中包含带有以下任一状态的货品：请选择添加
+        <input type="checkbox"  name="chkproduct" value="暂停销售"/>暂停销售
+        <input type="checkbox"  name="chkproduct" value="停产"/>停产
+        <input type="checkbox"  name="chkproduct" value="清仓"/>清仓
+        <input type="checkbox"  name="chkproduct" value="滞销"/>滞销
+        <input type="checkbox"  name="chkproduct" value="销售中"/>销售中
+        <input type="checkbox"  name="chkproduct" value="热卖"/>热卖
+        <input type="checkbox"  name="chkproduct" value="提价销售"/>提价销售
+    </div>
+     </fieldset>
+}

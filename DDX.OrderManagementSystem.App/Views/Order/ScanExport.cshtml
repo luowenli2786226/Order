@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "ScanExport";
+}
+<script type="text/javascript">
+    function exportexcel() {
+        $('#c_form').form('submit', {
+            url: "/Order/ScanExport/",
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                if (!result.IsSuccess) {
+
+                } else {
+
+                }
+            }
+        });
+    }
+
+    function exportexcel2() {
+        $('#c_form').form('submit', {
+            url: "/Order/ScanExport2/",
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+
+                if (!result.IsSuccess) {
+
+                } else {
+
+                }
+            }
+        });
+    }
+    function exportexcel3() {
+        $('#c_form').form('submit', {
+            url: "/Order/ScanExport3/",
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+
+                if (!result.IsSuccess) {
+
+                } else {
+
+                }
+            }
+        });
+    }
+</script>
+@using (Html.BeginForm("ScanExport", "Order", FormMethod.Post, new { id = "c_form", enctype = "multipart/form-data" }))
+{
+    <div>
+        开始：<input type="text" id="st" name="st" class="easyui-datetimebox" style="width: 150px" />
+        结束：<input type="text" id="et" name="et" class="easyui-datetimebox" style="width: 150px" />
+        扫描人：<input type="text" id="u" name="u" style="width: 150px" />
+        物流：<input type="text" id="key" name="key" style="width: 150px" />
+        <input type="button" value="导出扫描" onclick="exportexcel()" />
+        <input type="button" value="导出速卖通ALL" onclick="exportexcel2()" />
+        <input type="button" value="导出速卖通不同" onclick="exportexcel3()" />
+    </div>
+}
+

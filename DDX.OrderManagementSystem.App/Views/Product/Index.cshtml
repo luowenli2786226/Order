@@ -1,0 +1,385 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.ProductType>
+@{
+    ViewBag.Title = "Index";
+}
+<link href="~/Scripts/Uploadify/uploadify.css" rel="stylesheet" />
+<script src="~/Scripts/Uploadify/jquery.uploadify-3.1.min.js"></script>
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        var imgindex = 0;
+        $(function () {
+            //初始化
+            $('#up_file').uploadify({
+                'auto': true,
+                'buttonText': '请选择图片',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function (file, data, response) {
+                    eval("data=" + data);
+
+                    $("#img_" + imgindex + "").attr("src", data.SaveName);
+                    //$('#PicUrl').val(data.SaveName);
+                    
+                    $.ajax({
+                        url: '@Url.Action("EditPic", "Product")/',
+                        type: 'post',
+                        data: 'pid=' + imgindex + "&pic=" + encodeURIComponent(data.SaveName),
+                        success: function (result) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: "成功！",
+                                timeout: 0,
+                                showType: 'slide'
+                            });
+                            
+
+                        }
+                    });
+                    $('#dlgpic').dialog('close');
+                }
+            });
+
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "Product")',
+                nowrap: false,
+                toolbar: '#toolbar',
+                rownumbers: true,
+                fitColumns: true,
+                singleSelect: false,
+                pagination: true,
+                fit: true,
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100],
+                onDblClickRow: function (i, r) {
+                    window.open('@Url.Action("Details", "Product")/' + r.Id);
+                }
+            });
+            $('#IsScan').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+            $('#SearchStatus').combobox({
+                url: '/Home/ProductStatus/',
+                valueField: 'id',
+                textField: 'text',
+                width: 100,
+                panelHeight: 'auto'
+            });
+            $('#SearchCategory').combotree({
+                url: '/ProductCategory/ParentList',
+
+                width: 200
+            });
+            $('#Platform').combobox({
+                url: '/Home/Platform/2',
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 100,
+                panelHeight: 'auto'
+            });
+            $('#Platform').combobox("setValue", "不限");
+            $('#IsScan').combobox("setValue", "ALL");
+            $('#SearchStatus').combobox("setValue", "所有");
+            $('#SearchCategory').combobox("setValue", "所有");
+
+
+        });
+        //新建
+        function c_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                window.open('@Url.Action("Copy", "Product")/' + getselectedRow());
+            }
+        }
+
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                window.open('@Url.Action("Edit", "Product")/' + getselectedRow());
+            }
+        }
+        function exportdt() {
+            search = getSearch();
+            var SearchCategory = "";
+            if ($('#SearchCategory').combotree("getText") != "根目录") {
+                SearchCategory = $('#SearchCategory').combotree("getValue") + "";
+            }
+            var postUrl = "/Order/ExportDown/1";
+            $.ajax({
+                url: '@Url.Action("Export", "Product")/',
+                type: 'post',
+                data: 'search=' + encodeURIComponent(search) + "&c=" + SearchCategory,
+                success: function (result) {
+                    $.messager.show({
+                        title: '提示',
+                        msg: result.ErrorMsg,
+                        timeout: 0,
+                        showType: 'slide'
+                    });
+                    location.href = postUrl;
+
+                }
+            });
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "Product")/' + id;
+                delData(url, 'dg');
+            }
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function GetImg(v, r, i) {
+            return '<a href="javascript:openpic(' + r.Id + ');"><img id="img_' + r.Id + '"  src=' + v + '  height="64px" width="64px"  onmouseenter="ShowImg(' + r.Id + ')" onmouseleave="HideImg(' + r.Id + ')"/>';
+        }
+
+        function   ShowImg(obj)
+        {
+            $("#c_pop").show();
+            $("#c_imgdiv").attr("src", $("#img_" + obj).attr("src"));
+
+        }
+            function HideImg(obj)
+            {
+                $("#c_pop").hide();
+            }
+        function openpic(v) {
+            imgindex = v;
+            $('#dlgpic').dialog('open');
+
+        }
+        function doSearch() {
+            var a = $('#Platform').combobox("getText");
+            var p = "";
+            if (a != "不限") {
+                p = a;
+            }
+            search = getSearch();
+            var SearchCategory = "";
+            if ($('#SearchCategory').combotree("getText") != "根目录") {
+                SearchCategory = $('#SearchCategory').combotree("getValue") + "";
+            }
+            $("#dg").datagrid("load", {
+                search: search,
+                infraction: p,
+                c: SearchCategory
+            });
+        }
+        function getSearch() {
+            search = "";
+            if ($('#IsScan').combobox("getValue") != "ALL") {
+                search += "IsScan&" + $('#IsScan').combobox("getValue") + "^";
+            }
+            search += $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            if ($('#SearchStatus').combobox("getText") != "所有") {
+                search += "Status&" + $('#SearchStatus').combobox("getText") + "^";
+            }
+
+            return search;
+        }
+        function getSale(v, r, i) {
+            return r.SevenDay + "/" + r.Fifteen + "/" + r.ThirtyDay;
+        }
+
+        function getselectedRows() {
+            var s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                $.messager.alert("请选择一条数据");
+                return s_ids;
+            }
+            return s_ids;
+        }
+
+
+        function updateStatus(a) {
+            var s_ids = getselectedRows();
+            if (s_ids.length == 0) {
+                return;
+            }
+            if (confirm("您确定要把这些产品的状态设置为" + a)) {
+                jQuery.ajax({
+                    url: "/Product/EditStatus/",
+                    type: "post",
+                    data: "p=" + s_ids.join(',') + "&s=" + a,
+                    success: function (res) {
+                        if (res.IsError) {
+                            alert(res.Message);
+                        }
+                        $("#dg").datagrid("reload");
+                    }
+                });
+            }
+        }
+
+        function delBatch() {
+            var id = getselectedRow();
+            if (id == undefined) {
+                return;
+            }
+            if (confirm("批量删除这个SKU吗？")) {
+                jQuery.ajax({
+                    url: "/Product/DeleteBatch/",
+                    type: "post",
+                    data: "Id=" + id,
+                    success: function (res) {
+                        if (!res.IsSuccses) {
+                            alert(res.Message);
+                        }
+                        $.messager.alert("删除成功");
+                        $("#dg").datagrid("reload");
+                    }
+                });
+            }
+        }
+        function kuai(v) {
+            if (v == 1) {
+                name = "Weight_ei";
+            }
+            if (v == 2) {
+                name = "Price_ei";
+            }
+            var search = name + "&0^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+
+        function completeSKU() {
+            var id = getselectedRow();
+            if (id == undefined) {
+                return;
+            }
+            window.open("/Product/AutoCreateByPID/" + id);
+        }
+    </script>
+    <div region="center">
+        <table id="dg">
+            <thead>
+                <tr>
+                    <th field="Id" width="80" checkbox="true"></th>
+                    <th field="SKU" width="100" sortable="true">SKU
+                    </th>
+                    <th field="OldSKU" width="100" sortable="true">主SKU
+                    </th>
+                    <th field="Status" width="100" sortable="true">状态
+                    </th>
+                    <th field="Category" width="100" sortable="true">类别
+                    </th>
+                    <th field="PicUrl" width="100" formatter='GetImg'>图片
+                    </th>
+                    <th field="ProductName" width="100">商品名称
+                    </th>
+                    <th field="Standard" width="100">规格
+                    </th>
+                    <th field="Price" width="60" sortable="true">Price
+                    </th>
+                    <th field="Weight" width="60" sortable="true">重量
+                    </th>
+                    <th field="TotalWeight" width="60" sortable="true">单位体积
+                    </th>
+                    <th field="SevenDay" width="100" formatter="getSale">
+                    7/15/30
+                    <th field="Infraction" width="100">侵权
+                    </th>
+                    <th field="PackCoefficient" width="100">包装系数
+                    </th>
+
+                    <th field="ProductAttribute" width="100" sortable="true">产品属性
+                    </th>
+                    @*<th field="HasBattery" width="100" formatter="getTrue" sortable="true">电池
+                    </th>*@
+                    <th field="Location" width="100" sortable="true">库位
+                    </th>
+                    <th field="CreateBy" width="100" sortable="true">创建人
+                    </th>
+                    <th field="CreateOn" width="100" formatter="getDate">创建人
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="e_dlg();">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="c_dlg();">复制</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="completeSKU();">完善SKU</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="delBatch();">批量删除</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportdt();">导出</a>&nbsp;&nbsp;&nbsp;&nbsp;
+            配货扫描:
+            <input id="IsScan" />
+            类别：<input id="SearchCategory" />
+            状态：<input id="SearchStatus" />
+            侵权平台<input type="text" id="Platform" />
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-splitbutton" data-options="menu:'#mm1',iconCls:'icon-edit'">修改产品状态</a><br />
+            快捷查询：
+            <img src='/Content/images/Display.gif'>
+            <a href="#" onclick="kuai(1)">重量为0</a>
+            <img src='/Content/images/Display.gif'><a href="#" onclick="kuai(2)">价格为0</a>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'SKU'">SKU</div>
+            <div data-options="name:'OldSKU'">主SKU</div>
+            <div data-options="name:'ProductName'">商品名称</div>
+            <div data-options="name:'CreateBy'">创建人</div>
+        </div>
+        <div id="mm1" style="width: 150px;">
+            <div data-options="iconCls:'icon-edit'" onclick="updateStatus('暂停销售')">暂停销售</div>
+            <div class="menu-sep"></div>
+            <div data-options="iconCls:'icon-edit'" onclick="updateStatus('停产')">停产</div>
+            <div class="menu-sep"></div>
+            <div data-options="iconCls:'icon-edit'" onclick="updateStatus('清仓')">清仓</div>
+            <div class="menu-sep"></div>
+            <div data-options="iconCls:'icon-edit'" onclick="updateStatus('滞销')">滞销</div>
+            <div class="menu-sep"></div>
+            <div data-options="iconCls:'icon-edit'" onclick="updateStatus('销售中')">销售中</div>
+            <div class="menu-sep"></div>
+            <div data-options="iconCls:'icon-edit'" onclick="updateStatus('热卖')">热卖</div>
+            <div class="menu-sep"></div>
+            <div data-options="iconCls:'icon-edit'" onclick="updateStatus('提价销售')">提价销售</div>
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="dlgpic" class="easyui-dialog" title="上传图片" style="width: 250px; height: 250px; padding: 10px" closed="true">
+            <table>
+                <tr>
+                    <td>
+                        <input id="up_file" type="file" name="up_file" /></td>
+                </tr>
+
+            </table>
+        </div>
+<div id="c_pop" style="display: none; position: absolute; bottom: 200px; right: 400px;">
+            <img id="c_imgdiv" height="300px" width="300px" style="overflow:visible">
+        </div>
+    </div>
+</body>

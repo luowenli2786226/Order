@@ -1,0 +1,327 @@
+﻿@{
+    ViewBag.Title = "SendScan";
+}
+<script type="text/javascript">
+
+
+    document.write(' <OBJECT id="Player1"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ring.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+    //document.write(' <OBJECT id="Player2"');
+    //document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    //document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/security.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+    document.write(' <OBJECT id="Player2"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ok.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+    document.write(' <OBJECT id="Player3"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/fk.mp3" /> <param name="AutoStart" value="falses" /> </OBJECT>');
+    document.write(' <OBJECT id="Player4"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/cd.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+    document.write(' <OBJECT id="Player5"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ymd.mp3" /> <param name="AutoStart" value="false" /> </OBJECT>');
+</script>
+<script src="/Scripts/CreateControl.js" type="text/javascript"></script>
+<script type="text/javascript">
+    //CreateReport("Report");
+    //Report.LoadFromURL("/Home/PrintGrf/8");
+    function print(id) {
+        //if ($('#ckBGD').attr("checked")) {
+        //    Report.LoadDataFromURL("/Home/PrintOrder/" + id);
+        //    Report.Print(true);
+        //}
+    }
+</script>
+<script type="text/javascript">
+    $(function () { 
+        $('#ww').combobox({
+            url: '/Warehouse/QList',
+            valueField: 'Id',
+            textField: 'WName',
+            required: true
+        });
+        $('#ww').combobox("setValue", "1");
+        $('#wuser').combobox({
+            url: '/Home/UserList/',
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            width: 150
+        });
+        $('#wuser').combobox("setValue", "ALL");
+    });
+
+    function getDataa(v, l, m) {
+        $.ajax({
+            url: "/Logistics/GetData/",
+            type: "post",
+            data: "Id=" + v,
+            success: function (res) {
+                TrackCodeLength = res.CodeLength;
+
+            }
+        });
+    }
+
+</script>
+<body class="easyui-layout">
+    <div region="center">
+        <table width="100%" cellspacing="6" cellpadding="0" border="0" style="border-collapse: separate; border-spacing: 6px;">
+            <tbody>
+                <tr valign="top">
+                    <td>
+                        <table width="100%" cellspacing="0" cellpadding="6" border="0" class="blockTable">
+                            <tbody>
+                                <tr>
+                                    <td style="padding-top: 0px; padding-left: 6px; padding-right: 6px; padding-bottom: 8px;">
+                                        <div>
+                                            <table cellspacing="0" cellpadding="1" bordercolor="#eeeeee" border="1" width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td height="25" width="100">
+                                                            <h2>
+                                                                <b>选项</b></h2>
+                                                        </td>
+                                                        <td>仓库:<input type="text" id="ww" />&nbsp;&nbsp;经手人:<input type="text" id="wuser" /> 
+                                                          <input type="text" id="useramount" readonly= "true" />       
+                                                        </td>
+                                                        <td  rowspan ="4" style="width:80px"><img src='/Images/20160322.jpg' /></td>
+                                                    </tr>
+                                                     <tr >
+                                                        <td height="25">
+                                                            <h2 style="font-size:20px;font-weight:bold">金额</h2>
+                                                        </td>
+                                                        <td>
+                                                            &nbsp;&nbsp;<input type="text" id="txtamount"  readonly= "true "  style="font-size:45px;font-weight:bold"/>&nbsp;&nbsp;&nbsp;&nbsp;<input  type="button" value="OK" style="font-size :45px;width:130px;height:80px" onclick ="setstr()"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="tr_ID">
+                                                        <td height="25">
+                                                            <h2>
+                                                                <b>扫描包裹</b></h2>
+                                                        </td>
+                                                        <td>
+                                                            <input id="txt" onkeydown="return txt_keydown(event)" style="font-size: 50px; background-image: none; width: 511px" />
+                                                           总件数： <input type="text" id="usercount" readonly= "true" />  
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="tr2">
+                                                        <td height="25" width="100">
+                                                            <h2>状态</h2>
+                                                        </td>
+                                                        <td>
+                                                            <font style="color: Red; font-size: 30px"><span id="spanStatus">等待包裹扫描 </span></font>
+                                                        </td>
+                                                        
+                                                    </tr>
+                                                    <tr id="tr4">
+                                                        <td height="25" width="100">
+                                                            <h2>信息</h2>
+                                                        </td>
+                                                        <td>
+                                                            <font style="color: Blue; font-size: 30px"><span id="spanInfo"></span></font>
+                                                        </td>                                                  
+                                                    </tr>   
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <script type="text/javascript">
+            var zl = 0; //重量
+            var o = ""; //包裹编号
+            var progress = 0;
+            var txt = document.getElementById("txt");
+            var TrackCodeLength = -1;
+            var TrackCodeLength2 = -1;
+            var oldstr = "";
+            var spanInfo = document.getElementById("spanInfo");
+            var spanStatus = document.getElementById("spanStatus");
+            var amount = 0;
+            var str_direct = "";
+            var ok = 0;
+            //alert(str_direct.toString());
+            function setstr() {
+                str_direct = "";
+                amount = 0;
+                OutStock();
+                // $("#txtamount").attr("value", 0);     
+            }
+            function txt_keydown(e) {
+                //debugger;
+                var keynum;
+                if (window.event) //IE
+                {
+                    keynum = e.keyCode;
+                }
+                else if (e.which) //Netscape/Firefox/Opera
+                {
+                    keynum = e.which;
+                }
+                if (keynum == 13) {
+                    //debugger;
+                    if (txt.value == "") { Reset(); return; }
+                        getOrder(txt.value);   
+                    txt.value = "";
+                    return false;
+                }
+                return true;
+            }
+
+            function getOrder(str) {
+
+                jQuery.ajax({
+                    url: "/Order/GetOrderByDirect/",
+                    type: "post",
+                    data: "o=" + str,
+                    success: function (msg) {
+                        if (msg.IsSuccess) {
+                            o = str;
+                            str_direct += msg.Result;
+                            progress = 1;
+                            ShowMessage(str_direct, "请扫描产品", true);
+                            setSKU(msg.sku)
+                            Player1.controls.play();
+                        } else {
+                            str_direct += msg.Result;
+                            progress = 0;
+                            ShowMessage(str_direct, "等待扫描", false);
+                            setSKU(msg.sku)
+                            Player1.controls.play();
+                        }
+                    }
+                });
+            }
+            function OutStock() {
+                var s = $("#ww").combobox("getValue");//仓库
+                var wus = $("#wuser").combobox("getValue");//经手人
+                if (wus == "ALL") {
+                    jQuery.ajax({
+                        url: "/Order/OutStockByDirect/",
+                        type: "post",
+                        data: "wus=0" + "&s=" + s + "&skuCode=" + skuCode.join(','),
+                        success: function (msg) {
+                            if (msg.IsSuccess) {
+                                progress = 0;   
+                               // ShowMessage(msg.Result, "等待扫描", true);
+                                skuCode = [];
+                                alert(msg.Result);
+                                $("#useramount").attr("value", msg.Cc);
+                                $("#usercount").attr("value", msg.count);
+                                Player2.controls.play();           
+                            } else {
+                                progress = 0;
+                                //   ShowMessage(msg.Result, "等待扫描", false);
+                                skuCode = [];
+                                alert(msg.Result);
+                                $("#useramount").attr("value", msg.Cc);
+                                $("#usercount").attr("value", "0");
+                                Player5.controls.play();                             
+                            }
+                        }
+                    });
+                }
+                else {
+                    jQuery.ajax({
+                        url: "/Order/OutStockByDirect/",
+                        type: "post",
+                        data: "wus=" + wus + "&s=" + s + "&skuCode=" + skuCode.join(','),
+                        success: function (msg) {
+                            if (msg.IsSuccess) {
+                                progress = 0;
+                               // ShowMessage(msg.Result, "等待扫描", true);
+                                skuCode = [];
+                                alert(msg.Result);
+                                $("#useramount").attr("value", msg.Cc.toFixed(2));
+                                $("#usercount").attr("value", msg.count);
+                                Player2.controls.play();                             
+                            } else {
+                                progress = 0;
+                              //  ShowMessage(msg.Result, "等待扫描", false);
+                                alert(msg.Result);
+                                skuCode = [];
+                                $("#useramount").attr("value", msg.Cc.toFixed(2));
+                                $("#usercount").attr("value", "0");
+                                Player5.controls.play();   
+                            }
+                        }
+                    });
+                   
+                }
+
+            }
+
+            //重置
+            function Reset() {
+                progress = 0;
+                txt.value = "";
+                o = "";
+                ShowMessage("", "等待扫描", true);
+            }
+            function ShowMessage(msgInfo, msgStatus, isOk) {
+                if (msgInfo != null) {
+                    spanInfo.innerHTML = msgInfo;
+                }
+                if (msgStatus != null) {
+                    spanStatus.innerHTML = msgStatus;
+                }
+                if (isOk) {
+                    spanInfo.style.color = "Blue";
+                }
+                else {
+                    spanInfo.style.color = "Red";
+                }
+            }
+            var skuCode = [];
+            var code = "";
+            var iscon = true;
+            function setSKU(sku) {
+                //if ($("tr[name='tr_" + sku.toUpperCase() + "']").length == 0) {
+                //    ShowMessage(null, "Code不符！请输入正确的Code", true);
+                //    code = "";
+                //    Player5.controls.play();
+                //    return;
+                //}
+                //for (var i = 0; i < skuCode.length; i++) {
+                //    if (skuCode[i].toUpperCase() == code.toUpperCase()) {
+                //        ShowMessage(null, "这个条码已经在这次配货中扫描了！", true);
+                //        Player5.controls.play();
+                //        return;
+                //    }
+                //}
+                $("tr[name='tr_" + sku.toUpperCase() + "']").each(function () {
+                    var qty = parseInt($(this).attr("qty"));
+                    var cqty = parseInt($(this).attr("cqty"));
+                    var price = parseFloat($(this).attr("price"));
+                    var c = $(this).attr("code");
+                    //if (qty > cqty) {
+                       
+                        $(this).attr("cqty", cqty);
+                    skuCode.push(c);
+                       // $("#r_" + c).html(cqty);
+                        amount += parseFloat(cqty * price);
+                      //  alert((cqty * price).toString());
+                        $("#txtamount").attr("value", amount.toFixed(2));
+                        //cqty = parseInt(cqty) + 1;
+                        // skuCode.add(code);
+                        //检查是不是所有的条码都好了
+                        iscon = true;
+                        if (iscon) {   
+                        return false;
+                    }
+                });
+
+            }
+
+        </script>
+    </div>
+</body>

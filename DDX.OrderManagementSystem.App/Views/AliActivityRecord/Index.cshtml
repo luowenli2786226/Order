@@ -1,0 +1,351 @@
+﻿
+@model IEnumerable<DDX.OrderManagementSystem.Domain.AliActivityRecordType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            nowrap: false,
+            url: '@Url.Action("List", "AliActivityRecord")',
+            pageNumber: 1,
+            pageSize: 20,
+            //height: 550,
+            height:($(window).height()*0.98) ,
+            pageList: [20, 40, 60, 80, 100]
+        });
+
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        $('#cc').datebox("setValue", getStartDate(1));
+        $('#cc2').datebox("setValue", getStartDate(1));
+    });
+
+
+    //新建
+    function c_dlg() {
+        var url_str = '@Url.Action("Create", "AliActivityRecord")';
+        showdlg(url_str, 'c_dlg', ajaxAdd);
+    }
+
+    //编辑框
+    function e_dlg() {
+        var id = getselectedRow();
+        if (id != undefined) {
+            var url = '@Url.Action("Edit", "AliActivityRecord")/' + id;
+            showdlg(url, 'e_dlg', ajaxEdit);
+        }
+    }
+
+    //异步新建提交
+    function ajaxAdd() {
+        formPost('c_form', '@Url.Action("Create", "AliActivityRecord")', 'c_dlg', 'dg');
+    }
+    //异步修改提交
+    function ajaxEdit() {
+        formPost('e_form', '@Url.Action("Edit", "AliActivityRecord")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "AliActivityRecord")/' + id;
+                alert(1);
+                delData(url, 'dg');
+            }
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+
+        function getPInfo(v, r, i) {
+
+            var html = '<a href="http://www.aliexpress.com/item/1/' + r.PID + '.html" target="_blank" ><img src="http://i00.i.aliimg.com/wsphoto/v3/' + r.PID + '_1/1.jpg_50x50.jpg" width="64px" /></a></br>';
+            html += "(PID:" + r.PID + ")";
+            return html;
+
+        }
+        function getPriceInfo(v, r, i) {
+            var html = '原价：' + r.BasePrice + '<br />';
+            html += '折扣：' + r.ZK + '<br />';
+            html += '活动价：<font color="#F00"><b>' + r.ActivityPrice + '</b></font><br />';
+            //html += '成本价：' + r.CostPrice + '<br />';
+            return html;
+        }
+        function getWeightInfo(v, r, i) {
+            var html = '重量：' + r.Wight + '<br />';
+            html += '运费：' + r.Freight + '<br />';
+            return html;
+        }
+
+        function getSaleInfo(v, r, i) {
+            var html = '预计：' + r.ExpectedSales + '<br />';
+            //html += '实际：' + r.ActualSales + '<br />';
+            return html;
+        }
+
+        function getAuditInfo(v, r, i) {
+            var html = "";
+            if (v == 1) {
+                html = "审核中";
+            }  else if (v == 2) {
+                html = "已审核";
+            }  else if (v ==9) {
+                html = "审核失败";
+            } else {
+                html = "未审核";
+            }
+            return html;
+        }
+
+        function getAudit(v, r, i) {
+            var html = "";
+            if (r.IsAudit == 0) {
+                html = '<a href="javascript:void(0);" onclick="DoAudit(' + v + ',1)">一审</a>' + ' <a href="javascript:void(0);" onclick="DoAudit(' + v + ',9)">拒绝</a>';
+            }
+            if (r.IsAudit == 1) {
+                html = '<a href="javascript:void(0);" onclick="DoAudit(' + v + ',2)">终审</a>' + ' <a href="javascript:void(0);" onclick="DoAudit(' + v + ',9)">拒绝</a>';
+            }
+            return html;
+        }
+
+        function DoAudit(id, v) {
+            if (v == 1||v==9) {
+                $('#m_dlg').dialog({
+                    width: 300,
+                    title: '审批',
+                    modal: true,
+                    loadingMessage: '正在加载...',
+                    buttons: [{
+                        text: '确定',
+                        handler: function () {
+                            DoAudit2(id, v, $("#txtM").val());
+                            $("#txtM").val('');
+                            $('#m_dlg').dialog('close');
+                        }
+                    }, {
+                        text: '取消',
+                        handler: function () {
+                            $('#m_dlg').dialog('close');
+                        }
+                    }]
+                }).dialog('open');
+            }
+            else {
+                DoAudit2(id, v, "");
+            }
+        }
+
+        function DoAudit2(id, v, m) {
+            jQuery.ajax({
+                url: "/AliActivity/DoAudit/",
+                type: "post",
+                data: "k=" + id + "&a=" + v + "&m=" + m,
+                success: function (res) {
+                    if (!res.IsSuccess) {
+                        alert(res.ErrorMsg);
+                    }
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+        
+        function myformatter(date) {
+           
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            var d = date.getDate();
+            return y + '-' + (m < 10 ? ('0' + m) : m) + '-' + (d < 10 ? ('0' + d) : d);
+        }
+        function myparser(s) {
+            alert("1");
+            if (!s) return new Date();
+            var ss = (s.split('-'));
+            var y = parseInt(ss[0], 10);
+            var m = parseInt(ss[1], 10);
+            var d = parseInt(ss[2], 10);
+            if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+                return new Date(y, m - 1, d);
+            } else {
+                return new Date();
+            }
+        }
+</script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid" 
+               toolbar="#toolbar"  
+               rownumbers="true"  singleSelect="true" pagination="true" >  
+            <thead>  
+                <tr>
+                 
+                    <th field="ActivityType" width="80">
+                        活动类型
+                    </th>
+                    <th field="Account" width="80">
+                        店铺
+                    </th>
+                    <th field="Title" width="100">
+                        活动名称
+                    </th>
+                  
+                   <th field="PID" width="120" formatter="getPInfo">
+                        产品ID
+                    </th>
+
+                    <th field="BasePrice" width="80" formatter="getPriceInfo">
+                        价格
+                    </th>
+                   
+                    @*  <th field="ZK" width="100">
+                折扣
+            </th>
+            <th field="Freight" width="100">
+                运费
+            </th>
+            <th field="ActivityPrice" width="100">
+                活动价格
+            </th>
+            <th field="CostPrice" width="100">
+                成本价
+            </th>*@
+                    <th field="ExpectedSales" width="100" formatter='getSaleInfo'>
+                        销量
+                    </th>
+                  
+               
+                    <th field="BeginDate" width="BeginDate" formatter="getDate">
+                        开始时间
+                    </th>
+                    <th field="EndDate" width="120" formatter="getDate">
+                        结束时间
+                    </th>
+                   
+
+                    <th field="LimitedNumber" width="60">
+                        限购
+                    </th>
+
+                   
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg();">编辑</a> 
+            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+           
+        </div> 
+        <div id="mm" style="width: 120px">
+                       
+            <div data-options="name:'Title'">活动名称</div>
+            <div data-options="name:'ActivityType'">活动类型</div>
+            <div data-options="name:'PID'">产品ID</div>
+            <div data-options="name:'SKU'">SKU</div>
+            <div data-options="name:'PUrl'">产品图片</div>
+            <div data-options="name:'BasePrice'">原价</div>          
+            <div data-options="name:'ExpectedSales'">预计销量</div>
+            <div data-options="name:'ActualSales'">实际销量</div>
+            <div data-options="name:'ProfitAndLoss'">盈亏情况</div>
+            <div data-options="name:'LimitedNumber'">买家限购数</div>
+            <div data-options="name:'Reason'">报名理由</div>
+            <div data-options="name:'Result'">活动效果分析</div>
+            <div data-options="name:'BeginDate'">开始时间</div>
+            <div data-options="name:'EndDate'">结束时间</div>
+            <div data-options="name:'Status'">Status</div>
+            <div data-options="name:'IsAudit'">IsAudit</div>
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="m_dlg" class="easyui-dialog" closed="true">
+            理由:<textarea id="txtM"></textarea>
+          
+        </div>
+    </div>
+     <script type="text/javascript">
+         //$.extend($.fn.datagrid.methods, {
+         //    editCell: function (jq, param) {
+         //        return jq.each(function () {
+         //            var opts = $(this).datagrid('options');
+         //            var fields = $(this).datagrid('getColumnFields', true).concat($(this).datagrid('getColumnFields'));
+         //            for (var i = 0; i < fields.length; i++) {
+         //                var col = $(this).datagrid('getColumnOption', fields[i]);
+         //                col.editor1 = col.editor;
+         //                if (fields[i] != param.field) {
+         //                    col.editor = null;
+         //                }
+         //            }
+         //            $(this).datagrid('beginEdit', param.index);
+         //            for (var i = 0; i < fields.length; i++) {
+         //                var col = $(this).datagrid('getColumnOption', fields[i]);
+         //                col.editor = col.editor1;
+         //            }
+         //        });
+         //    }
+         //});
+
+         var editIndex = undefined;
+         function endEditing() {
+             if (editIndex == undefined) { return true }
+             if ($('#dg').datagrid('validateRow', editIndex)) {
+                 $('#dg').datagrid('endEdit', editIndex);
+                 var s = $('#dg').datagrid("getRows")[editIndex]["BeginDate"];
+                 var e = $('#dg').datagrid("getRows")[editIndex]["EndDate"];
+                 var id = $('#dg').datagrid("getRows")[editIndex]["Id"];
+                    jQuery.ajax({
+                     url: "/AliActivity/EditStatus/",
+                     type: "post",
+                     data: "id="+id+"&s="+s,
+                     success: function (res) {
+                         if (res.IsSuccess) {
+                             $.messager.show({
+                                 title: '提示',
+                                 msg: "操作成功",
+                                 timeout: 2000,
+                                 showType: 'slide'
+                             });
+                         }
+                       
+                     }
+                 });
+                 editIndex = undefined;
+                 return true;
+             } else {
+                 return false;
+             }
+         }
+         function onClickCell(index, field) {
+             if (endEditing()) {
+                 $('#dg').datagrid('selectRow', index)
+                         .datagrid('editCell', { index: index, field: field });
+                 editIndex = index;
+             }
+         }
+    </script>
+</body>

@@ -1,0 +1,210 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.PickingListType>
+@{
+    ViewBag.Title = "PrintList";
+}
+
+<body class="easyui-layout">
+    <script src="~/Scripts/easyUI/datagrid-detailview.js"></script>
+
+    <script type="text/javascript">
+        $(function ()
+        {
+            $('#dg').datagrid({
+                url: '@Url.Action("QList", "PickingList")',
+                pageNumber: 1,
+                nowrap: false,
+                pageSize: 20,
+                rownumbers: true,
+                pagination: true,
+                singleselect:true,
+                pageList: [20, 40, 60, 80, 100, 200],
+                width: 900,
+                height: 600
+            })
+            $('#dg1').treegrid({
+                url: '@Url.Action("ParentLogicsList", "PickingList")',
+                rownumbers:true,
+                fitcolumns: true,
+                singleselect: true,
+                idField: 'id',
+                treeField: 'text',
+                height: 650,
+                width: 300,
+                animate:true,
+                onSelect: function (node) {
+                    doSearch();
+                },
+                onLoadSuccess: function (data) {
+                    $('#dg1').treegrid('select', 0);
+                }
+            });
+            $('#OrderPdtType').combobox({
+                url: '/Home/OrderPdtType/1',
+                valueField: 'text',
+                textField: 'text',
+                required: true,
+                width: 100,
+                panelHeight: 'auto',
+                editable: false
+            });
+            $('#warehouse').combobox({
+                url: '/PickingList/QListSearchPrint',
+                valueField: 'WCode',
+                textField: 'WName',
+                required: true,
+                panelHeight: 'auto',
+                editable: false
+            });
+            $('#logicsticsTree').combotree({
+                width: 250,
+                url: '/PickingList/ParentLogicsList',
+                multiple: false,
+                editable: false
+
+            })
+            $('#OrderPdtState').combobox({
+                url: '/PickingList/GetPickingState',
+                valueField: 'id',
+                textField:'text',
+                width: 100,
+                required: true,
+                panelHeight: 'auto',
+                editable:false
+
+            })
+            $('#Platform').combobox("setValue", "ALL");
+            $('#OrderPdtType').combobox("setValue", "ALL");
+            $('#warehouse').combobox("setValue", "ALL");
+            $('#OrderPdtState').combobox("setValue","ALL");
+        })
+        function doSearch()
+        {
+            var search = "";
+            var warehouse = $('#warehouse').combobox("getValue");
+            if (warehouse != "ALL" && warehouse != "") {
+                search += "WareHouse&" + warehouse + "^";
+            }
+            var OrderPdtState = $('#OrderPdtState').combobox("getText");
+            if (OrderPdtState != "ALL" && OrderPdtState != "") {
+                search += "State_es&" + OrderPdtState + "^";
+            }
+            var pdttype = $('#OrderPdtType').combobox("getValue");
+            if (pdttype != "ALL" && pdttype != "") {
+                search += "PickingType&" + pdttype + "^";
+            }
+            /*var logistics = $("#logicsticsTree").combotree('getText');
+            if (logistics.length > 0) {
+                search += "LogisticMode&" + logistics + "^";
+            }*/
+            var logistics = $('#dg1').treegrid("getSelected");
+            //选中子节点时直接查询,选中父节点时传递参数
+            if (logistics.text != "根目录") {
+                if (logistics != null && logistics._parentId != 0 && logistics._parentId != undefined) {
+                    search += "LogisticMode&" + logistics.text + "^";
+                    logistics = "";
+                }
+            }
+            else {
+                logistics = "";
+            }
+
+            $("#dg").datagrid("load", {
+                search: search,
+                logistics: logistics.text
+            });
+        }
+        function Transfer(v, r, i) {
+            var   html = "<a href='#' onclick='Show(\"" + r.Id + "\");'>查看 </a>";
+            if (r.State=="未打印") {
+                html += " &nbsp;<a href='#' onclick='PrintPickList(" + r.PickingNo + ");'>打印拣货单 </a> ";
+            }
+            else if(r.State=="已包装")
+            {
+            html += " &nbsp;<a href='#' onclick='QuestionPackage(" + r.PickingNo + ");'>打印问题包裹 </a> ";
+        }
+            return html;
+        }
+        //打印问题包裹
+        function QuestionPackage(id)
+        {
+            var url = '@Url.Action("QuestionPackage", "PickingList")/'+id;
+            window.open(url);
+        }
+        function del(id) {
+                var url = '@Url.Action("DeletePrintList", "PickingList")/' + id;
+                delData(url, 'dg');
+        }
+        function getDateinfo(v, r, i) {
+            if (v) {
+                return getDate(v);
+            }
+        }
+        function Show(id) {
+            var url_str = '@Url.Action("Show", "PickingList")?Id=' + id
+            $('#show').load(url_str, function () {
+                $(this).dialog({
+                    title: '拣货单--查看',
+                    loadingMessage: '正在加载...',
+                    buttons: [{
+                        text: '关闭',
+                        handler: function () {
+                            $('#show').dialog('close');
+                        }
+                    }]
+                });
+            }).dialog('open');
+        }
+        function PrintPickList(id)
+        {
+            jQuery.ajax({
+                // url: "/PickingList/PrintPickList/" + id,
+                url: "/PickingList/PrintPickList/" + id,
+                type: "post",
+                data: 'strtype=print',
+                success: function (msg) {
+                    $('#dg').datagrid('reload');
+                    $('#printdata').val(msg.Result);
+                    window.open('/Home/PrintDetail/111');
+                   
+                }
+            });
+        }
+    </script>
+    <div region="center">
+        <input type="hidden" id="printdata"/>
+        仓库 <input type="text" id="warehouse" />
+             拣货单状态<input type="text" id="OrderPdtState" />
+             拣货单类型<input type="text" id="OrderPdtType" />
+            @* 物流方式 <input type ="text" id="logicsticsTree"/>*@
+              <a href="#" class="easyui-linkbutton" plain="true" iconcls="icon-search" onclick="doSearch()">Search</a>
+        <table>
+            <tr>
+            <td>
+            <table id="dg1" class="easyui-datagrid">
+             <thead>
+                <tr>
+                    <th field="text" width="250">物流方式
+                    </th>
+                </tr>
+            </thead>
+            </table>
+          </td>
+           <td>
+         <table id="dg" class="easyui-datagrid"> <thead><tr>
+          <th field="Id" width="220" formatter="Transfer">操作</th>
+         <th field="PickingNo" width="100">拣货单单号</th>
+             <th field="State" width="100">拣货单状态</th>
+         <th field="PickingType" width="100">拣货单类型</th>
+         <th field="OrderCount" width="80">包裹数</th>
+         <th field="SkuCategory" width="80">SKU品种数</th>
+         <th field="SKUcount" width="80">货品总数</th>
+         <th field="CreateTime" width="150" formatter="getDateinfo">创建时间</th>
+         <th field="CreateBy" width="50">创建人</th>
+         </tr></thead></table>
+          </td>
+            </tr></table>
+         <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="show"></div>
+    </div>
+</body>

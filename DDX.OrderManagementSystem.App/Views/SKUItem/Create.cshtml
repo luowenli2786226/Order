@@ -1,0 +1,56 @@
+﻿@model DDX.OrderManagementSystem.Domain.SKUItemType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#c_Account').combobox({
+            url: '/Account/ListQ',
+            valueField: 'AccountName',
+            textField: 'AccountName',
+            required: true,
+            width: 150
+        });
+
+    });
+
+</script>
+
+@using (Html.BeginForm("Create", "SKUItem", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKUEx, "平台上SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKUEx, new { @id = "c_SKUEx" })
+		</td>
+	</tr>
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU, "系统SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU, new { @id = "c_SKU" })
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Account, "账户:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Account, new { @id = "c_Account" })
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

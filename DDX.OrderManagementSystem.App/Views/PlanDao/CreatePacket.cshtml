@@ -1,0 +1,228 @@
+﻿@model DDX.OrderManagementSystem.Domain.PlanDaoType
+@{
+    Layout = null;
+    
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#c_type').combobox({
+            panelWidth: 360,
+            valueField: 0,
+            //valueField: '请选择',
+            //textField: '请选择',
+            textField: 1,
+            panelHeight: 'auto',
+            required: true,
+            data: [["请选择", "请选择"], ["小包仓库", "小包仓库"], ["海外仓库", "海外仓库"],
+            ],
+            onSelect: Validate
+        });
+        $('#c_PassRate').numberbox({
+            min: 0,
+            max: 100
+        });
+        $('#c_RealQty').numberbox({
+            min: 0
+        });
+
+        $('#c_WId').combogrid({
+            required: true,
+            panelWidth: 400,
+            mode: 'remote',
+            idField: 'Id',
+            textField: 'WName',
+            url: '/Warehouse/QListFilterPacket',
+            fit: true,
+            columns: [[
+                { field: 'Id', title: 'Id', width: 20 },
+                { field: 'WCode', title: '仓库代码', width: 80 },
+                { field: 'WName', title: '仓库名称', width: 100 }
+                //{ field: 'Address', title: '仓位地址', width: 100 }
+            ]]
+        });
+        $('#c_UnitTariff').numberbox({
+            precision: 4
+        });
+        //$('#c_WId').combogrid("setValue", 1);
+        $('#c_type').combobox("setValue", "小包仓库");
+    });
+    function Validate() {
+        var type = $("input[name='Type']").val();
+        if (type == '海外仓库') {
+
+            $('#c_UnitFristPrice').numberbox({
+                required: true,
+                precision: 4,
+                min: 0
+            });
+            $('#c_YsUMaxPrice').numberbox({
+                required: true,
+                precision: 4,
+                min: 0
+            });
+
+            $('#c_UnitTariff').numberbox({
+                required: true,
+                precision: 4,
+                min: 0
+            });
+
+            //if ($('#c_YsUMaxPrice').val() == 0) {
+            //    alert(11);
+            //}
+
+            //if ($('#c_UnitFristPrice').val() == 0) {
+            //    alert(11);
+            //}
+        }
+        else {
+            $('#c_UnitFristPrice').numberbox({
+                required: false,
+                precision: 4,
+                min: 0
+            });
+            $('#c_YsUMaxPrice').numberbox({
+                required: false,
+                precision: 4,
+                min: 0
+            });
+        }
+    }
+
+</script>
+
+@using (Html.BeginForm("Create", "PlanDao", FormMethod.Post, new { id = "c_form" }))
+{
+    <fieldset>
+        <legend>采购到货</legend>
+        @{
+    var plan = ViewData["plan"] as DDX.OrderManagementSystem.Domain.PurchasePlanType;
+            <table class="editForm">
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.PlanNo, "采购计划编号:")
+                        <input id="d_IsFrist" type="hidden" value="@plan.IsFrist"/>
+                        <input id="d_pwd" type="hidden" value="@ViewData["pwd"]"/>
+                    </td>
+                    <td>
+                        <input readonly="readonly" value="@plan.PlanNo"/>(产品销售：@ViewData["uname"])
+                        <input type="hidden"  name="PlanNo" value="@plan.Id"/>
+
+                    </td>
+                    <td>
+                        <div style="display: none;">@Html.TextBoxFor(model => model.Type, new { @id = "c_type" })</div>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.SKU, "SKU:")
+
+                    </td>
+                    <td>
+                        <input  name="SKU" value="@plan.SKU"/>
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.Title, "产品名称:")
+                    </td>
+                    <td>
+                        <input readonly="readonly" name="Title" value="@plan.ProductName"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.BuyOn, "采购时间:")
+                    </td>
+                    <td>
+                        <input readonly="readonly" name="BuyOn" value="@plan.BuyOn"/>
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.SendOn, "发货时间:")
+                    </td>
+                    <td>
+                        <input readonly="readonly"  value="@plan.SendOn"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.LogisticMode, "物流:")
+                    </td>
+                    <td>
+                        <input readonly="readonly" name="LogisticsMode" value="@plan.LogisticsMode"/>
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.TrackCode, "追踪号:")
+                    </td>
+                    <td>
+                        <input readonly="readonly" name="TrackCode" value="@plan.TrackCode"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.PlanQty, "数量:")
+                    </td>
+                    <td>
+                        <input readonly="readonly" name="PlanQty" id="c_PlanQty" value="@plan.Qty"/>
+                        已到：@plan.DaoQty
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.Price, "金额:")
+                    </td>
+                    <td>
+                        <input readonly="readonly" name="Price" value="@plan.Price"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.PlanMemo, "采购备注:")
+                    </td>
+                    <td colspan="3">
+
+                        <textarea style="width: 482px; height: 35px;" readonly="readonly" name="PlanMemo">@plan.Memo</textarea>
+                    </td>
+                </tr>
+
+            </table>
+        }
+
+    </fieldset>
+    <script type="text/javascript">
+        function alldao() {
+
+            $('#c_RealQty').numberbox("setValue", '@plan.Qty-@plan.DaoQty');
+            // $('#c_Status').combobox("setValue", "已收到");
+        }
+    </script>
+    <fieldset>
+        <legend>到货信息</legend>
+        <table>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.RealQty, "实际到货数量:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.RealQty, new { @id = "c_RealQty" })
+                    <input type="button" onclick="alldao()" value="全部到货" />
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.WId, "入库仓库:")
+                </td>
+                <td>
+                    @*@Html.TextBoxFor(model => model.WId, new { @id = "c_WId" })*@
+                    @Html.TextBoxFor(model => model.WId, new { @id = "c_WId", @Value=@ViewData["WId"] })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Memo, "到货备注:")
+                </td>
+                <td colspan="3">
+                    @Html.TextAreaFor(model => model.Memo, new { @id = "c_Memo", @style = "width: 482px; height: 35px;" })
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}

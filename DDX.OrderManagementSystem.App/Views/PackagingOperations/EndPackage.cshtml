@@ -1,0 +1,76 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.OrderPackageType>
+
+@{
+    Layout = null;
+}
+<style type="text/css">
+    .onecenter{text-align:center;width:200px;}
+</style>
+
+<script type="text/javascript">
+    $(function () {
+        $("#dg").datagrid({
+            url: '@Url.Action("EndList", "PackagingOperations")',
+            nowrap: true,
+            queryParams: { "PickingNo":  window.opener.document.all.PickingNo.value },
+            fit: true,
+            rownumbers: true,
+            columns: [[
+                    { field: 'OrderNo', title: '订单号', width: 100, fixed: true }
+            ]]
+        })
+        $("#ChkEnd").click(function () {
+            if ($(this).is(":checked")) {
+                $("#BtnEnd").show();
+            }
+        })
+        $("#BtnEnd").click(function () {
+            $.ajax({
+                url: '@Url.Action("ForceEnd", "PackagingOperations")',// 跳转到 action  
+                 data: {
+                     PickingNo: window.opener.document.all.PickingNo.value
+                 },
+                 type: 'post',
+                 cache: false,
+                 dataType: 'json',
+                 success: function (result) {
+
+                     if (result.IsSuccess) {
+                         alert("操作成功");
+
+                         window.close();
+
+                     }
+
+                     else {
+                         alert("操作失败!");
+                     }
+
+                 },
+                 error: function () {
+                     // view("异常！");  
+                     alert("异常！");
+                 }
+             });
+        });
+    })
+      
+   
+</script>
+<div>
+    <table border="0" width="400" height="30">
+        <tr style="background:#99BBFF">
+            <td ><font color="white"><b>您即将结束拣货单 @Html.Encode(ViewData["PickingNo"]) 的包装作业，但系统检测到以下异常: </b></td>
+        </tr>
+    </table>
+<span>1.以下订单尚未打印或包裹打印前被作废 </span>
+    <table id="dg">
+        
+       
+    </table>
+<div>
+    强制结束包装作业时未打印订单将从拣货单中移除，再次生成新的拣货单。
+正常情况下，本项货品汇总应与您手中的货品实物剩余一致。<input type="checkbox" id="ChkEnd" />强制结束
+    <input type="button" value="确定" style="display:none" id="BtnEnd"/>
+</div>
+    </div>

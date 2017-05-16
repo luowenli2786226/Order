@@ -1,0 +1,69 @@
+﻿@model DDX.OrderManagementSystem.Domain.OMS.Entities.ConfigTempleType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    $(function () {
+        //$('#c_Category').combobox({
+        //    url: '/ConfigTemple/GetCOnfigTempleCategory/',
+        //    valueField: 'id',
+        //    textField: 'text',
+
+        //    width: 160,
+        //    panelHeight: 'auto'
+        //});
+        
+        $("#DrpCategory").val($("#e_Category").val());
+        $("#DrpCategory").width(160);
+    }
+)
+</script>
+@using (Html.BeginForm("Edit", "OrderRecord", FormMethod.Post, new { id = "e_form", DrpCategory = "DrpCategory" }))
+{
+    @Html.HiddenFor(model=>model.Category,new { @id = "e_Category" } )
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                <td style="display: none">
+                    @Html.TextBoxFor(model => model.ID, new { @id = "e_Id" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Category, "类别")
+                </td>
+                <td class="editor-field">
+                    @*@Html.DropDownList(model => model.Category, new { @id = "c_Category"})*@
+                     @Html.DropDownList("DrpCategory",ViewData["Category"] as SelectList)
+                 @*@Html.DropDownListFor(model => model.Category, (List<SelectListItem>)ViewData["Category"])*@
+                    
+                </td>
+            </tr>
+            <tr>
+                <td class="editor-label">
+                    @Html.LabelFor(model => model.Price, "工价")
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.Price, new { @id = "edit_Price"})
+                    
+                    @Html.ValidationMessageFor(model => model.Price)
+                </td>
+            </tr>
+            <tr>
+                <td class="editor-label">
+                    @Html.LabelFor(model => model.ParamValue, "系数")
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.ParamValue, new  { @id="edit_ParamValue" })
+                    @Html.ValidationMessageFor(model => model.ParamValue)
+                </td>
+            </tr>
+        </table>
+
+    </fieldset>
+}
+

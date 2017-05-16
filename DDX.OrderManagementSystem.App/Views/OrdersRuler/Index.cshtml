@@ -1,0 +1,429 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.OrdersRulersType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+
+<style>
+    a {
+        text-decoration: none;
+    }
+
+    .font_bk {
+        border: 1px solid #ccc;
+        background-color: #D2E9FF;
+        text-decoration: none;
+    }
+
+    #divindex li {
+        float: left;
+        list-style: none;
+        line-height: 30px;
+    }
+
+        #divindex li a {
+            padding: 20px;
+        }
+
+            #divindex li a:hover {
+                text-decoration: none;
+                color: #999999;
+                cursor: pointer;
+            }
+</style>
+
+    <script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
+
+<script type="text/javascript">
+    var checkstate = [{ label: 'ALL', value: 'ALL' }, { label: '启用', value: '启用' }, { label: '停用', value: '停用' }];
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List", "OrdersRuler")',
+            pageNumber: 1,
+            nowrap: false,
+            pageSize: 20,
+            rownumbers: true,
+            pagination: true,
+            singleSelect: true,
+            fitColumns: true,
+            fit: true,
+            toolbar: '#toolbar',
+            pageList: [20, 40, 60, 80, 100, 200]
+        })
+
+        $("#selectAction").combobox('setValue', 'ALL');
+        $("#selectstate").combobox('setValue', 'ALL');
+    })
+//function DoAction(c) {
+//    $("a").removeClass("font_bk");
+//    $("#a" + c).addClass("font_bk");
+
+//    var search = "OrderAction='分配发货仓库'";
+//    switch (c) {
+//        case '2': search = "OrderAction='匹配邮寄方式'"; break;
+//        case '3': search = "OrderAction='需人工审核订单'"; break;
+
+//    }
+//    $("#dg").datagrid("load", {
+//        search: search
+//    });
+//}
+function c_dlg() {
+    var url_str = '@Url.Action("Create", "OrdersRuler")';
+        // window.open(url_str);
+        showdlg1('订单自动规则', url_str, '900', '650', 'c_dlg', ajaxAdd);
+        //showdlg(url_str, 'c_dlg', ajaxAdd);
+    }
+
+    //异步新建提交
+    function ajaxAdd() {
+        var OrderChoose = $("#txt").html();
+        //var OrderChoose = { "persons": [{ "sex": "男", "name": "李小名" }, { "sex": "女", "name": "小徐" }, { "sex": "男", "name": "小明" }, { "sex": "女", "name": "小张" }, { " sex ": "男", "name": "小李" }, { "sex": "男", "name": "小孙" }, { "sex": "男", "name": "小赵" }] };
+        //var test = $("#txt").text();
+        //将已选条件拼接成json格式      
+        var actionwarehouse = "";
+        if ($("#actionwarehouse").combogrid('getValue') != "") {
+            actionwarehouse = $("#actionwarehouse").combogrid('grid').datagrid('getSelected').WCode;
+        }
+        var actionLogic = $("#actionLogic").combogrid('getValue');
+        var IsMinusStock = $("#chkstock").combobox('getValue');
+        var RulersName = $("#txtrulersname").val();
+        var OrderAction = $("input[name=radioaction]:checked").val();
+        var OrderChooseText = $("#txt").text();
+        if (OrderChooseText.indexOf("指定") != -1 || OrderChooseText == "") {
+            alert("请选择指定条件且条件不能为空");
+        }
+        else if (RulersName == "") {
+            alert("请输入规则名！");
+        }
+        else if (OrderAction == "分配发货仓库" && actionwarehouse == "") {
+            alert("请选择发货分配仓库");
+        }
+        else if (OrderAction == "匹配邮寄方式" && actionLogic == "") {
+            alert("请选择发货采用的邮寄方式");
+        }
+        else {
+            $.ajax({
+                url: '@Url.Action("Create", "OrdersRuler")',// 跳转到 action  
+                    data: {
+                        actionwarehouse: actionwarehouse,
+                        OrderChoose: OrderChoose,
+                        actionLogic: actionLogic,
+                        IsMinusStock: IsMinusStock,
+                        RulersName: RulersName,
+                        OrderAction: OrderAction
+                    },
+                    type: 'post',
+                    cache: false,
+                    dataType: 'json',
+                    success: function (result) {
+
+                        if (result.IsSuccess) {
+                            alert("操作成功");
+
+                            $('#c_dlg').dialog('close');
+
+                            $('#dg').datagrid('reload');
+
+                        }
+
+                        else {
+                            alert("保存失败!");
+                        }
+
+                    },
+                    error: function () {
+                        // view("异常！");  
+                        alert("异常！");
+                    }
+                });
+            }
+
+
+
+}
+
+//编辑框
+function e_dlg() {
+    var id = getselectedRow();
+    if (id != undefined) {
+        var url = '@Url.Action("Edit", "OrdersRuler")/' + id;
+            showdlg1('订单自动规则', url, '900', '650', 'e_dlg', ajaxEdit)
+            //showdlg1('订单自动规则', url_str, '900', '600', 'c_dlg', ajaxAdd);
+
+        }
+    }
+
+    //异步修改提交
+    function ajaxEdit() {
+        debugger
+        //formPost('e_form', '@Url.Action("Edit", "OrdersRuler")', 'e_dlg', 'dg');
+        var OrderChoose = $("#txtedit").html();
+        //var OrderChoose = { "persons": [{ "sex": "男", "name": "李小名" }, { "sex": "女", "name": "小徐" }, { "sex": "男", "name": "小明" }, { "sex": "女", "name": "小张" }, { " sex ": "男", "name": "小李" }, { "sex": "男", "name": "小孙" }, { "sex": "男", "name": "小赵" }] };
+        //var test = $("#txt").text();
+        //将已选条件拼接成json格式      
+        var actionwarehouse = $("#actionwarehouseedit").combogrid('getValue');
+        var actionLogic = $("#actionLogicedit").combogrid('getValue');
+        var IsMinusStock = $("#chkstockedit").combobox('getValue');
+        var RulersName = $("#txtrulersnameedit").val();
+        var OrderAction = $("input[name=radioaction]:checked").val();
+        var OrderChooseText = $("#txtedit").text();
+        var id = $("#hidid").val();
+        if (OrderChooseText.indexOf("指定") != -1 || OrderChooseText == "") {
+            alert("请选择指定条件且条件不能为空");
+        }
+        else if (RulersName == "") {
+            alert("请输入规则名！");
+        }
+        else if (OrderAction == "分配发货仓库" && actionwarehouse == "") {
+            alert("请选择发货分配仓库");
+        }
+        else if (OrderAction == "匹配邮寄方式" && actionLogic == "") {
+            alert("请选择发货采用的邮寄方式");
+        }
+        else {
+            $.ajax({
+                url: '@Url.Action("Edit", "OrdersRuler")',// 跳转到 action  
+                data: {
+                    id: id,
+                    actionwarehouse: actionwarehouse,
+                    OrderChoose: OrderChoose,
+                    actionLogic: actionLogic,
+                    IsMinusStock: IsMinusStock,
+                    RulersName: RulersName,
+                    OrderAction: OrderAction
+                },
+                type: 'post',
+                cache: false,
+                dataType: 'json',
+                success: function (result) {
+
+                    if (result.IsSuccess) {
+                        alert("操作成功");
+
+                        $('#e_dlg').dialog('close');
+
+                        $('#dg').datagrid('reload');
+
+                    }
+
+                    else {
+                        alert("保存失败!");
+                    }
+
+                },
+                error: function () {
+                    // view("异常！");  
+                    alert("异常！");
+                }
+            });
+        }
+}
+//删除
+function del() {
+    var id = getselectedRow();
+    if (id != undefined) {
+        var url = '@Url.Action("Delete", "OrdersRuler")/' + id;
+
+            delData(url, 'dg');
+
+        }
+    }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+    //添加title自写
+    function showdlg1(title, url, width, height, dlg, handle) {
+        $('#' + dlg).load(url, function () {
+            $('#' + dlg).dialog({
+                title: title,
+                modal: true,
+                rownumbers: true,
+                width: width,
+                height: height,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '保存',
+                    iconCls: 'icon-ok',
+                    handler: handle
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#' + dlg).dialog('close');
+                    }
+                }]
+            });
+        }).dialog('open');
+    }
+    function doSearch() {
+        var search = "";
+        if ($("#selectAction").combobox('getValue') != "ALL") {
+            search += "OrderAction='" + $("#selectAction").combobox('getValue') + "'";
+        }
+        if (search != "" && $("#selectstate").combobox('getValue') != "ALL") {
+            search += "and ";
+        }
+        if ($("#selectstate").combobox('getValue') != "ALL") {
+            search += "IsUse='" + $("#selectstate").combobox('getValue') + "'";
+        }
+        $("#dg").datagrid("load", {
+            search: search
+        });
+    }
+    function getState(v, r, i) {
+        var html;
+        if (r.IsUse == 1) {
+            html = "启用";
+        }
+        else { html = "停用"; }
+        return html;
+    }
+    function GetPrioty(v, r, i) {
+        var html = "<img src='/Content/imgs/up.png' title='优先' onclick='EditPriority(0," + r.Id + ")' style='cursor:pointer'></img>   <img src='/Content/imgs/down.png' title='非优先' onclick='EditPriority(1," + r.Id + ")'  style='cursor:pointer'></img>";
+        if (r.Priority == 1) {
+            html = "<img src='/Content/imgs/down.png' title='非优先' onclick='EditPriority(1," + r.Id + ")'  style='cursor:pointer'></img>"
+        }
+
+        return html;
+    }
+    //提升优先
+    function EditPriority(type, id) {
+        $.ajax({
+            url: '@Url.Action("EditPriority", "OrdersRuler")',// 跳转到 action  
+            data: {
+                id: id,
+                type: type
+            },
+            type: 'post',
+            cache: false,
+            dataType: 'json',
+            success: function (result) {
+                if (result.IsSuccess) {
+                    $('#dg').datagrid('reload');
+
+                }
+
+                else {
+                    alert("操作失败");
+
+                }
+
+            },
+            error: function () {
+                // view("异常！");  
+                alert("异常！");
+            }
+        });
+    }
+    function UpdateState() {
+        var id = getselectedRow();
+        if (id != undefined) {
+            var url = '@Url.Action("UpdateState", "OrdersRuler")/' + id;
+            UpdateData(url, 'dg');
+        }
+    }
+    function UpdateData(url, dg, t) {
+        if (url) {
+            $.messager.confirm('修改', '确定修改状态?', function (r) {
+                if (r) {
+                    $.post(url, function () {
+                    }).success(function (data) {
+                        var msgstr = "修改成功";
+                        $.messager.show({
+                            title: '提示',
+                            msg: msgstr,
+                            timeout: 3000,
+                            showType: 'slide'
+                        });
+                        if (t) {
+                            $('#' + dg).treegrid('reload');
+                        }
+                        else {
+                            $('#' + dg).datagrid('reload');
+                        }
+                    }).error(function () {
+                        $.messager.alert('错误', '修改发生错误');
+                    });
+
+                }
+            });
+        }
+    }
+</script>
+    <div region="center" >
+ @*   <table id="divindex"><tr><td>
+        <ul>
+       <li><strong>自动处理动作</strong></li>
+       <li><a name="ShowAction" class="font_bk" id="a1" onclick="DoAction('1')" >分配发货仓库</a></li>
+       <li><a name="ShowAction" onclick="DoAction('2')" id="a2" >匹配邮寄方式</a></li>
+       <li><a name="ShowAction" onclick="DoAction('3')" id="a3">需人工审核订单</a></li>
+   </ul></td></tr>
+        <tr><td><ul><li><a name="ShowState" class="font_bk" id="a4" onclick="DoAction('4')" >启用</a></li><li>停用</li></ul></td></tr>
+    </table>*@
+     <table id="dg"> <thead><tr>
+         <th field="Priority" width="30">优先级序号</th>
+         <th field="Id" formatter="GetPrioty" width="50">优先级</th>
+         <th field="RulersName" width="150">规则名称</th>
+         <th field="OrderAction" width="150">规则类别</th>
+         <th field="IsUse" formatter="getState" width="50">状态</th>
+         </tr></thead></table>
+      <div id="toolbar">
+           规则类别<input type="text"  class="easyui-combobox" id="selectAction"
+data-options="
+		valueField: 'label',
+		textField: 'value',
+		data: [{
+			label: 'ALL',
+			value: 'ALL'
+		},{
+			label: '分配发货仓库',
+			value: '分配发货仓库'
+		},{
+			label: '匹配邮寄方式',
+			value: '匹配邮寄方式'
+		},{
+			label: '需人工审核订单',
+			value: '需人工审核订单'
+		}
+               ]"
+               />
+           状态<input class="easyui-combobox" data-options="
+		valueField: 'label',
+		textField: 'value',
+		data: [{
+			label: 'ALL',
+			value: 'ALL'
+		},{
+			label: '1',
+			value: '启用'
+		},{
+			label: '0',
+			value: '停用'
+		}]"  id="selectstate"/>
+           <a href="#" class="easyui-linkbutton" plain="true" iconcls="icon-search" onclick="doSearch()">Search</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="UpdateState();">更改状态</a>
+           <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">添加</a>
+           <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+           <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+      </div>  
+     
+    
+      <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+</div>
+</body>

@@ -1,0 +1,124 @@
+﻿
+@model IEnumerable<DDX.OrderManagementSystem.Domain.AccountFeeType>
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    var v = @ViewData["Id"];
+    $(function() {
+        $('#dgFeright').datagrid({
+            url: '@Url.Action("List", "AccountFee")/',
+            queryParams: { code: v },
+            title: '账户费用',
+            width: 800,
+            height: 400,
+            onClickRow: onClickRow
+        });
+    });
+
+    var editIndex = undefined;
+    function endEditing() {
+        if (editIndex == undefined) { return true }
+        if ($('#dgFeright').datagrid('validateRow', editIndex)) {
+
+            $('#dgFeright').datagrid('endEdit', editIndex);
+            $.post("/AccountFee/Save/", $('#dgFeright').datagrid("getRows")[editIndex], function (rsp) {
+                if (rsp.IsSuccess) {
+                  
+                    $.messager.alert("提示", "提交成功！");
+                } else {
+                    $.messager.alert("提示", rsp.Result);
+                    iscon = false;
+                }
+            }, "JSON").error(function () {
+                $.messager.alert("提示", "提交错误了！");
+            });
+
+            editIndex = undefined;
+            $('#dlgFreight').dialog('reload');
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+    function onClickRow(index) {
+        if (editIndex != index) {
+            if (endEditing()) {
+                $('#dgFeright').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                editIndex = index;
+            } else {
+                $('#dgFeright').datagrid('selectRow', editIndex);
+            }
+        }
+    }
+    function append() {
+        if (endEditing()) {
+            $('#dgFeright').datagrid('appendRow', { AccountId: v });
+            editIndex = $('#dgFeright').datagrid('getRows').length - 1;
+            $('#dgFeright').datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+        }
+    }
+    function remove() {
+        var ids = [];
+        var rows = $('#dgFeright').datagrid('getSelections');
+        for (var i = 0; i < rows.length; i++) {
+       
+            $.ajax({
+                type:'post',
+                data:"id="+rows[i].Id,
+                url: '/AccountFee/Delete'
+            });
+        }
+        $('#dgFeright').datagrid("reload");
+    }
+    function accept() {
+        if (endEditing()) {
+         
+            $('#dgFeright').datagrid('acceptChanges');
+        }
+    }
+</script>
+        <div id="dlgFreight" class="easyui-dialog" title="添加费用" data-options="iconCls:'icon-save'" style="width: 800px; height: 400px; padding: 10px" closed="true">
+        <div>
+            <table id="dgFeright" toolbar="#tbFreight">
+                <thead>
+                    <tr>
+                        <th field="Id" width="100" data-options="hidden:true">操作
+                        </th>
+                        <th field="AccountId" width="100" data-options="hidden:true">操作
+                        </th>
+                        <th field="AmountBegin" width="100" data-options="editor:{type:'numberbox',options:{precision:1}}">总金额开始
+                        </th>
+
+                        <th field="AmountEnd" width="100" data-options="editor:{type:'numberbox',options:{precision:1}}">总金额结束
+                        </th>
+
+                        <th field="FeeFormula" width="100" data-options="editor:'text'">公式
+                        </th>
+
+                        <th field="FeeName" width="100" data-options="editor:{  
+                            type:'combobox',  
+                            options:{  
+                                valueField: 'id',
+                                textField: 'text',
+                                panelHeight: 'auto',
+                                required: true,
+                                data: [{ id: '手续费', text: '手续费' }, { id: '交易费', text: '交易费' }, { id: '其他费', text: '其他费' }]
+                            }  
+                        }">费用名称
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+        <div id="tbFreight">
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="append()">添加</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="remove()">删除</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">保存</a>
+    </div>

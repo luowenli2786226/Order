@@ -1,0 +1,223 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.DictionaryClassType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "DictionaryClass")',
+                toolbar: '#toolbar',
+                rownumbers: true,
+                fitColumns: true,
+                singleSelect: true,
+                pagination: true,
+                fit: true,
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+            });
+        });
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "DictionaryClass")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "DictionaryClass")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "DictionaryClass")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "DictionaryClass")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "DictionaryClass")/' + id;
+                delData(url, 'dg');
+            }
+        }
+
+
+            //获取选中行
+            function getselectedRow() {
+                var row = $('#dg').datagrid('getSelected');
+                if (row != undefined) {
+                    if (row.hasOwnProperty('Id')) {
+                        var id = row['Id'];
+                        return id;
+                    }
+                }
+                $.messager.show({
+                    title: '提示',
+                    msg: '请选择行',
+                    timeout: 3000,
+                    showType: 'slide'
+                });
+                return (undefined);
+            }
+
+            function ShowOp(v, r, i) {
+                return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'showData("' + r.Code + '")\'>查看明细</a>';
+            }
+            var code;
+            function showData(v) {
+                code = v;
+                $('#s_dlg').dialog({
+                    title: '字典明细',
+                    height: 400,
+                    width: 600,
+                    loadingMessage: '正在加载...'
+                }).dialog('open');
+                $('#dg1').datagrid({
+                    url: '@Url.Action("List", "Dictionary")/',
+                    queryParams: { code: v },
+                    onClickRow: onClickRow
+                });
+
+                $('#s_dlg').dialog('open');
+            }
+
+            var editIndex = undefined;
+            function endEditing() {
+                if (editIndex == undefined) { return true }
+                if ($('#dg1').datagrid('validateRow', editIndex)) {
+                    $('#dg1').datagrid('endEdit', editIndex);
+                    $.post("/Dictionary/Save/", $('#dg1').datagrid("getRows")[editIndex], function (rsp) {
+                        if (rsp.status) {
+                            $.messager.alert("提示", "提交成功！");
+                        }
+                    }, "JSON").error(function () {
+                        $.messager.alert("提示", "提交错误了！");
+                    });
+                    editIndex = undefined;
+
+                    return true;
+
+                } else {
+                    return false;
+                }
+            }
+
+            function onClickRow(index) {
+                if (editIndex != index) {
+                    if (endEditing()) {
+                        $('#dg1').datagrid('selectRow', index)
+                                .datagrid('beginEdit', index);
+                        editIndex = index;
+                    } else {
+                        $('#dg1').datagrid('selectRow', editIndex);
+                    }
+                }
+            }
+
+            function s_add() {
+                if (endEditing()) {
+                    $('#dg1').datagrid('appendRow', { DicCode: code });
+                    editIndex = $('#dg1').datagrid('getRows').length - 1;
+                    $('#dg1').datagrid('selectRow', editIndex)
+                            .datagrid('beginEdit', editIndex);
+                }
+            }
+
+            function s_del() {
+                var ids = [];
+                var rows = $('#dg1').datagrid('getSelections');
+                for (var i = 0; i < rows.length; i++) {
+                    $.ajax({
+                        url: '/Dictionary/DelDictionary/' + rows[i].Id,
+                    });
+                }
+                $('#dg1').datagrid("reload");
+            }
+
+            function accept() {
+                if (endEditing()) {
+                    $('#dg1').datagrid('acceptChanges');
+                }
+            }
+
+            function doSearch() {
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                $("#dg").datagrid("load", {
+                    search: search
+
+                });
+            }
+    </script>
+    <div region="center">
+        <table id="dg">
+            <thead>
+                <tr>
+                    <th field="ClassName" width="100" sortable="true">分类
+                    </th>
+
+                    <th field="Code" width="100" sortable="true">代码
+                    </th>
+
+                    <th field="AllowDelete" width="100" sortable="true">系统内置
+                    </th>
+                    <th field="Id" width="100" formatter="ShowOp">操作
+                    </th>
+
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'ClassName'">分类</div>
+            <div data-options="name:'Code'">代码</div>
+            <div data-options="name:'AllowDelete'">系统内置</div>
+        </div>
+
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="s_dlg">
+            <table id="dg1" class="easyui-datagrid"
+                toolbar="#toolbar1"
+                rownumbers="true" fitcolumns="true" singleselect="true">
+                <thead>
+                    <tr>
+                        <th field="Id" width="100" data-options="hidden:true">操作
+                        </th>
+                        <th field='ck' checkbox="true"></th>
+                        <th field="DicCode" width="100">分类代码
+                        </th>
+
+                        <th field="FullName" width="100" data-options="editor:'text'">名称
+                        </th>
+
+                        <th field="DicValue" width="100" data-options="editor:'text'">值
+                        </th>
+
+                        <th field="AllowDelete" width="100" data-options="editor:{type:'checkbox',options:{on:'是',off:'否'}}">内置
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="toolbar1">
+                <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="s_add();">新建</a>
+                <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="s_del();">删除</a>
+                <a href="#" class="easyui-linkbutton" iconcls="icon-save" plain="true" onclick="accept();">保存</a>
+            </div>
+        </div>
+
+    </div>
+</body>

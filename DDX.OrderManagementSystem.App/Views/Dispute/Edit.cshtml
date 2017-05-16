@@ -1,0 +1,226 @@
+﻿@model DDX.OrderManagementSystem.Domain.DisputeRecordType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    $(function () {
+       @* $('#e_ExamineType').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/ExamineType',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            onLoadSuccess: function (data) {
+                if (data == 0) {
+                    // $.messager.alert("系统提示", "数据库异常，请联系管理员！", "warning");
+                } else {
+                    var data1 = $('#e_ExamineType').combobox('getData');  //赋默认值
+                    if (data1.length > 0) {
+                        $("#e_ExamineType ").combobox('select', data1[0].DicValue);
+                    }
+                }
+            }
+        });*@
+
+        $('#e_ExamineCurrencyCode').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/CurrencyCode',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            onLoadSuccess: function (data) {
+                if (data == 0) {
+                    // $.messager.alert("系统提示", "数据库异常，请联系管理员！", "warning");
+                } else {
+                    var data1 = $('#e_ExamineCurrencyCode').combobox('getValue');  //赋默认值
+                    if (data1.length > 0) {
+                        $("#e_ExamineCurrencyCode").combobox('select', data1);
+                    }
+                }
+              //  var data = $("#ExamineCurrencyCode").val();
+                //$("#e_ExamineCurrencyCode ").combobox('select', data);
+            }
+        });
+
+        //如果是 导入的数据直接将纠纷状态设置为只读
+        var isImport = $("#IsImport").val();
+        if (isImport == 1) {
+
+            document.getElementById("e_DisputeState").readOnly = true;
+        }
+        else {
+            $('#e_DisputeState').combobox({
+                url: '@Url.Action("GetOptions", "DataDictionaryDetail")/DisputeState',
+                valueField: 'DicValue',
+                textField: 'FullName',
+                panelHeight: '150',
+                onLoadSuccess: function (data) {
+                    if (data == 0) {
+                        // $.messager.alert("系统提示", "数据库异常，请联系管理员！", "warning");
+                    } else {
+                        
+                        var data1 = $('#e_DisputeState').combobox('getValue');  //赋默认值
+                        if (data1.length > 0) {
+                            $("#e_DisputeState ").combobox('select', data1);
+                        }
+                    }
+                }
+            });
+        }
+
+        $('#e_ExamineClass').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/QuestionType',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            onLoadSuccess: function (data) {
+                if (data == 0) {
+                    // $.messager.alert("系统提示", "数据库异常，请联系管理员！", "warning");
+                } else {
+                    var data1 = $('#e_ExamineClass').combobox('getData');  //赋默认值
+                    if (data1.length > 0) {
+                        $("#e_ExamineClass ").combobox('select', data1[0].DicValue);
+                    }
+                }
+            }
+        });
+
+        $('#e_Account').combobox({
+            url: '@Url.Action("ListQ", "Account")',
+            valueField: 'AccountName',
+            textField: 'AccountName',
+            panelHeight: '250',
+            mode: 'remote'
+        });
+    })
+
+</script>
+
+@using (Html.BeginForm("Create", "ServiceExamination", FormMethod.Post, new { id = "e_form" }))
+{
+    @Html.HiddenFor(model => model.Id);
+     @Html.HiddenFor(model => model.PayOn);
+     @Html.HiddenFor(model => model.Rate);
+     @Html.HiddenFor(model => model.ZeRenBy);
+     @Html.HiddenFor(model => model.ExamineBy);
+     @Html.HiddenFor(model => model.Platform);
+     @Html.HiddenFor(model => model.ExamineHandle);
+     @Html.HiddenFor(model => model.ExamineMemo);
+     @Html.HiddenFor(model => model.ExamineStatus);
+     @Html.HiddenFor(model => model.CreateBy);
+     @Html.HiddenFor(model => model.CreateOn);
+     @Html.HiddenFor(model => model.IsImport);
+   
+<fieldset>
+<table class="editForm">
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.ExamineTitle, "标题:")
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.ExamineTitle, new { @id = "e_ExamineTitle" })
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.ExamineType, "订单号:")
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.OrderNo, new { @id = "e_OrderNo" })
+        </td>
+    </tr>
+      <tr>
+        <td>
+            @Html.LabelFor(model => model.ExamineType, "SKU:")
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.SKU, new { @id = "e_SKU" })
+        </td>
+    </tr>
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineType, "店铺:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Account, new { @id = "e_Account" })
+		</td>
+	</tr>
+    @*    <tr>
+        <td>
+            @Html.LabelFor(model => model.ExamineType, "类型:")
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.ExamineType, new { @id = "e_ExamineType" })
+        </td>
+    </tr>*@
+    
+     <tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineClass, "纠纷状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DisputeState, new { @id = "e_DisputeState" })
+		</td>
+	</tr>
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineClass, "原因:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExamineClass, new { @id = "e_ExamineClass" })
+		</td>
+	</tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.ExamineCurrencyCode, "货币:")
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.ExamineCurrencyCode, new { @id = "e_ExamineCurrencyCode" })
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.ExamineAmount, "订单金额:")
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.OrderAmount2, new { @id = "e_OrderAmount2" })
+        </td>
+    </tr>
+     <tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineAmount, "预赔金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderAmount, new { @id = "e_OrderAmount" })
+		</td>
+	</tr>
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineAmount, "实赔金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExamineAmount, new { @id = "e_ExamineAmount" })
+		</td>
+	</tr>
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Remark, "备注:")
+		</td>
+		<td>
+            @Html.TextAreaFor(model => model.Remark, new { @id = "e_Remark" })
+		</td>
+	</tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.Paypal, "Paypal账号:")
+
+        </td>
+        <td>
+            @Html.TextAreaFor(model => model.Paypal, new { @id = "e_Paypal" })
+            @Html.ValidationMessageFor(model => model.Paypal)
+        </td>
+
+    </tr>
+</table>
+</fieldset>
+}

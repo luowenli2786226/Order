@@ -1,0 +1,75 @@
+﻿@{
+    ViewBag.Title = "权限设置";
+}
+<script type="text/javascript">
+    $(function () {
+        $('#tree1').tree({
+            url: '@Url.Action("SelectListByRole", "Module")/@ViewData["uid"]',
+            checkbox: true
+        });
+        $('#tree2').tree({
+            url: '@Url.Action("SelectListByRole", "PermissionItem")/@ViewData["uid"]',
+            checkbox: true
+        });
+    });
+
+    function getChecked(tree, t) {
+
+        var nodes = $('#' + tree).tree('getChecked');
+        var s = '';
+        var prevNode = '';
+        for (var i = 0; i < nodes.length; i++) {
+            if (t=="1") {
+                if (s != '') s += ',';
+                s += nodes[i].id;
+            } else {
+                if ($('#' + tree).tree('isLeaf', nodes[i].target)) {
+                    if (s != '') s += ',';
+                    s += nodes[i].id;
+                    var pnode = $('#' + tree).tree('getParent', nodes[i].target); //获取当前节点的父节点 
+                    if (prevNode != pnode.id) //保证当前父节点与上一次父节点不同  
+                    {
+                        if (s != '') s += ',';
+                        s += pnode.id;
+                        prevNode = pnode.id;
+
+                    }
+                }
+            }
+        }
+        return s;
+    }
+
+
+    function SetUser() {
+        var m = getChecked('tree1');
+        var p = getChecked('tree2', "1");
+
+        $.ajax({
+            type: "POST",
+            url: "/Role/SetMP/",
+            data: "uid=@ViewData["uid"]&m=" + m + "&p=" + p,
+            success: function (msg) {
+                alert("已经保存");
+            }
+        });
+    }
+</script>
+<input type="button" value="保存" onclick="SetUser()" />
+<table style="width: 600px; height: 300px;">
+    <tr>
+        <td valign="top">
+            <fieldset>
+                <legend>菜单管理</legend>
+
+                <div id="tree1"></div>
+            </fieldset>
+        </td>
+        <td valign="top">
+            <fieldset>
+                <legend>权限管理</legend>
+                <div id="tree2"></div>
+            </fieldset>
+        </td>
+    </tr>
+</table>

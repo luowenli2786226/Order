@@ -1,0 +1,60 @@
+﻿@model DDX.OrderManagementSystem.Domain.OMS.Entities.ConfigTempleType
+
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        $('#c_Category').combobox({
+            url: '/ConfigTemple/GetCOnfigTempleCategory/',
+            valueField: 'id',
+            textField: 'text',
+
+            width: 150,
+            panelHeight: 'auto'
+        });
+        $("#Category").width(160);
+    }
+)
+</script>
+
+@using (Html.BeginForm("Create", "ConfigTempleType", FormMethod.Post, new { id = "c_form" }))
+{
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <table class="editForm">
+            
+            <tr>
+                 <td>
+                   @Html.LabelFor(model => model.Category, "类别")
+                </td>
+                <td class="editor-field">
+                 @*  @Html.TextBoxFor(model => model.Category, new { @id = "c_Category" })*@
+                 @*   @Html.DropDownList("DrpCategory",ViewBag.Category as SelectList) *@
+                    @Html.DropDownListFor(model => model.Category, ViewData["Category"] as SelectList)
+                </td>
+            </tr>
+            <tr>
+                <td class="editor-label">
+                    @Html.LabelFor(model => model.Price,"工价")
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.Price,new { @id = "creat_Price"})
+                    @Html.ValidationMessageFor(model => model.Price)
+                </td>
+            </tr>
+            <tr>
+                <td class="editor-label">
+                    @Html.LabelFor(model => model.ParamValue,"系数")
+                </td>
+                <td class="editor-field">
+                    @Html.TextBoxFor(model => model.ParamValue, new  {@id="creat_ParamValue" })
+                    @Html.ValidationMessageFor(model => model.ParamValue)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}
+
+

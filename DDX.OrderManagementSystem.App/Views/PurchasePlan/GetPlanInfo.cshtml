@@ -1,0 +1,21 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.PurchasePlanType>
+@{
+    Layout = null;
+    ViewBag.Title = "";
+}
+
+<table class="dv-table" border="1" style="width: 600px;">
+    @foreach (var p in Model)
+    {
+        <tr>
+              <td style="width:80px;">计划编号:@p.PlanNo</td>
+            <td style="width: 100px;">
+                <img src="@p.PicUrl" width="64px" height="64px" /></td>
+            <td style="width: 80px;">SKU:@p.SKU</td>
+            <td style="width: 80px;">供应商:<b>@p.Suppliers</b></td>
+            <td style="width: 80px;">单价:@p.Price</td>
+            <td style="width: 80px;">数量:@p.Qty</td>
+             <td style="width: 80px;">运费:@p.Freight</td>
+      
+    }
+</table>

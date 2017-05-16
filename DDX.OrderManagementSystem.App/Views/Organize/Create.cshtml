@@ -1,0 +1,91 @@
+﻿@model DDX.OrderManagementSystem.Domain.OrganizeType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $(function () {
+            $('#c_ParentId').combotree({
+                url: '/Organize/ParentList',
+                valueField: 'Id',
+                textField: 'FullName',
+                required: true
+            });
+        });
+        $('#c_form input').each(function () {
+            if ($(this).attr('required') || $(this).attr('validType'))
+                $(this).validatebox();
+        });
+        
+
+
+    });
+
+</script>
+
+@using (Html.BeginForm("Create", "Organize", FormMethod.Post, new { id = "c_form" }))
+{
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ParentId, "父级主键:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ParentId, new { @id = "c_ParentId" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Code, "编号:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Code, new { @id = "c_Code", @class = "easyui-validatebox", @required = "true" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ShortName, "简称:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ShortName, new { @id = "c_ShortName", @class = "easyui-validatebox", @required = "true" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.FullName, "名称:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.FullName, new { @id = "c_FullName", @class = "easyui-validatebox", @required = "true" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SortCode, "排序码:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SortCode, new { @id = "c_SortCode" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Description, "备注:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Description, new { @id = "c_Description" })
+                </td>
+            </tr>
+
+
+
+        </table>
+    </fieldset>
+}

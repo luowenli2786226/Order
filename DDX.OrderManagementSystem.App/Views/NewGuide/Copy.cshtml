@@ -1,0 +1,144 @@
+﻿@model DDX.OrderManagementSystem.Domain.NewGuideType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+        $('#copy_CreateOn').datebox({
+            required:true,
+        });
+        $("#copy_NewSku").validatebox({
+            required: true,
+        });
+        $("#copy_OldSku").validatebox({
+            required: true,
+        });
+        $("#copy_Pic").validatebox({
+            required: true,
+        });
+        $("#copy_Url").validatebox({
+            required: true,
+        });
+
+
+    });
+</script>
+@using (Html.BeginForm("Copy", "NewGuide", FormMethod.Post, new { id = "copy_form" }))
+{
+<fieldset>
+<table class="editForm">
+@*	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>*@
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.NewSku,"新SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.NewSku,new{@id="copy_NewSku"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OldSku,"旧SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OldSku,new{@id="copy_OldSku"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Title,"标题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Title,new{@id="copy_Title"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Pic,"图片:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Pic,new{@id="copy_Pic"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Url,"网址:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Url,new{@id="copy_Url"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Price,"价格:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Price,new{@id="copy_Price"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ColorSize,"规格:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ColorSize,new{@id="copy_ColorSize"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Remark,"备注:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Remark,new{@id="copy_Remark"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="copy_Status"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsCheck,"采购标记:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsCheck,new{@id="copy_IsCheck"})
+		</td>
+	</tr>
+
+@*	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="copy_CreateOn"})
+		</td>
+	</tr>*@
+
+
+    
+</table>
+</fieldset>
+}

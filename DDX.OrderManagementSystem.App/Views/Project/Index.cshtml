@@ -1,0 +1,311 @@
+﻿
+@model IEnumerable<DDX.OrderManagementSystem.Domain.ProjectType>
+@{
+    ViewBag.Title = "Index";
+}
+@*<script src="~/Scripts/Kindeditor/kindeditor-min.js"></script>*@
+<script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List", "Project")',
+            pageNumber: 1,
+            nowrap: false,
+            view: detailview,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100],
+            detailFormatter: function (index, row) {
+                var vvv = row.Content;
+                if (vvv) {
+                    vvv = vvv.replace(/\n/g, "<br />");
+                } else {
+                    vvv = "";
+                }
+                var html = '<div  style="padding:5px 0"><b>项目内容:<br />' + vvv + '</b></div>';
+                return html;
+
+            }
+        });
+
+    });
+
+
+    //新建
+    function c_dlg() {
+        var url_str = '@Url.Action("Create", "Project")';
+        showdlg(url_str, 'c_dlg', ajaxAdd)
+    }
+
+    //新建
+    function t_dlg(id) {
+        url_str = '/ProjectState/Index/' + id;
+        showdlg(url_str, 'e_dlg', function () {
+            $('#e_dlg').dialog('close');
+        });
+    }
+
+    //编辑框
+    function e_dlg() {
+        var id = getselectedRow();
+        if (id != undefined) {
+            var url = '@Url.Action("Edit", "Project")/' + id;
+            showdlg(url, 'e_dlg', ajaxEdit)
+        }
+    }
+
+    //异步新建提交
+    function ajaxAdd() {
+        formPost('c_form', '@Url.Action("Create", "Project")', 'c_dlg', 'dg');
+    }
+    //异步修改提交
+    function ajaxEdit() {
+        formPost('e_form', '@Url.Action("Edit", "Project")', 'e_dlg', 'dg');
+    }
+    //删除
+    function del() {
+        var id = getselectedRow();
+        if (id != undefined) {
+            var url = '@Url.Action("Delete", "Project")/' + id;
+
+            delData(url, 'dg');
+        }
+    }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+    function doSearch() {
+        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        $("#dg").datagrid("load", {
+            search: search
+        });
+    }
+
+    function getOp(v, r, i) {
+        var html = "";
+        if (r.IsAudit == 1) {
+
+            html += "<a href='javascript:void(0);' onclick='DoState(" + v + ")'>追加进度</a>";
+            html += " &nbsp;<a href='javascript:void(0);' onclick='t_dlg(" + v + ")'>查看进度</a>";
+        } else if (r.IsAudit == 0) {
+            html += " &nbsp;<a href='javascript:void(0);' onclick='DoAudit(" + v + ",1)'>审批</a>";
+            html += " &nbsp;<a href='javascript:void(0);' onclick='DoAudit(" + v + ",9)'>拒绝</a>";
+        }
+
+
+
+        return html;
+    }
+    function getState1(v, r, i) {
+        var html = "";
+        if (v == 0) {
+            return "未开发";
+        }
+        if (v == 1) {
+            return "开发中";
+        }
+        if (v == 2) {
+            return "<b>开发完成";
+        }
+
+    }
+    function getState2(v, r, i) {
+        var html = "";
+        if (v == 0) {
+            return "审批中";
+        }
+        if (v == 1) {
+            return "审批通过";
+        }
+        if (v == 9) {
+            return "<b>审批失败</b>";
+        }
+    }
+
+
+    function DoState(id) {
+        $('#p_dlg').dialog({
+            width: 350,
+            title: '审批',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    jQuery.ajax({
+                        url: "/Project/DoState/",
+                        type: "post",
+                        data: "k=" + id + "&m=" + $("#txtP").val(),
+                        success: function (res) {
+                            if (!res.IsSuccess) {
+                                alert(res.ErrorMsg);
+                            }
+                            $("#txtP").val('');
+                            $('#p_dlg').dialog('close');
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#p_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+    function DoAudit(id, v) {
+        $('#m_dlg').dialog({
+            width: 350,
+            title: '审批',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    DoAudit2(id, v, $("#txtM").val());
+                    $("#txtM").val('');
+                    $('#m_dlg').dialog('close');
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#m_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+
+    function DoAudit2(id, v, m) {
+        jQuery.ajax({
+            url: "/Project/DoAudit/",
+            type: "post",
+            data: "k=" + id + "&a=" + v + "&m=" + m,
+            success: function (res) {
+                if (!res.IsSuccess) {
+                    alert(res.ErrorMsg);
+                }
+                $('#dg').datagrid("reload");
+            }
+        });
+    }
+</script>
+<div region="center">
+<table id="dg" class="easyui-datagrid" 
+           toolbar="#toolbar"  
+           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+        <thead>  
+        <tr>
+            <th field="Id" width="150" formatter="getOp">
+                操作
+            </th>
+
+            <th field="Title" width="100">
+                项目标题
+            </th>
+              <th field="IsAudit" width="100" formatter="getState2" sortable="true">
+                审核状态
+            </th>
+             <th field="State" width="100" formatter="getState1" sortable="true">
+                项目状态
+            </th>
+          @*  <th field="Content" width="100">
+                项目内容
+            </th>*@
+
+            <th field="Remark" width="100">
+                项目备注
+            </th>
+
+            <th field="CreateBy" width="100">
+                创建人
+            </th>
+
+            <th field="CreateOn" width="100" formatter="getDate">
+                创建时间
+            </th>
+
+            <th field="AuditBy" width="100">
+                审核人
+            </th>
+
+            <th field="AuditOn" width="100" formatter="getDate">
+                审核时间
+            </th>
+
+            <th field="AuditRemark" width="100">
+                审核备注
+            </th>
+
+            <th field="LastState" width="100">
+                最近开发进度
+            </th>
+
+            <th field="LastOn" width="100" formatter="getDate">
+                最近更新时间
+            </th>
+
+@*            <th field="BeginDate" width="100">
+                开始时间
+            </th>
+
+            <th field="EndDate" width="100">
+                结束时间
+            </th>*@
+
+          @*  <th field="EvaluateContent" width="100">
+                完成评价
+            </th>*@
+
+
+    	</tr>
+		</thead>
+		</table>
+        <div id="toolbar">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div> 
+		<div id="mm" style="width: 120px">   
+            <div data-options="name:'Title'">项目标题</div>
+        </div>
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+            <div id="m_dlg" class="easyui-dialog" closed="true">
+            <table>
+      
+                <tr>
+                    <td valign="middle"> 理由:</td>
+                    <td valign="middle"> <textarea id="txtM" style="width: 250px;"></textarea></td>
+                </tr>
+            </table>
+            </div>
+     <div id="p_dlg" class="easyui-dialog" closed="true">
+            <table>
+ 
+                <tr>
+                    <td valign="middle"> 添加进度内容:</td>
+                    <td valign="middle"> <textarea id="txtP" style="width: 250px;"></textarea></td>
+                </tr>
+            </table>
+        </div>
+</div>
+</body>

@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="Scripts/easyUI/jquery-1.8.0.min.js"></script>
+</head>
+<body>
+    <input type="button" value="OpenPort" onclick="OpenPort()" />
+    <input type="button" value="ClosePort" onclick="ClosePort()" />
+    <input type="button" value="SendMessage" onclick="SendMessage()" />
+    <textarea id="txtReceive" style="width: 250px; height: 250px;"></textarea>
+    <object classid="clsid:648A5600-2C6E-101B-82B6-000000000014" id="MSComm1" codebase="MSCOMM32.OCX"
+        type="application/x-oleobject" style="left: 54px; top: 14px">
+        <param name="CommPort" value="1">
+        <!--设置并返回通讯端口号。-->
+        <param name="DTREnable" value="1">
+        <param name="Handshaking" value="0">
+        <param name="InBufferSize" value="1024">
+        <param name="InputLen" value="0">
+        <param name="NullDiscard" value="0">
+        <param name="OutBufferSize" value="512">
+        <param name="ParityReplace" value="?">
+        <param name="RThreshold" value="1">
+        <param name="RTSEnable" value="1">
+        <param name="SThreshold" value="2">
+        <param name="EOFEnable" value="0">
+        <param name="InputMode" value="0">
+        <!--comInputModeText 0 （缺省） 通过 Input 属性以文本方式取回数据。comInputModeBinary 1  通过 Input 属性以二进制方式检取回数据。-->
+        <param name="DataBits" value="8">
+        <param name="StopBits" value="1">
+        <param name="BaudRate" value="38400">
+        <param name="Settings" value="38400,N,8,1">
+    </object>
+    <script type="text/javascript">
+
+        function OpenPort() {
+            var cmd_send = "";
+            var result = $('#txtReceive').val();
+            var results = result.split(',');
+            for (var i = 0; i < results.length; i++) {
+                cmd_send += String.fromCharCode(eval(results[i]));
+            }
+            if (MSComm1.PortOpen == false) {
+                MSComm1.PortOpen = true;
+                MSComm1.Output = cmd_send;//发送命令
+            }
+            else {
+                window.alert("已经开始接收数据!");
+            }
+        }
+
+
+        function ClosePort() {
+            if (MSComm1.PortOpen == true) {
+                MSComm1.PortOpen = false;
+            }
+            else {
+                window.alert("串口已经关闭!");
+            }
+        }
+
+        function SendMessage() {
+            var cmd_send = "";
+            var result = $('txtReceive').value;
+            var results = result.split(',');
+            for (var i = 0; i < results.length; i++) {
+                cmd_send += String.fromCharCode(eval(results[i]));
+            }
+            if (MSComm1.PortOpen == false) {
+                window.alert("串口已经关闭!!");
+            }
+            else {
+                MSComm1.Output = cmd_send;//发送命令    
+            }
+        }
+
+    </script>
+</body>
+</html>

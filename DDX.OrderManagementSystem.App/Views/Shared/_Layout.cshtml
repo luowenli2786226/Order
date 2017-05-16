@@ -1,0 +1,34 @@
+﻿
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+     
+ 
+    <link href="~/Content/common.css" rel="stylesheet" />
+    <link href="~/Content/zstyle.css" rel="stylesheet" />
+    
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <link href="~/Content/icon.css" rel="stylesheet" />
+    <script src="@Url.Content("~/Scripts/easyUI/jquery.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/easyUI/jquery.cookie.js")"></script>
+    
+    <link id="easyuiTheme" href="@Url.Content("~/Scripts/easyUI/themes/metro-gray/easyui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/easyUI/themes/icon.css")" rel="stylesheet" type="text/css" />
+    <script id="easyuijs" src="@Url.Content("~/Scripts/easyUI/jquery.easyui.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/easyUI/EasyUIUtil.js")"></script>
+<script src="@Url.Content("~/Scripts/js/App.js?v=" + DateTime.Now.Ticks)"></script>
+ <script src="~/Scripts/js/common.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+           // setTheme();
+            
+        });
+    </script>
+</head>
+<body>
+    @RenderBody()
+</body>
+</html>

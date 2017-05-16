@@ -1,0 +1,81 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.AliActivityRecordType>
+@{
+    ViewBag.Title = "Index";
+}
+<script src="~/Scripts/easyUI/datagrid-groupview.js"></script>
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                nowrap: false,
+                url: '@Url.Action("ALLList", "AliActivityRecord")',
+                height: 570,
+                view: groupview,
+                groupField: 'Account',
+                groupFormatter: function (value, rows) {
+                   
+                
+                    return '账户:' + value + ' 共有 ' + rows.length + " 个活动";
+                }
+            
+          
+            });
+           
+    });
+
+
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            rownumbers="true" singleselect="true" >
+            <thead>
+                <tr>
+
+                    <th field="Account" width="80">店铺
+                    </th>
+                    <th field="Title" width="100">活动名称
+                    </th>
+                       <th field="BeginDate" width="100" formatter="getOnlyDate">开始时间
+                    </th>
+
+                    <th field="EndDate" width="100" formatter="getOnlyDate">结束时间
+                    </th>
+                    <th field="PID" width="100" >产品ID
+                    </th>
+
+                    <th field="BasePrice" width="80">价格
+                    </th>
+
+                    @*<th field="ZK" width="100">
+                折扣
+            </th>
+            <th field="Freight" width="100">
+                运费
+            </th>
+          
+            <th field="CostPrice" width="100">
+                成本价
+            </th>*@
+                    <th field="ActivityPrice" width="100">活动价格
+                    </th>
+                    <th field="ExpectedSales" width="100" >销量
+                    </th>
+                    <th field="LimitedNumber" width="60">限购
+                    </th>
+                 
+
+
+
+
+
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+  
+        </div>
+      
+      
+    </div>
+   
+</body>

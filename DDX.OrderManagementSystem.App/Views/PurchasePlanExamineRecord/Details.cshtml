@@ -1,0 +1,65 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.PurchasePlanType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("GetListByEId", "PurchasePlan")',
+                queryParams:{"Id":@ViewData["Id"]},
+                nowrap: false,
+                rownumbers: true,
+                singleSelect: true,
+             
+                fit: true,
+                columns: [[
+                    
+                    { field: 'PlanNo', title: '计划编号', width: 100, sortable: true },
+                    
+                    {
+                        field: 'Price', title: '', width: 30, sortable: true,
+                    },
+                    { field: 'Qty', title: '数量', width: 30, sortable: true },
+                    
+                    
+                    { field: 'Freight', title: '运费', width: 30, sortable: true },
+                    {
+                        field: 'Price', title: '总价格', width: 30, sortable: true,
+                        formatter: function (v, r, i) {
+                            return r.Price * r.Qty + r.Freight;
+                        }
+                    },
+                {
+                    field: 'Profit', title: '利润', width: 30, sortable: true
+                   
+                }
+                    ,
+                    { field: 'Suppliers', title: '供应商', width: 80, sortable: true },
+                    
+                    {
+                        field: 'Status', title: '状态', width: 80, sortable: true
+                    },
+                    { field: 'LogisticsMode', title: '发货方式', width: 80, sortable: true },
+                  
+                    {
+                        field: 'CreateOn', title: '时间', width: 250, sortable: true,
+                        formatter: function (v, r, i) {
+                            return '创建时间:' + getDate(v) + "<br>" ;
+                        }
+                    }
+
+                ]]
+            });
+            
+           
+        });
+       
+    </script>
+
+    <div region="center">
+        <table id="dg">
+        </table>
+
+    </div>
+</body>

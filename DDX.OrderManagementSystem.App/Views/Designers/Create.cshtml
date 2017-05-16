@@ -1,0 +1,155 @@
+﻿@model DDX.OrderManagementSystem.Domain.DesignerType
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+</head>
+<body>
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    
+    @using (Html.BeginForm()) {
+        @Html.ValidationSummary(true)
+    
+        <fieldset>
+            <legend>DesignerType</legend>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.DesignerID)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.DesignerID)
+                @Html.ValidationMessageFor(model => model.DesignerID)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Contentitle)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Contentitle)
+                @Html.ValidationMessageFor(model => model.Contentitle)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Lasttime)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Lasttime)
+                @Html.ValidationMessageFor(model => model.Lasttime)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Apllicant)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Apllicant)
+                @Html.ValidationMessageFor(model => model.Apllicant)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Apllicantime)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Apllicantime)
+                @Html.ValidationMessageFor(model => model.Apllicantime)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Auditor)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Auditor)
+                @Html.ValidationMessageFor(model => model.Auditor)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Audittime)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Audittime)
+                @Html.ValidationMessageFor(model => model.Audittime)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Auditnotes)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Auditnotes)
+                @Html.ValidationMessageFor(model => model.Auditnotes)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Auditstatus)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Auditstatus)
+                @Html.ValidationMessageFor(model => model.Auditstatus)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Expectedtime)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Expectedtime)
+                @Html.ValidationMessageFor(model => model.Expectedtime)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Receivenotes)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Receivenotes)
+                @Html.ValidationMessageFor(model => model.Receivenotes)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Receiptor)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Receiptor)
+                @Html.ValidationMessageFor(model => model.Receiptor)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Receivingsate)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Receivingsate)
+                @Html.ValidationMessageFor(model => model.Receivingsate)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Receivingtime)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Receivingtime)
+                @Html.ValidationMessageFor(model => model.Receivingtime)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Finishtime)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Finishtime)
+                @Html.ValidationMessageFor(model => model.Finishtime)
+            </div>
+    
+            <p>
+                <input type="submit" value="Create" />
+            </p>
+        </fieldset>
+    }
+    
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+</body>
+</html>

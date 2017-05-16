@@ -1,0 +1,2876 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.chukou1.com/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://www.chukou1.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.chukou1.com/">
+      <s:element name="VerifyUser">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:VerifyUserRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="VerifyUserRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="UserID" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="BaseRequest">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Token" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="UserKey" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustomUserKey" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MessageID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Version" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="VerifyUserResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="VerifyUserResult" type="tns:VerifyUserResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="VerifyUserResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse" />
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="BaseResponse">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Ack" type="tns:EnumAck" />
+          <s:element minOccurs="0" maxOccurs="1" name="Message" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="InvocationID" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="EnumAck">
+        <s:restriction base="s:string">
+          <s:enumeration value="Failure" />
+          <s:enumeration value="Success" />
+          <s:enumeration value="PartialFailure" />
+          <s:enumeration value="Warning" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="ExpressAddOrderNew">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ExpressAddOrderNewRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExpressAddOrderNewRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ExpressAddOrderRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="ExpressTypeNew" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ExpressAddOrderRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderDetail" type="tns:ExpressOrder" />
+              <s:element minOccurs="1" maxOccurs="1" name="Submit" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ExpressOrder">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ExpressType" type="tns:ExpressType" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Location" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Point4Delivery" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="IsTracking" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Remark" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="PickupType" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="PickUpAddress" type="tns:PickUpAddress" />
+          <s:element minOccurs="0" maxOccurs="1" name="PackageList" type="tns:ArrayOfExpressPackage" />
+          <s:element minOccurs="1" maxOccurs="1" name="IsGzShare" nillable="true" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="ExpressType">
+        <s:restriction base="s:string">
+          <s:enumeration value="UNKNOWN" />
+          <s:enumeration value="HKP" />
+          <s:enumeration value="CEE" />
+          <s:enumeration value="EMS" />
+          <s:enumeration value="CNP" />
+          <s:enumeration value="HKD" />
+          <s:enumeration value="UPS" />
+          <s:enumeration value="CDD" />
+          <s:enumeration value="EUB" />
+          <s:enumeration value="CUE" />
+          <s:enumeration value="SHD" />
+          <s:enumeration value="CES" />
+          <s:enumeration value="SGP" />
+          <s:enumeration value="EMD" />
+          <s:enumeration value="CTU" />
+          <s:enumeration value="CNB" />
+          <s:enumeration value="CAU" />
+          <s:enumeration value="CNC" />
+          <s:enumeration value="CUB" />
+          <s:enumeration value="EMP" />
+          <s:enumeration value="MEP" />
+          <s:enumeration value="SAP" />
+          <s:enumeration value="CAP" />
+          <s:enumeration value="HKE" />
+          <s:enumeration value="AUB" />
+          <s:enumeration value="CNE" />
+          <s:enumeration value="EMI" />
+          <s:enumeration value="EUI" />
+          <s:enumeration value="SWP" />
+          <s:enumeration value="SWT" />
+          <s:enumeration value="CNO" />
+          <s:enumeration value="CND" />
+          <s:enumeration value="CEF" />
+          <s:enumeration value="CNI" />
+          <s:enumeration value="CRI" />
+          <s:enumeration value="CNN" />
+          <s:enumeration value="CRN" />
+          <s:enumeration value="SGO" />
+          <s:enumeration value="UEE" />
+          <s:enumeration value="HBM" />
+          <s:enumeration value="HTM" />
+          <s:enumeration value="DGN" />
+          <s:enumeration value="DGR" />
+          <s:enumeration value="CAN" />
+          <s:enumeration value="CAT" />
+          <s:enumeration value="CEN" />
+          <s:enumeration value="CIE" />
+          <s:enumeration value="CFE" />
+          <s:enumeration value="CRU" />
+          <s:enumeration value="CNL" />
+          <s:enumeration value="CJP" />
+          <s:enumeration value="CET" />
+          <s:enumeration value="CUN" />
+          <s:enumeration value="CUT" />
+          <s:enumeration value="CSE" />
+          <s:enumeration value="FED" />
+          <s:enumeration value="CEA" />
+          <s:enumeration value="CRS" />
+          <s:enumeration value="EUU" />
+          <s:enumeration value="CBL" />
+          <s:enumeration value="CGT" />
+          <s:enumeration value="CGN" />
+          <s:enumeration value="CRE" />
+          <s:enumeration value="DGM" />
+          <s:enumeration value="CRP" />
+          <s:enumeration value="MYR" />
+          <s:enumeration value="MYN" />
+          <s:enumeration value="NLR" />
+          <s:enumeration value="NLN" />
+          <s:enumeration value="CAF" />
+          <s:enumeration value="CRA" />
+          <s:enumeration value="CRB" />
+          <s:enumeration value="EUF" />
+          <s:enumeration value="CLS" />
+          <s:enumeration value="CLY" />
+          <s:enumeration value="BEO" />
+          <s:enumeration value="BEP" />
+          <s:enumeration value="CLZ" />
+          <s:enumeration value="HSR" />
+          <s:enumeration value="HSS" />
+          <s:enumeration value="UPE" />
+          <s:enumeration value="AEN" />
+          <s:enumeration value="AET" />
+          <s:enumeration value="CLF" />
+          <s:enumeration value="FBA" />
+          <s:enumeration value="CRC" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="PickUpAddress">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseAddress">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="District" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="DistrictCode" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="CityCode" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ProvinceCode" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="BaseAddress">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Contact" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Company" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Street1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Street2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Province" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Country" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PostCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Phone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Email" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ShipToAddress">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseAddress" />
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfExpressPackage">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ExpressPackage" nillable="true" type="tns:ExpressPackage" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ExpressPackage">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Package">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="Status" nillable="true" type="tns:OrderExpressState" />
+              <s:element minOccurs="0" maxOccurs="1" name="TrackCode" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Remark" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ProductList" type="tns:ArrayOfExpressProduct" />
+              <s:element minOccurs="1" maxOccurs="1" name="SendedStatus" nillable="true" type="tns:OrderExpressState" />
+              <s:element minOccurs="0" maxOccurs="1" name="ClientOrderSn" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="RefNo" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="CheckRepeatRefNo" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="Package">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Custom" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ItemSign" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ShipToAddress" type="tns:ShipToAddress" />
+          <s:element minOccurs="0" maxOccurs="1" name="Packing" type="tns:Packing" />
+          <s:element minOccurs="1" maxOccurs="1" name="Weight" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="ClientPackageId" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Packing">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Length" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="Width" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="Height" type="s:decimal" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="OrderExpressState">
+        <s:restriction base="s:string">
+          <s:enumeration value="Initial" />
+          <s:enumeration value="Submitted" />
+          <s:enumeration value="Received" />
+          <s:enumeration value="Examined" />
+          <s:enumeration value="Pending" />
+          <s:enumeration value="Shipped" />
+          <s:enumeration value="Dispatching" />
+          <s:enumeration value="Delivered" />
+          <s:enumeration value="Sended" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfExpressProduct">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ExpressProduct" nillable="true" type="tns:ExpressProduct" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ExpressProduct">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Product">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="ProductId" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="QuantityReturnFactory" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="Product">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="SKU" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StorageNo" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DeclareValue" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="Weight" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="Quantity" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustomsTitleCN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustomsTitleEN" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ExpressAddOrderNewResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExpressAddOrderNewResult" type="tns:ExpressAddOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExpressAddOrderResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Packages" type="tns:ArrayOfFeedBackItem" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfFeedBackItem">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FeedBackItem" nillable="true" type="tns:FeedBackItem" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FeedBackItem">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Custom" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ItemSign" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Remark" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ExpressAddOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ExpressAddOrderRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExpressAddOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExpressAddOrderResult" type="tns:ExpressAddOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExpressCompleteOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ExpressCompleteOrderRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExpressCompleteOrderRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="ActionType" type="tns:EnumActionType" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="EnumActionType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Submit" />
+          <s:enumeration value="Cancel" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="ExpressCompleteOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExpressCompleteOrderResult" type="tns:ExpressCompleteOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExpressCompleteOrderResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse" />
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ExpressAddPackageNew">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ExpressAddPackageNewRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExpressAddPackageNewRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ExpressAddPackageRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="ExpressTypeNew" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ExpressAddPackageRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="ExpressType" type="tns:ExpressType" />
+              <s:element minOccurs="1" maxOccurs="1" name="IsTracking" type="s:boolean" />
+              <s:element minOccurs="1" maxOccurs="1" name="PickupType" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="Location" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Point4Delivery" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PickUpAddress" type="tns:PickUpAddress" />
+              <s:element minOccurs="0" maxOccurs="1" name="PackageDetail" type="tns:ExpressPackage" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ExpressAddPackageNewResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExpressAddPackageNewResult" type="tns:ExpressAddPackageResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExpressAddPackageResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="TrackCode" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Custom" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ItemSign" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ExpressAddPackage">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ExpressAddPackageRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExpressAddPackageResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExpressAddPackageResult" type="tns:ExpressAddPackageResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExpressGetPackage">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ExpressGetPackageRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExpressGetPackageRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Custom" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ItemSign" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="RefNo" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ExpressGetPackageResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExpressGetPackageResult" type="tns:ExpressGetPackageResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExpressGetPackageResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="PackageDetail" type="tns:ExpressPackage" />
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ExpressAddCruOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ExpressAddCruOrderRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExpressAddCruOrderRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderDetail" type="tns:ExpressCruOrder" />
+              <s:element minOccurs="1" maxOccurs="1" name="Submit" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ExpressCruOrder">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ExpressType" type="tns:ExpressType" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="HandleLocation" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Remark" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PackageList" type="tns:ArrayOfExpressCruPackage" />
+          <s:element minOccurs="0" maxOccurs="1" name="ShipperAddress" type="tns:ApiShipperAddress" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfExpressCruPackage">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ExpressCruPackage" nillable="true" type="tns:ExpressCruPackage" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ExpressCruPackage">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Package">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Remark" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PassportName" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PassportNo" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="PassportDate" nillable="true" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="ClientOrderSn" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ProductList" type="tns:ArrayOfExpressCruProduct" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfExpressCruProduct">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ExpressCruProduct" nillable="true" type="tns:ExpressCruProduct" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ExpressCruProduct">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Product">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="CTNCode" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Composition" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Packing" type="tns:Packing" />
+              <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="SalesWebSite" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ApiShipperAddress">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseAddress" />
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ExpressAddCruOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExpressAddCruOrderResult" type="tns:ExpressAddCruOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExpressAddCruOrderResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ExpressAddOrderResponse" />
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ExpressAddCruPackage">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ExpressAddCruPackageRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExpressAddCruPackageRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="ExpressType" type="tns:ExpressType" />
+              <s:element minOccurs="0" maxOccurs="1" name="HandleLocation" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PackageDetail" type="tns:ExpressCruPackage" />
+              <s:element minOccurs="0" maxOccurs="1" name="ShipperAddress" type="tns:ApiShipperAddress" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ExpressAddCruPackageResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExpressAddCruPackageResult" type="tns:ExpressAddCruPackageResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExpressAddCruPackageResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ExpressAddPackageResponse" />
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="InStoreAddOrderNew">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:InStoreAddOrderNewRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="InStoreAddOrderNewRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderDetail" type="tns:InStoreOrderNew" />
+              <s:element minOccurs="1" maxOccurs="1" name="Submit" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="InStoreOrderNew">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:InStoreOrder">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="StateNew" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ShippingMethodNew" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="WarehouseNew" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="LocationNew" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="InStoreOrder">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="State" type="tns:OrderInState" />
+          <s:element minOccurs="1" maxOccurs="1" name="ShippingMethod" type="tns:ShippingType" />
+          <s:element minOccurs="1" maxOccurs="1" name="Warehouse" type="tns:EnumWarehouse" />
+          <s:element minOccurs="1" maxOccurs="1" name="Location" type="tns:EnumLocation" />
+          <s:element minOccurs="1" maxOccurs="1" name="PickupType" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="PickUpAddress" type="tns:PickUpAddress" />
+          <s:element minOccurs="1" maxOccurs="1" name="ArriveTime" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="CaseList" type="tns:ArrayOfInStoreCase" />
+          <s:element minOccurs="0" maxOccurs="1" name="Remark" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="IsInsured" nillable="true" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="InsuredRate" nillable="true" type="s:decimal" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="OrderInState">
+        <s:restriction base="s:string">
+          <s:enumeration value="Initial" />
+          <s:enumeration value="Sutmitted" />
+          <s:enumeration value="Received" />
+          <s:enumeration value="Examined" />
+          <s:enumeration value="Pending" />
+          <s:enumeration value="Shipped" />
+          <s:enumeration value="Stocked" />
+          <s:enumeration value="GoodsLost" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="ShippingType">
+        <s:restriction base="s:string">
+          <s:enumeration value="AIR" />
+          <s:enumeration value="SEA" />
+          <s:enumeration value="EMS" />
+          <s:enumeration value="DHL" />
+          <s:enumeration value="UPS" />
+          <s:enumeration value="CND" />
+          <s:enumeration value="FED" />
+          <s:enumeration value="BFE" />
+          <s:enumeration value="ROAD" />
+          <s:enumeration value="CNP" />
+          <s:enumeration value="UPE" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="EnumWarehouse">
+        <s:restriction base="s:string">
+          <s:enumeration value="US" />
+          <s:enumeration value="AU" />
+          <s:enumeration value="UK" />
+          <s:enumeration value="MA" />
+          <s:enumeration value="DE" />
+          <s:enumeration value="GZ" />
+          <s:enumeration value="None" />
+          <s:enumeration value="NJ" />
+          <s:enumeration value="BY" />
+          <s:enumeration value="LA" />
+          <s:enumeration value="ES" />
+          <s:enumeration value="TO" />
+          <s:enumeration value="MO" />
+          <s:enumeration value="RI" />
+          <s:enumeration value="JL" />
+          <s:enumeration value="ON" />
+          <s:enumeration value="PU" />
+          <s:enumeration value="PO" />
+          <s:enumeration value="PZ" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="EnumLocation">
+        <s:restriction base="s:string">
+          <s:enumeration value="GZ" />
+          <s:enumeration value="SZ" />
+          <s:enumeration value="SH" />
+          <s:enumeration value="None" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfInStoreCase">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="InStoreCase" nillable="true" type="tns:InStoreCase" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="InStoreCase">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="CaseNo" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="CaseSign" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="State" type="tns:OrderInState" />
+          <s:element minOccurs="0" maxOccurs="1" name="Packing" type="tns:Packing" />
+          <s:element minOccurs="1" maxOccurs="1" name="Weight" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="ProductList" type="tns:ArrayOfInStoreProduct" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfInStoreProduct">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="InStoreProduct" nillable="true" type="tns:InStoreProduct" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="InStoreProduct">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="SKU" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Quantity" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="DeclaredName" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DeclaredValue" type="s:decimal" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="InStoreAddOrderNewResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="InStoreAddOrderNewResult" type="tns:InStoreAddOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="InStoreAddOrderResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="InStoreAddOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:InStoreAddOrderRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="InStoreAddOrderRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderDetail" type="tns:InStoreOrder" />
+              <s:element minOccurs="1" maxOccurs="1" name="Submit" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="InStoreAddOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="InStoreAddOrderResult" type="tns:InStoreAddOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InStoreCompleteOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:InStoreCompleteOrderRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="InStoreCompleteOrderRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="ActionType" type="tns:EnumActionType" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="InStoreCompleteOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="InStoreCompleteOrderResult" type="tns:InStoreCompleteOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="InStoreCompleteOrderResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse" />
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="InStoreGetOrderNew">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:InStoreGetOrderNewRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="InStoreGetOrderNewRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:InStoreGetOrderRequest" />
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="InStoreGetOrderRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="InStoreGetOrderNewResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="InStoreGetOrderNewResult" type="tns:InStoreGetOrderNewResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="InStoreGetOrderNewResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderDetail" type="tns:InStoreOrderNew" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="InStoreGetOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:InStoreGetOrderRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InStoreGetOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="InStoreGetOrderResult" type="tns:InStoreGetOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="InStoreGetOrderResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderDetail" type="tns:InStoreOrder" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="M2CAddOrderNew">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:M2CAddOrderNewRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="M2CAddOrderNewRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:M2CAddOrderRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderDetailNew" type="tns:OutStoreOrderNew" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="M2CAddOrderRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderDetail" type="tns:M2COrder" />
+              <s:element minOccurs="1" maxOccurs="1" name="Submit" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="M2COrder">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="State" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Warehouse" type="tns:EnumWarehouse" />
+          <s:element minOccurs="0" maxOccurs="1" name="Remark" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PackageList" type="tns:ArrayOfM2CPackage" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfM2CPackage">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="M2CPackage" nillable="true" type="tns:M2CPackage" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="M2CPackage">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Sign" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="State" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Custom" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TrackingNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Shipping" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ShippingV2_1" nillable="true" type="tns:OutStoreShippingV2_1" />
+          <s:element minOccurs="0" maxOccurs="1" name="Services" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ShipToAddress" type="tns:ShipToAddress" />
+          <s:element minOccurs="0" maxOccurs="1" name="ProductList" type="tns:ArrayOfOutStoreProduct" />
+          <s:element minOccurs="0" maxOccurs="1" name="Remark" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ShippingNew" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="OutStoreShippingV2_1">
+        <s:restriction base="s:string">
+          <s:enumeration value="USNUS" />
+          <s:enumeration value="USRUS" />
+          <s:enumeration value="USNIU" />
+          <s:enumeration value="USNLE" />
+          <s:enumeration value="USRLE" />
+          <s:enumeration value="USRLS" />
+          <s:enumeration value="USRLP" />
+          <s:enumeration value="USRIS" />
+          <s:enumeration value="USLTL" />
+          <s:enumeration value="AUNAP" />
+          <s:enumeration value="AURAP" />
+          <s:enumeration value="AUTNT" />
+          <s:enumeration value="AUHUT" />
+          <s:enumeration value="AULCP" />
+          <s:enumeration value="AURLP" />
+          <s:enumeration value="AUREP" />
+          <s:enumeration value="AURPP" />
+          <s:enumeration value="UKNRM" />
+          <s:enumeration value="UKRRM" />
+          <s:enumeration value="UKRNX" />
+          <s:enumeration value="UKRLS" />
+          <s:enumeration value="UKDPD" />
+          <s:enumeration value="UKRIS" />
+          <s:enumeration value="UKRIP" />
+          <s:enumeration value="UKNIR" />
+          <s:enumeration value="UKRIR" />
+          <s:enumeration value="UKRLE" />
+          <s:enumeration value="UKNR2" />
+          <s:enumeration value="UKRR2" />
+          <s:enumeration value="UKRLO" />
+          <s:enumeration value="UKRLH" />
+          <s:enumeration value="DENLD" />
+          <s:enumeration value="DENID" />
+          <s:enumeration value="DERLS" />
+          <s:enumeration value="DERIS" />
+          <s:enumeration value="AURLT" />
+          <s:enumeration value="None" />
+          <s:enumeration value="UKNRT" />
+          <s:enumeration value="NJNUS" />
+          <s:enumeration value="NJRUS" />
+          <s:enumeration value="NJNIU" />
+          <s:enumeration value="NJNLE" />
+          <s:enumeration value="NJRLE" />
+          <s:enumeration value="NJRLS" />
+          <s:enumeration value="NJRLP" />
+          <s:enumeration value="NJRIS" />
+          <s:enumeration value="UKPOD" />
+          <s:enumeration value="DENDE" />
+          <s:enumeration value="DENDS" />
+          <s:enumeration value="DERDS" />
+          <s:enumeration value="DERID" />
+          <s:enumeration value="DERLT" />
+          <s:enumeration value="DERIT" />
+          <s:enumeration value="AUNIP" />
+          <s:enumeration value="AURIP" />
+          <s:enumeration value="UKRLF" />
+          <s:enumeration value="AURSP" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfOutStoreProduct">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="OutStoreProduct" nillable="true" type="tns:OutStoreProduct" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="OutStoreProduct">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="SKU" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StorageNo" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Quantity" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="DeclareName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DeclareValue" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="OutStoreOrderNew">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutStoreOrder">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="WarehouseNew" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PackageListNew" type="tns:ArrayOfOutStorePackageNew" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="OutStoreOrder">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="State" nillable="true" type="tns:OrderOutState" />
+          <s:element minOccurs="1" maxOccurs="1" name="Warehouse" type="tns:EnumWarehouse" />
+          <s:element minOccurs="0" maxOccurs="1" name="Remark" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PackageList" type="tns:ArrayOfOutStorePackage" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="OrderOutState">
+        <s:restriction base="s:string">
+          <s:enumeration value="Initial" />
+          <s:enumeration value="Sutmitted" />
+          <s:enumeration value="Examined" />
+          <s:enumeration value="Pending" />
+          <s:enumeration value="Shipped" />
+          <s:enumeration value="Dispatching" />
+          <s:enumeration value="Delivered" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfOutStorePackage">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="OutStorePackage" nillable="true" type="tns:OutStorePackage" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="OutStorePackage">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Sign" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="State" nillable="true" type="tns:OrderOutState" />
+          <s:element minOccurs="0" maxOccurs="1" name="Custom" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TrackingNumber" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Shipping" nillable="true" type="tns:OutStoreShipping" />
+          <s:element minOccurs="1" maxOccurs="1" name="ShippingV2_1" nillable="true" type="tns:OutStoreShippingV2_1" />
+          <s:element minOccurs="0" maxOccurs="1" name="Services" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ShipToAddress" type="tns:ShipToAddress" />
+          <s:element minOccurs="0" maxOccurs="1" name="ProductList" type="tns:ArrayOfOutStoreProduct" />
+          <s:element minOccurs="0" maxOccurs="1" name="Remark" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="BuyerID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ItemID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="BuyerEmail" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Weight" nillable="true" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="IsInsured" nillable="true" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="InsuredRate" nillable="true" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="ClientPackageId" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ShippingNew" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RefNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CheckRepeatRefNo" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="OutStoreShipping">
+        <s:restriction base="s:string">
+          <s:enumeration value="None" />
+          <s:enumeration value="Royalmail" />
+          <s:enumeration value="DHL" />
+          <s:enumeration value="UPS" />
+          <s:enumeration value="USPS" />
+          <s:enumeration value="AuPost" />
+          <s:enumeration value="Parcelforce" />
+          <s:enumeration value="Fedex" />
+          <s:enumeration value="DPD" />
+          <s:enumeration value="CouriersPlease" />
+          <s:enumeration value="TNT" />
+          <s:enumeration value="DePost" />
+          <s:enumeration value="Hermes" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="OutStorePackageNew">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutStorePackage" />
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfOutStorePackageNew">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="OutStorePackageNew" nillable="true" type="tns:OutStorePackageNew" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="M2CAddOrderNewResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="M2CAddOrderNewResult" type="tns:M2CAddOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="M2CAddOrderResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Packages" type="tns:ArrayOfFeedBackItem" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="M2CAddOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:M2CAddOrderRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="M2CAddOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="M2CAddOrderResult" type="tns:M2CAddOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="M2CAddPaypalOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:M2CAddPaypalOrderRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="M2CAddPaypalOrderRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:M2CAddOrderRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Payment" type="tns:PaypalPaymentDetail" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="PaypalPaymentDetail">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Amount" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="Currency" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ReturnUrl" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CancelUrl" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="M2CAddPaypalOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="M2CAddPaypalOrderResult" type="tns:M2CAddPaypalOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="M2CAddPaypalOrderResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:M2CAddOrderResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="RedirectUrl" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="M2CCompleteOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:M2CCompleteOrderRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="M2CCompleteOrderRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="ActionType" type="tns:EnumActionType" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="M2CCompleteOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="M2CCompleteOrderResult" type="tns:M2CCompleteOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="M2CCompleteOrderResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse" />
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="M2CGetOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:M2CGetOrderRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="M2CGetOrderRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="M2CGetOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="M2CGetOrderResult" type="tns:M2CGetOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="M2CGetOrderResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderDetail" type="tns:M2COrder" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="M2CGetPackage">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:M2CGetPackageRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="M2CGetPackageRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Sign" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Custom" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="Warehouse" type="tns:EnumWarehouse" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="M2CGetPackageResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="M2CGetPackageResult" type="tns:M2CGetPackageResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="M2CGetPackageResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="PackageDetail" type="tns:M2CPackage" />
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="M2CGetShareStock">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:M2CGetShareStockRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="M2CGetShareStockRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="StorageNo" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="M2CGetShareStockResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="M2CGetShareStockResult" type="tns:M2CGetShareStockResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="M2CGetShareStockResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="StockDetail" type="tns:ProductStock" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ProductStock">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="SKU" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StorageNo" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Amount" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="AvailableAmount" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Weight" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="Packing" type="tns:Packing" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="OutStoreAddOrderNew">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:OutStoreAddOrderNewRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OutStoreAddOrderNewRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutStoreAddOrderRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderDetailNew" type="tns:OutStoreOrderNew" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="OutStoreAddOrderRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderDetail" type="tns:OutStoreOrder" />
+              <s:element minOccurs="1" maxOccurs="1" name="Submit" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="OutStoreAddOrderNewResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="OutStoreAddOrderNewResult" type="tns:OutStoreAddOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OutStoreAddOrderResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Packages" type="tns:ArrayOfFeedBackItem" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="OutStoreAddOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:OutStoreAddOrderRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="OutStoreAddOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="OutStoreAddOrderResult" type="tns:OutStoreAddOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="OutStoreCompleteOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:OutStoreCompleteOrderRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OutStoreCompleteOrderRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="ActionType" type="tns:EnumActionType" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="OutStoreCompleteOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="OutStoreCompleteOrderResult" type="tns:OutStoreCompleteOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OutStoreCompleteOrderResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse" />
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="OutStoreGetOrderNew">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:OutStoreGetOrderNewRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OutStoreGetOrderNewRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutStoreGetOrderRequest" />
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="OutStoreGetOrderRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="OutStoreGetOrderNewResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="OutStoreGetOrderNewResult" type="tns:OutStoreGetOrderNewResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OutStoreGetOrderNewResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderDetail" type="tns:OutStoreOrderNew" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="OutStoreGetOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:OutStoreGetOrderRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="OutStoreGetOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="OutStoreGetOrderResult" type="tns:OutStoreGetOrderResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OutStoreGetOrderResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="OrderDetail" type="tns:OutStoreOrder" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="OutStoreGetOrderPackageNew">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:OutStoreGetOrderPackageNewRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OutStoreGetOrderPackageNewRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Sign" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Custom" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="RefNo" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="OutStoreGetOrderPackageNewResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="OutStoreGetOrderPackageNewResult" type="tns:OutStoreGetOrderPackageNewResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OutStoreGetOrderPackageNewResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="PackageDetail" type="tns:OutStorePackageNew" />
+              <s:element minOccurs="0" maxOccurs="1" name="OrderSign" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="OutStoreGetPackageNew">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:OutStoreGetPackageNewRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OutStoreGetPackageNewRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Sign" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Custom" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="RefNo" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="OutStoreGetPackageNewResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="OutStoreGetPackageNewResult" type="tns:OutStoreGetPackageNewResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OutStoreGetPackageNewResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="PackageDetail" type="tns:OutStorePackageNew" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="OutStoreGetPackage">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:OutStoreGetPackageRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OutStoreGetPackageRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Sign" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Custom" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="RefNo" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="OutStoreGetPackageResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="OutStoreGetPackageResult" type="tns:OutStoreGetPackageResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OutStoreGetPackageResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="PackageDetail" type="tns:OutStorePackage" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ProductAddModel">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ProductAddModelRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ProductAddModelRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="ModelDetail" type="tns:ProductModel" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ProductModel">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="SKU" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Custom" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Category" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ProductFlag" type="tns:ProductFlag" />
+          <s:element minOccurs="0" maxOccurs="1" name="Packing" type="tns:Packing" />
+          <s:element minOccurs="1" maxOccurs="1" name="Weight" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="DeclareName" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DeclareValue" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="Warning" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="ProductFlag">
+        <s:restriction base="s:string">
+          <s:enumeration value="Normal" />
+          <s:enumeration value="Special" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="ProductAddModelResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ProductAddModelResult" type="tns:ProductAddModelResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ProductAddModelResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse" />
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ProductGetModel">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ProductGetModelRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ProductGetModelRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="SKU" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Custom" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ProductGetModelResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ProductGetModelResult" type="tns:ProductGetModelResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ProductGetModelResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="ModelDetail" type="tns:ProductModel" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ProductGetStockNew">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ProductGetStockNewRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ProductGetStockNewRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ProductGetStockRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="WarehouseNew" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ProductGetStockRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="SKU" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Custom" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="Warehouse" type="tns:EnumWarehouse" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ProductGetStockNewResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ProductGetStockNewResult" type="tns:ProductGetStockResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ProductGetStockResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="StockDetail" type="tns:ProductStock" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ProductGetStock">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ProductGetStockRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ProductGetStockResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ProductGetStockResult" type="tns:ProductGetStockResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ProductGetStorageNoNew">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ProductGetStorageNoNewRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ProductGetStorageNoNewRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ProductGetStorageNoRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="WarehouseNew" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ProductGetStorageNoRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="Warehouse" type="tns:EnumWarehouse" />
+              <s:element minOccurs="0" maxOccurs="1" name="SKU" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ProductGetStorageNoNewResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ProductGetStorageNoNewResult" type="tns:ProductGetStorageNoResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ProductGetStorageNoResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="Warehouse" type="tns:EnumWarehouse" />
+              <s:element minOccurs="0" maxOccurs="1" name="SKU" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="StorageNo" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="Weight" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="ProductPackage" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ProductGetStorageNo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ProductGetStorageNoRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ProductGetStorageNoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ProductGetStorageNoResult" type="tns:ProductGetStorageNoResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTracking">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:GetTrackingRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="GetTrackingRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseRequest">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="ItemSign" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Custom" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="OrderType" type="tns:OrderType" />
+              <s:element minOccurs="0" maxOccurs="1" name="ClientNo" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="OrderType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Express" />
+          <s:enumeration value="OutStore" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GetTrackingResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTrackingResult" type="tns:GetTrackingResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="GetTrackingResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseResponse">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="TrackingDetail" type="tns:Tracking" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="Tracking">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:EntityBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="TrackSummmary" type="tns:Summmary" />
+              <s:element minOccurs="0" maxOccurs="1" name="TrackDetails" type="tns:ArrayOfDetail" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="EntityBase" />
+      <s:complexType name="Summmary">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Carrier" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TrackNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Status" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ShipTime" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="DeliveryTime" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Location" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Address" type="tns:TrackingAddress" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TrackingAddress">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ShippingAddress" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Street" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="State" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Zip" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Country" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfDetail">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Detail" nillable="true" type="tns:Detail" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Detail">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Date" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Location" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Desc" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DetailInfo">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Detail">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="CurrentStatus" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="TimeFlag" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="VerifyUserSoapIn">
+    <wsdl:part name="parameters" element="tns:VerifyUser" />
+  </wsdl:message>
+  <wsdl:message name="VerifyUserSoapOut">
+    <wsdl:part name="parameters" element="tns:VerifyUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExpressAddOrderNewSoapIn">
+    <wsdl:part name="parameters" element="tns:ExpressAddOrderNew" />
+  </wsdl:message>
+  <wsdl:message name="ExpressAddOrderNewSoapOut">
+    <wsdl:part name="parameters" element="tns:ExpressAddOrderNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExpressAddOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:ExpressAddOrder" />
+  </wsdl:message>
+  <wsdl:message name="ExpressAddOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:ExpressAddOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExpressCompleteOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:ExpressCompleteOrder" />
+  </wsdl:message>
+  <wsdl:message name="ExpressCompleteOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:ExpressCompleteOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExpressAddPackageNewSoapIn">
+    <wsdl:part name="parameters" element="tns:ExpressAddPackageNew" />
+  </wsdl:message>
+  <wsdl:message name="ExpressAddPackageNewSoapOut">
+    <wsdl:part name="parameters" element="tns:ExpressAddPackageNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExpressAddPackageSoapIn">
+    <wsdl:part name="parameters" element="tns:ExpressAddPackage" />
+  </wsdl:message>
+  <wsdl:message name="ExpressAddPackageSoapOut">
+    <wsdl:part name="parameters" element="tns:ExpressAddPackageResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExpressGetPackageSoapIn">
+    <wsdl:part name="parameters" element="tns:ExpressGetPackage" />
+  </wsdl:message>
+  <wsdl:message name="ExpressGetPackageSoapOut">
+    <wsdl:part name="parameters" element="tns:ExpressGetPackageResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExpressAddCruOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:ExpressAddCruOrder" />
+  </wsdl:message>
+  <wsdl:message name="ExpressAddCruOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:ExpressAddCruOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExpressAddCruPackageSoapIn">
+    <wsdl:part name="parameters" element="tns:ExpressAddCruPackage" />
+  </wsdl:message>
+  <wsdl:message name="ExpressAddCruPackageSoapOut">
+    <wsdl:part name="parameters" element="tns:ExpressAddCruPackageResponse" />
+  </wsdl:message>
+  <wsdl:message name="InStoreAddOrderNewSoapIn">
+    <wsdl:part name="parameters" element="tns:InStoreAddOrderNew" />
+  </wsdl:message>
+  <wsdl:message name="InStoreAddOrderNewSoapOut">
+    <wsdl:part name="parameters" element="tns:InStoreAddOrderNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="InStoreAddOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:InStoreAddOrder" />
+  </wsdl:message>
+  <wsdl:message name="InStoreAddOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:InStoreAddOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="InStoreCompleteOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:InStoreCompleteOrder" />
+  </wsdl:message>
+  <wsdl:message name="InStoreCompleteOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:InStoreCompleteOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="InStoreGetOrderNewSoapIn">
+    <wsdl:part name="parameters" element="tns:InStoreGetOrderNew" />
+  </wsdl:message>
+  <wsdl:message name="InStoreGetOrderNewSoapOut">
+    <wsdl:part name="parameters" element="tns:InStoreGetOrderNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="InStoreGetOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:InStoreGetOrder" />
+  </wsdl:message>
+  <wsdl:message name="InStoreGetOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:InStoreGetOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="M2CAddOrderNewSoapIn">
+    <wsdl:part name="parameters" element="tns:M2CAddOrderNew" />
+  </wsdl:message>
+  <wsdl:message name="M2CAddOrderNewSoapOut">
+    <wsdl:part name="parameters" element="tns:M2CAddOrderNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="M2CAddOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:M2CAddOrder" />
+  </wsdl:message>
+  <wsdl:message name="M2CAddOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:M2CAddOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="M2CAddPaypalOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:M2CAddPaypalOrder" />
+  </wsdl:message>
+  <wsdl:message name="M2CAddPaypalOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:M2CAddPaypalOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="M2CCompleteOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:M2CCompleteOrder" />
+  </wsdl:message>
+  <wsdl:message name="M2CCompleteOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:M2CCompleteOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="M2CGetOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:M2CGetOrder" />
+  </wsdl:message>
+  <wsdl:message name="M2CGetOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:M2CGetOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="M2CGetPackageSoapIn">
+    <wsdl:part name="parameters" element="tns:M2CGetPackage" />
+  </wsdl:message>
+  <wsdl:message name="M2CGetPackageSoapOut">
+    <wsdl:part name="parameters" element="tns:M2CGetPackageResponse" />
+  </wsdl:message>
+  <wsdl:message name="M2CGetShareStockSoapIn">
+    <wsdl:part name="parameters" element="tns:M2CGetShareStock" />
+  </wsdl:message>
+  <wsdl:message name="M2CGetShareStockSoapOut">
+    <wsdl:part name="parameters" element="tns:M2CGetShareStockResponse" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreAddOrderNewSoapIn">
+    <wsdl:part name="parameters" element="tns:OutStoreAddOrderNew" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreAddOrderNewSoapOut">
+    <wsdl:part name="parameters" element="tns:OutStoreAddOrderNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreAddOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:OutStoreAddOrder" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreAddOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:OutStoreAddOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreCompleteOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:OutStoreCompleteOrder" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreCompleteOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:OutStoreCompleteOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreGetOrderNewSoapIn">
+    <wsdl:part name="parameters" element="tns:OutStoreGetOrderNew" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreGetOrderNewSoapOut">
+    <wsdl:part name="parameters" element="tns:OutStoreGetOrderNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreGetOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:OutStoreGetOrder" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreGetOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:OutStoreGetOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreGetOrderPackageNewSoapIn">
+    <wsdl:part name="parameters" element="tns:OutStoreGetOrderPackageNew" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreGetOrderPackageNewSoapOut">
+    <wsdl:part name="parameters" element="tns:OutStoreGetOrderPackageNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreGetPackageNewSoapIn">
+    <wsdl:part name="parameters" element="tns:OutStoreGetPackageNew" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreGetPackageNewSoapOut">
+    <wsdl:part name="parameters" element="tns:OutStoreGetPackageNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreGetPackageSoapIn">
+    <wsdl:part name="parameters" element="tns:OutStoreGetPackage" />
+  </wsdl:message>
+  <wsdl:message name="OutStoreGetPackageSoapOut">
+    <wsdl:part name="parameters" element="tns:OutStoreGetPackageResponse" />
+  </wsdl:message>
+  <wsdl:message name="ProductAddModelSoapIn">
+    <wsdl:part name="parameters" element="tns:ProductAddModel" />
+  </wsdl:message>
+  <wsdl:message name="ProductAddModelSoapOut">
+    <wsdl:part name="parameters" element="tns:ProductAddModelResponse" />
+  </wsdl:message>
+  <wsdl:message name="ProductGetModelSoapIn">
+    <wsdl:part name="parameters" element="tns:ProductGetModel" />
+  </wsdl:message>
+  <wsdl:message name="ProductGetModelSoapOut">
+    <wsdl:part name="parameters" element="tns:ProductGetModelResponse" />
+  </wsdl:message>
+  <wsdl:message name="ProductGetStockNewSoapIn">
+    <wsdl:part name="parameters" element="tns:ProductGetStockNew" />
+  </wsdl:message>
+  <wsdl:message name="ProductGetStockNewSoapOut">
+    <wsdl:part name="parameters" element="tns:ProductGetStockNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="ProductGetStockSoapIn">
+    <wsdl:part name="parameters" element="tns:ProductGetStock" />
+  </wsdl:message>
+  <wsdl:message name="ProductGetStockSoapOut">
+    <wsdl:part name="parameters" element="tns:ProductGetStockResponse" />
+  </wsdl:message>
+  <wsdl:message name="ProductGetStorageNoNewSoapIn">
+    <wsdl:part name="parameters" element="tns:ProductGetStorageNoNew" />
+  </wsdl:message>
+  <wsdl:message name="ProductGetStorageNoNewSoapOut">
+    <wsdl:part name="parameters" element="tns:ProductGetStorageNoNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="ProductGetStorageNoSoapIn">
+    <wsdl:part name="parameters" element="tns:ProductGetStorageNo" />
+  </wsdl:message>
+  <wsdl:message name="ProductGetStorageNoSoapOut">
+    <wsdl:part name="parameters" element="tns:ProductGetStorageNoResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetTrackingSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTracking" />
+  </wsdl:message>
+  <wsdl:message name="GetTrackingSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTrackingResponse" />
+  </wsdl:message>
+  <wsdl:portType name="CK1Soap">
+    <wsdl:operation name="VerifyUser">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">验证用户并获得授权</wsdl:documentation>
+      <wsdl:input message="tns:VerifyUserSoapIn" />
+      <wsdl:output message="tns:VerifyUserSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddOrderNew">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">添加直发订单</wsdl:documentation>
+      <wsdl:input message="tns:ExpressAddOrderNewSoapIn" />
+      <wsdl:output message="tns:ExpressAddOrderNewSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddOrder">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">添加直发订单.</wsdl:documentation>
+      <wsdl:input message="tns:ExpressAddOrderSoapIn" />
+      <wsdl:output message="tns:ExpressAddOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExpressCompleteOrder">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">提审或取消直发订单.</wsdl:documentation>
+      <wsdl:input message="tns:ExpressCompleteOrderSoapIn" />
+      <wsdl:output message="tns:ExpressCompleteOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddPackageNew">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">添加直发包裹</wsdl:documentation>
+      <wsdl:input message="tns:ExpressAddPackageNewSoapIn" />
+      <wsdl:output message="tns:ExpressAddPackageNewSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddPackage">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">添加直发包裹</wsdl:documentation>
+      <wsdl:input message="tns:ExpressAddPackageSoapIn" />
+      <wsdl:output message="tns:ExpressAddPackageSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExpressGetPackage">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取直发包裹详细.</wsdl:documentation>
+      <wsdl:input message="tns:ExpressGetPackageSoapIn" />
+      <wsdl:output message="tns:ExpressGetPackageSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddCruOrder">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">添加俄罗斯快线/俄罗斯专线订单.</wsdl:documentation>
+      <wsdl:input message="tns:ExpressAddCruOrderSoapIn" />
+      <wsdl:output message="tns:ExpressAddCruOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddCruPackage">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">添加俄罗斯快线/俄罗斯专线包裹</wsdl:documentation>
+      <wsdl:input message="tns:ExpressAddCruPackageSoapIn" />
+      <wsdl:output message="tns:ExpressAddCruPackageSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="InStoreAddOrderNew">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">添加入库订单.</wsdl:documentation>
+      <wsdl:input message="tns:InStoreAddOrderNewSoapIn" />
+      <wsdl:output message="tns:InStoreAddOrderNewSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="InStoreAddOrder">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">添加入库订单.</wsdl:documentation>
+      <wsdl:input message="tns:InStoreAddOrderSoapIn" />
+      <wsdl:output message="tns:InStoreAddOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="InStoreCompleteOrder">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">提审或取消入库订单.</wsdl:documentation>
+      <wsdl:input message="tns:InStoreCompleteOrderSoapIn" />
+      <wsdl:output message="tns:InStoreCompleteOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="InStoreGetOrderNew">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取入库订单详细.</wsdl:documentation>
+      <wsdl:input message="tns:InStoreGetOrderNewSoapIn" />
+      <wsdl:output message="tns:InStoreGetOrderNewSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="InStoreGetOrder">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取入库订单详细.</wsdl:documentation>
+      <wsdl:input message="tns:InStoreGetOrderSoapIn" />
+      <wsdl:output message="tns:InStoreGetOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="M2CAddOrderNew">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">添加M2C订单</wsdl:documentation>
+      <wsdl:input message="tns:M2CAddOrderNewSoapIn" />
+      <wsdl:output message="tns:M2CAddOrderNewSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="M2CAddOrder">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">添加M2C订单</wsdl:documentation>
+      <wsdl:input message="tns:M2CAddOrderSoapIn" />
+      <wsdl:output message="tns:M2CAddOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="M2CAddPaypalOrder">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">添加Paypal支付M2C订单</wsdl:documentation>
+      <wsdl:input message="tns:M2CAddPaypalOrderSoapIn" />
+      <wsdl:output message="tns:M2CAddPaypalOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="M2CCompleteOrder">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">提审或取消M2C订单.</wsdl:documentation>
+      <wsdl:input message="tns:M2CCompleteOrderSoapIn" />
+      <wsdl:output message="tns:M2CCompleteOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="M2CGetOrder">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取M2C订单详细.</wsdl:documentation>
+      <wsdl:input message="tns:M2CGetOrderSoapIn" />
+      <wsdl:output message="tns:M2CGetOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="M2CGetPackage">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取M2C包裹详细.</wsdl:documentation>
+      <wsdl:input message="tns:M2CGetPackageSoapIn" />
+      <wsdl:output message="tns:M2CGetPackageSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="M2CGetShareStock">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取M2C共享库存详细.</wsdl:documentation>
+      <wsdl:input message="tns:M2CGetShareStockSoapIn" />
+      <wsdl:output message="tns:M2CGetShareStockSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreAddOrderNew">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">添加出库订单</wsdl:documentation>
+      <wsdl:input message="tns:OutStoreAddOrderNewSoapIn" />
+      <wsdl:output message="tns:OutStoreAddOrderNewSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreAddOrder">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">添加出库订单</wsdl:documentation>
+      <wsdl:input message="tns:OutStoreAddOrderSoapIn" />
+      <wsdl:output message="tns:OutStoreAddOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreCompleteOrder">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">提审或取消出库订单.</wsdl:documentation>
+      <wsdl:input message="tns:OutStoreCompleteOrderSoapIn" />
+      <wsdl:output message="tns:OutStoreCompleteOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetOrderNew">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取出库订单详细.</wsdl:documentation>
+      <wsdl:input message="tns:OutStoreGetOrderNewSoapIn" />
+      <wsdl:output message="tns:OutStoreGetOrderNewSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetOrder">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取出库订单详细.</wsdl:documentation>
+      <wsdl:input message="tns:OutStoreGetOrderSoapIn" />
+      <wsdl:output message="tns:OutStoreGetOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetOrderPackageNew">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取出库包裹详细,并返回订单号.</wsdl:documentation>
+      <wsdl:input message="tns:OutStoreGetOrderPackageNewSoapIn" />
+      <wsdl:output message="tns:OutStoreGetOrderPackageNewSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetPackageNew">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取出库包裹详细.</wsdl:documentation>
+      <wsdl:input message="tns:OutStoreGetPackageNewSoapIn" />
+      <wsdl:output message="tns:OutStoreGetPackageNewSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetPackage">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取出库包裹详细.</wsdl:documentation>
+      <wsdl:input message="tns:OutStoreGetPackageSoapIn" />
+      <wsdl:output message="tns:OutStoreGetPackageSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ProductAddModel">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">添加产品型号.</wsdl:documentation>
+      <wsdl:input message="tns:ProductAddModelSoapIn" />
+      <wsdl:output message="tns:ProductAddModelSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetModel">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取产品详细.</wsdl:documentation>
+      <wsdl:input message="tns:ProductGetModelSoapIn" />
+      <wsdl:output message="tns:ProductGetModelSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetStockNew">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取产品库存.</wsdl:documentation>
+      <wsdl:input message="tns:ProductGetStockNewSoapIn" />
+      <wsdl:output message="tns:ProductGetStockNewSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetStock">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取产品库存.</wsdl:documentation>
+      <wsdl:input message="tns:ProductGetStockSoapIn" />
+      <wsdl:output message="tns:ProductGetStockSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetStorageNoNew">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取库存编码</wsdl:documentation>
+      <wsdl:input message="tns:ProductGetStorageNoNewSoapIn" />
+      <wsdl:output message="tns:ProductGetStorageNoNewSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetStorageNo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取库存编码</wsdl:documentation>
+      <wsdl:input message="tns:ProductGetStorageNoSoapIn" />
+      <wsdl:output message="tns:ProductGetStorageNoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTracking">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">获取订单追踪信息</wsdl:documentation>
+      <wsdl:input message="tns:GetTrackingSoapIn" />
+      <wsdl:output message="tns:GetTrackingSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CK1Soap" type="tns:CK1Soap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="VerifyUser">
+      <soap:operation soapAction="http://www.chukou1.com/VerifyUser" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddOrderNew">
+      <soap:operation soapAction="http://www.chukou1.com/ExpressAddOrderNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddOrder">
+      <soap:operation soapAction="http://www.chukou1.com/ExpressAddOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressCompleteOrder">
+      <soap:operation soapAction="http://www.chukou1.com/ExpressCompleteOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddPackageNew">
+      <soap:operation soapAction="http://www.chukou1.com/ExpressAddPackageNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddPackage">
+      <soap:operation soapAction="http://www.chukou1.com/ExpressAddPackage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressGetPackage">
+      <soap:operation soapAction="http://www.chukou1.com/ExpressGetPackage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddCruOrder">
+      <soap:operation soapAction="http://www.chukou1.com/ExpressAddCruOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddCruPackage">
+      <soap:operation soapAction="http://www.chukou1.com/ExpressAddCruPackage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InStoreAddOrderNew">
+      <soap:operation soapAction="http://www.chukou1.com/InStoreAddOrderNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InStoreAddOrder">
+      <soap:operation soapAction="http://www.chukou1.com/InStoreAddOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InStoreCompleteOrder">
+      <soap:operation soapAction="http://www.chukou1.com/InStoreCompleteOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InStoreGetOrderNew">
+      <soap:operation soapAction="http://www.chukou1.com/InStoreGetOrderNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InStoreGetOrder">
+      <soap:operation soapAction="http://www.chukou1.com/InStoreGetOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="M2CAddOrderNew">
+      <soap:operation soapAction="http://www.chukou1.com/M2CAddOrderNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="M2CAddOrder">
+      <soap:operation soapAction="http://www.chukou1.com/M2CAddOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="M2CAddPaypalOrder">
+      <soap:operation soapAction="http://www.chukou1.com/M2CAddPaypalOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="M2CCompleteOrder">
+      <soap:operation soapAction="http://www.chukou1.com/M2CCompleteOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="M2CGetOrder">
+      <soap:operation soapAction="http://www.chukou1.com/M2CGetOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="M2CGetPackage">
+      <soap:operation soapAction="http://www.chukou1.com/M2CGetPackage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="M2CGetShareStock">
+      <soap:operation soapAction="http://www.chukou1.com/M2CGetShareStock" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreAddOrderNew">
+      <soap:operation soapAction="http://www.chukou1.com/OutStoreAddOrderNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreAddOrder">
+      <soap:operation soapAction="http://www.chukou1.com/OutStoreAddOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreCompleteOrder">
+      <soap:operation soapAction="http://www.chukou1.com/OutStoreCompleteOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetOrderNew">
+      <soap:operation soapAction="http://www.chukou1.com/OutStoreGetOrderNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetOrder">
+      <soap:operation soapAction="http://www.chukou1.com/OutStoreGetOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetOrderPackageNew">
+      <soap:operation soapAction="http://www.chukou1.com/OutStoreGetOrderPackageNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetPackageNew">
+      <soap:operation soapAction="http://www.chukou1.com/OutStoreGetPackageNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetPackage">
+      <soap:operation soapAction="http://www.chukou1.com/OutStoreGetPackage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProductAddModel">
+      <soap:operation soapAction="http://www.chukou1.com/ProductAddModel" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetModel">
+      <soap:operation soapAction="http://www.chukou1.com/ProductGetModel" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetStockNew">
+      <soap:operation soapAction="http://www.chukou1.com/ProductGetStockNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetStock">
+      <soap:operation soapAction="http://www.chukou1.com/ProductGetStock" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetStorageNoNew">
+      <soap:operation soapAction="http://www.chukou1.com/ProductGetStorageNoNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetStorageNo">
+      <soap:operation soapAction="http://www.chukou1.com/ProductGetStorageNo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTracking">
+      <soap:operation soapAction="http://www.chukou1.com/GetTracking" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="CK1Soap12" type="tns:CK1Soap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="VerifyUser">
+      <soap12:operation soapAction="http://www.chukou1.com/VerifyUser" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddOrderNew">
+      <soap12:operation soapAction="http://www.chukou1.com/ExpressAddOrderNew" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddOrder">
+      <soap12:operation soapAction="http://www.chukou1.com/ExpressAddOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressCompleteOrder">
+      <soap12:operation soapAction="http://www.chukou1.com/ExpressCompleteOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddPackageNew">
+      <soap12:operation soapAction="http://www.chukou1.com/ExpressAddPackageNew" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddPackage">
+      <soap12:operation soapAction="http://www.chukou1.com/ExpressAddPackage" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressGetPackage">
+      <soap12:operation soapAction="http://www.chukou1.com/ExpressGetPackage" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddCruOrder">
+      <soap12:operation soapAction="http://www.chukou1.com/ExpressAddCruOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExpressAddCruPackage">
+      <soap12:operation soapAction="http://www.chukou1.com/ExpressAddCruPackage" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InStoreAddOrderNew">
+      <soap12:operation soapAction="http://www.chukou1.com/InStoreAddOrderNew" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InStoreAddOrder">
+      <soap12:operation soapAction="http://www.chukou1.com/InStoreAddOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InStoreCompleteOrder">
+      <soap12:operation soapAction="http://www.chukou1.com/InStoreCompleteOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InStoreGetOrderNew">
+      <soap12:operation soapAction="http://www.chukou1.com/InStoreGetOrderNew" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InStoreGetOrder">
+      <soap12:operation soapAction="http://www.chukou1.com/InStoreGetOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="M2CAddOrderNew">
+      <soap12:operation soapAction="http://www.chukou1.com/M2CAddOrderNew" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="M2CAddOrder">
+      <soap12:operation soapAction="http://www.chukou1.com/M2CAddOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="M2CAddPaypalOrder">
+      <soap12:operation soapAction="http://www.chukou1.com/M2CAddPaypalOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="M2CCompleteOrder">
+      <soap12:operation soapAction="http://www.chukou1.com/M2CCompleteOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="M2CGetOrder">
+      <soap12:operation soapAction="http://www.chukou1.com/M2CGetOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="M2CGetPackage">
+      <soap12:operation soapAction="http://www.chukou1.com/M2CGetPackage" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="M2CGetShareStock">
+      <soap12:operation soapAction="http://www.chukou1.com/M2CGetShareStock" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreAddOrderNew">
+      <soap12:operation soapAction="http://www.chukou1.com/OutStoreAddOrderNew" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreAddOrder">
+      <soap12:operation soapAction="http://www.chukou1.com/OutStoreAddOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreCompleteOrder">
+      <soap12:operation soapAction="http://www.chukou1.com/OutStoreCompleteOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetOrderNew">
+      <soap12:operation soapAction="http://www.chukou1.com/OutStoreGetOrderNew" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetOrder">
+      <soap12:operation soapAction="http://www.chukou1.com/OutStoreGetOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetOrderPackageNew">
+      <soap12:operation soapAction="http://www.chukou1.com/OutStoreGetOrderPackageNew" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetPackageNew">
+      <soap12:operation soapAction="http://www.chukou1.com/OutStoreGetPackageNew" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OutStoreGetPackage">
+      <soap12:operation soapAction="http://www.chukou1.com/OutStoreGetPackage" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProductAddModel">
+      <soap12:operation soapAction="http://www.chukou1.com/ProductAddModel" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetModel">
+      <soap12:operation soapAction="http://www.chukou1.com/ProductGetModel" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetStockNew">
+      <soap12:operation soapAction="http://www.chukou1.com/ProductGetStockNew" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetStock">
+      <soap12:operation soapAction="http://www.chukou1.com/ProductGetStock" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetStorageNoNew">
+      <soap12:operation soapAction="http://www.chukou1.com/ProductGetStorageNoNew" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProductGetStorageNo">
+      <soap12:operation soapAction="http://www.chukou1.com/ProductGetStorageNo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTracking">
+      <soap12:operation soapAction="http://www.chukou1.com/GetTracking" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CK1">
+    <wsdl:port name="CK1Soap" binding="tns:CK1Soap">
+      <soap:address location="http://yewu.chukou1.cn/client/ws/v2.1/ck1.asmx" />
+    </wsdl:port>
+    <wsdl:port name="CK1Soap12" binding="tns:CK1Soap12">
+      <soap12:address location="http://yewu.chukou1.cn/client/ws/v2.1/ck1.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

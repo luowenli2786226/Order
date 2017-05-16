@@ -1,0 +1,141 @@
+﻿@model DDX.OrderManagementSystem.Domain.OrderType
+@{
+    ViewBag.Title = "QuestionPackage";
+
+}
+     <script src="~/Scripts/easyUI/datagrid-detailview.js"></script>
+
+    <script type="text/javascript">
+        $(function ()
+        {
+            $('#dg').datagrid({
+                url: '@Url.Action("QuestionList", "PickingList")/@ViewData["PickinglistNo"]',
+                pageNumber: 1,
+                nowrap: true,
+                pageSize: 20,
+                rownumbers: true,
+                pagination: true,
+                singleselect: true,
+                toolbar: '#toolbar',
+                width:'auto',
+                fit: true,
+                pageList: [20, 40, 60, 80, 100, 200]
+            })
+        })
+        function getDateinfo(v, r, i) {
+            if (v) {
+                return getDate(v);
+            }
+        }
+        function PrintList()
+        {
+            var rows = $('#dg').datagrid('getSelections');
+            if (rows.length == 0) {
+                $.messager.show({
+                    title: '提示',
+                    msg: '请选择数据',
+                    timeout: 3000,
+                    showType: 'slide'
+                });
+                return;
+            }
+            var mm = rows[0].LogisticMode;
+            var ids = [];
+            for (var i = 0; i < rows.length; i++) {
+                ids.push(rows[i]["OrderNo"]);
+                 }
+           
+            $.ajax({
+                type: "POST",
+                url: "/PrintTemplate/GetTemplateId",
+                data: "t=" + mm,
+                success: function (temp) {
+                    if (temp.IsSuccess == true) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/Home/SetPrintData",
+                            data: "ids=" + ids.join(","),
+                            success: function (msg) {
+                                if (msg.IsSuccess != "") {
+                                    $('#printdata').val(msg.Result);
+                                    window.open('/Home/PrintDetail/' + temp.Id);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+            
+        }
+        //获取选中行
+        function getselectedRowInfo() {
+            var row = $('#dg').datagrid('getSelections');
+            if (row != undefined) {
+                return row;
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        //标记面单已打印
+        function TagPrint()
+        {
+            var rows = $('#dg').datagrid('getSelections');
+            if (rows.length == 0) {
+                $.messager.show({
+                    title: '提示',
+                    msg: '请选择行',
+                    timeout: 3000,
+                    showType: 'slide'
+                });
+                return;
+            }
+            var mm = rows[0].LogisticMode;
+            var ids = [];
+            for (var i = 0; i < rows.length; i++) {
+                ids.push(rows[i]["OrderNo"]);
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/PickingList/TagPrint/" + ids.join(","),
+                success: function (temp) {
+                    if (temp.IsSuccess == true) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: '标记成功',
+                            timeout: 3000,
+                            showType: 'slide'
+                        });
+                        $('#dg').datagrid('reload');
+                    }
+                }
+            });
+        }
+     </script>
+<body class="easyui-layout">
+
+     <div  data-options="region:'center'">
+         <input type="hidden" id="printdata"/>
+         <table id="dg" > <thead>
+             <tr>
+         <th field="Id" width="60" checkbox="true"></th>
+         <th field="OrderNo"  width="150">订单号</th>
+         <th field="BuyerName" width="150">买家ID</th>
+         <th field="OrderNo" width="150">目的地</th>
+        <th field="Weight" width="80">重量G</th>
+        <th field="OrderNo" width="80">金额</th>
+        <th field="CreateOn" width="200" formatter="getDateinfo">时间</th>
+         </tr></thead></table>
+         <div id="toolbar">
+              <a href="#" class="easyui-linkbutton" plain="true" iconcls="icon-edit" onclick="TagPrint()">标记订单已打印</a>
+              <a href="#" class="easyui-linkbutton" plain="true" iconcls="icon-edit" onclick="PrintList()">打印面单</a>
+         </div>
+         <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+    </div>
+</body>

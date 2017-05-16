@@ -1,0 +1,68 @@
+﻿@model DDX.OrderManagementSystem.Domain.EmailTemplateType
+
+@{
+    Layout = null;
+}
+<script src="@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")"></script>
+<script type="text/javascript">
+    var editor;
+    KindEditor.ready(function (K) {
+        editor = K.create('textarea[name="Content"]', {
+            resizeType: 1,
+            allowPreviewEmoticons: false,
+            allowImageUpload: false,
+            items: [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+        });
+    });
+    $(function () {
+
+
+    });
+</script>
+@using (Html.BeginForm("Create", "EmailTemplate", FormMethod.Post, new { id ="c_form" }))
+{
+<fieldset style="border:0">
+<table class="editForm">
+@*	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Subject,"主题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Subject,new{@id="c_Subject"})
+		</td>
+	</tr>*@
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Title, "标题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Title, new { @id = "c_Title",@style="width:600px;"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Content, "内容:")
+		</td>
+		<td>
+            @Html.TextAreaFor(model => model.Content, new { @id = "c_Content" ,@style="width:600px;height:300px;resize:none;" })
+		</td>
+	</tr>
+
+
+</table> 
+</fieldset>
+}

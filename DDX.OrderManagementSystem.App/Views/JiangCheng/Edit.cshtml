@@ -1,0 +1,143 @@
+﻿@model DDX.OrderManagementSystem.Domain.JiangChengType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	        $('#e_JCBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        $('#e_JCOn').datebox();
+
+
+        $('#e_CreateOn').datebox();
+
+        $('#e_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "JiangCheng", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserName,"人员:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserName,new{@id="e_UserName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Pic,"照片:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Pic,new{@id="e_Pic"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.NickName,"名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.NickName,new{@id="e_NickName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Content,"内容:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Content,new{@id="e_Content"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.JCBy,"奖赏人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.JCBy,new{@id="e_JCBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.JCType,"奖惩类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.JCType,new{@id="e_JCType"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.JCMemo,"奖励理由:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.JCMemo,new{@id="e_JCMemo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.JCContent,"奖励内容:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.JCContent,new{@id="e_JCContent"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.JCOn,"奖励时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.JCOn,new{@id="e_JCOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"添加时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"添加人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

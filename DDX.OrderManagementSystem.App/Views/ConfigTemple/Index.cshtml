@@ -1,0 +1,172 @@
+﻿@model DDX.OrderManagementSystem.Domain.OMS.Entities.ConfigTempleType
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "ConfigTemple")',
+                nowrap: false,
+                toolbar: '#toolbar',
+                rownumbers: true,
+                pagination: true,
+                fit: true,
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+            });
+
+        });
+
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create","ConfigTemple")';
+        showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            var url = '@Url.Action("Edit","ConfigTemple")/' + id;
+            if (id != undefined) {
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+        //异步新建提交
+        function ajaxAdd() {
+            if (Creatvalidate()) {
+                formPost('c_form', '@Url.Action("Create", "ConfigTemple")', 'c_dlg', 'dg');
+            }
+            
+    }
+    //异步修改提交
+        function ajaxEdit() {
+            if (Editvalidate()) {
+                formPost('e_form', '@Url.Action("Edit", "ConfigTemple")', 'e_dlg', 'dg');
+            }
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "ConfigTemple")/' + id;
+                delData(url, 'dg');
+
+            }
+        }
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('ID')) {
+                    var id = row['ID'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+
+       
+        function Creatvalidate()
+        {
+            var txtcategory = $("input[name='Category']").val();
+            if (txtcategory=='')
+            {
+                alert("类别不能为空！");
+                return false;
+            }
+            
+            var txtPrice = $("#creat_Price").val();
+            if (txtPrice=='') {
+                alert("工价不能为空！");
+                return false;
+            }
+            var isNum = /^\d+(\.\d+)?$/;
+            if (!isNum.test(txtPrice))
+            {
+                alert("工价输入金额");
+                return false;
+            }
+            var txtparam = $("#creat_ParamValue").val();
+            if (txtparam=='') {
+                alert("系数不能为空！");
+                return false;
+            }
+  
+            //var isFloat = /^0\.[1-9]\d*$/;
+            if (isNum.test(txtparam)) {
+                return true;
+            }
+            else {
+                alert("系数必须输入数字");
+                return false;
+            }
+            
+        }
+        function Editvalidate() {
+            var txtcategory = $("input[name='Category']").val();
+            if (txtcategory == '') {
+                alert("类别不能为空！");
+                return false;
+            }
+
+            var txtPrice = $("#edit_Price").val();
+            if (txtPrice == '') {
+                alert("工价不能为空！");
+                return false;
+            }
+            var isNum = /^\d+(\.\d+)?$/;
+            if (!isNum.test(txtPrice)) {
+                alert("工价输入金额");
+                return false;
+            }
+            var txtparam = $("#edit_ParamValue").val();
+            if (txtparam == '') {
+                alert("系数不能为空！");
+                return false;
+            }
+
+            //var isFloat = /^0\.[1-9]\d*$/;
+            if (isNum.test(txtparam)) {
+                return true;
+            }
+            else {
+                alert("系数必须输入数字");
+                return false;
+            }
+
+        }
+
+    </script>
+
+    <legend>ConfigTempleType</legend>
+
+ <div region="center">
+        <table id="dg" singleselect="true"  class="easyui-datagrid"  fitcolumns="true" fit="true" toolbar="#toolbar" rownumbers="true">
+            <thead>
+                <tr>
+                     <th field="ID" width="100">ID
+                    </th>
+                    <th field="Category" width="100" >类别</th>
+                    <th field="Price" width="100" >工价</th>
+                    <th field="ParamValue" width="100" >系数</th>
+                    </tr>
+                </thead>
+            </table>
+             <div id="toolbar">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+        </div> 
+
+      <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+</div></body>

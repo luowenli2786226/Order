@@ -1,0 +1,149 @@
+﻿@model DDX.OrderManagementSystem.Domain.EmailReturnType
+@{
+    // ViewBag.Title = "EmailRe";
+}
+<script src="@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")"></script>
+<script type="text/javascript">
+
+    $(function () {
+        $('#dg').datagrid({
+            singleSelect: true,
+            onClickRow: function (index, row) {
+                $.getJSON("/Email/getEmailTempDetail/" + row.Id, function (json) {
+                    $('#r_Content').attr('value', json[0].Content);
+                })
+            }
+        })
+        $('#r_EId').val('@ViewData["EId"]');
+    });
+    //发送提交
+
+    function send() {
+        if ($('#r_Content').attr("value") == "") {
+            alert("回复顶不能为空！");
+        }
+        else {
+            $('#r_form').form('submit', {
+                url: '@Url.Action("EmailRe", "Email")',
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (msg) {
+                    var result = $.parseJSON(msg);
+                    if (result.IsSuccess) {
+                        $.ajax({
+                            url: '@Url.Action("GetNext", "Email")/@ViewData["EId"]',
+                                success: function (result) {
+                                    if (result) {
+                                        if (result.Msg != '0') {
+                                            $.messager.show({
+                                                title: '提示',
+                                                msg: '已进入下一封未读！',
+                                                timeout: 2000,
+                                                showType: 'slide'
+                                            })
+                                            window.location = "/Email/EmailRe/" + result.Msg;
+                                        }
+                                        else {
+                                            alert("已经到最后一封未读，点击“确定”关闭！");
+                                            window.close();
+                                        }
+                                    }
+
+                                }
+                            })
+                        } else {
+                            alert("保存失败!");
+                        }
+                }
+            });
+
+            }
+
+
+    }
+
+
+</script>
+<body class="easyui-layout">
+    <div data-options="region:'center',title:'邮件内容'" style="height: 200px;">
+        <div class="easyui-layout" style="width: 100%; height: 520px;">
+            <div data-options="region:'north',border:false" style="height: 180px;">
+                <table class="editForm" id="etable">
+                    <tr>
+                        <td>&nbsp;&nbsp;<label>邮件标题:</label>
+                        </td>
+                        <td>
+                            <textbox id="ESubject" style="width: 1200px; font-size: larger">@ViewData["sub"]</textbox>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>&nbsp;&nbsp;<label>邮件内容:</label>
+                        </td>
+                        <td>
+                            <textarea id="EContent" style="width: 1200px; height: 80px; resize: none;" readonly="readOnly">@ViewData["con"]</textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div data-options="region:'center',title:'回复内容'">
+                @using (Html.BeginForm("EmailRe", "Email", FormMethod.Post, new { id = "r_form" }))
+                {
+                    <fieldset style="border: 0">
+                        <table class="editForm">
+                            <tr>
+                                <td>
+
+                                    @Html.LabelFor(model => model.REmail, "回复邮箱:")
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.REmail, new { @id = "r_REmail", @readOnly = "readOnly", style = "width:700px;" })
+                                    @Html.HiddenFor(model => model.EId, new { @id = "r_EId" })
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    @Html.LabelFor(model => model.Subject, "回复主题:")
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.Subject, new { @id = "r_Subject", style = "width:700px;" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelFor(model => model.Content, "回复内容:")
+                                </td>
+                                <td>
+                                    @Html.TextAreaFor(model => model.Content, new { @id = "r_Content", style = "width:700px;height:190px;resize:none" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td align="center">
+
+                                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="send()">回复并进入下一封未回复</a>
+
+
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                }
+            </div>
+       <div data-options="region:'east',split:true,title:'回复模板'" style="width: 450px; padding: 10px;">
+        <table id="dg" class="easyui-datagrid" style="width: 410px; height: 300px"
+            data-options="url:'/Email/getEmailTemp',fitColumns:true,nowrap:false">
+            <thead>
+                <tr>
+                    <th data-options="field:'Id'" style="display: none"></th>
+                    <th data-options="field:'Title',width:150">情况名称</th>
+                    <th data-options="field:'Content',width:280">回复内容</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+        </div>
+    </div>
+</body>

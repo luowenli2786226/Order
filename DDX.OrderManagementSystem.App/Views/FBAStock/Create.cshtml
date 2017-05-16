@@ -1,0 +1,133 @@
+﻿@model DDX.OrderManagementSystem.Domain.FBAStockType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+        $('#c_CreateOn').datebox();
+
+        $('#c_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        $('#c_UndateOn').datebox();
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "FBAStock", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU,"SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Pid,"Pid:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Pid,new{@id="c_Pid"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Pic,"Pic:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Pic,new{@id="c_Pic"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Title,"Title:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Title,new{@id="c_Title"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Qty,"Qty:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TotalQty,"TotalQty:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TotalQty,new{@id="c_TotalQty"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"CreateOn:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"CreateBy:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UndateOn,"UndateOn:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UndateOn,new{@id="c_UndateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Remark,"Remark:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Remark,new{@id="c_Remark"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

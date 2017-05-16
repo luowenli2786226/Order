@@ -1,0 +1,166 @@
+﻿@model DDX.OrderManagementSystem.Domain.DisputeRecordType
+
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $('#e_ExamineClass').combobox({
+        url: '@Url.Action("GetOptions", "DataDictionaryDetail")/QuestionType',
+        valueField: 'DicValue',
+        textField: 'FullName',
+        panelHeight: 'auto',
+        onLoadSuccess: function (data) {
+            if (data == 0) {
+                // $.messager.alert("系统提示", "数据库异常，请联系管理员！", "warning");
+            } else {
+                var data1 = $('#e_ExamineClass').combobox('getData');  //赋默认值
+                if (data1.length > 0) {
+                    $("#e_ExamineClass ").combobox('select', data1[0].DicValue);
+                }
+            }
+        }
+    });
+
+
+</script>
+@using (Html.BeginForm("EditReason", "Dispute", FormMethod.Post, new { id = "e_formreason" }))
+{
+     @Html.HiddenFor(model => model.Id);
+     @Html.HiddenFor(model => model.PayOn);
+     @Html.HiddenFor(model => model.Rate);
+     @Html.HiddenFor(model => model.ZeRenBy);
+     @Html.HiddenFor(model => model.ExamineBy);
+     @Html.HiddenFor(model => model.Platform);
+     @Html.HiddenFor(model => model.ExamineHandle);
+     @Html.HiddenFor(model => model.ExamineMemo);
+     @Html.HiddenFor(model => model.ExamineStatus);
+     @Html.HiddenFor(model => model.CreateBy);
+     @Html.HiddenFor(model => model.CreateOn);
+     @Html.HiddenFor(model=>model.IsImport)
+     @Html.HiddenFor(model => model.ExamineTitle);
+     @Html.HiddenFor(model => model.OrderNo);
+     @Html.HiddenFor(model => model.SKU);
+     @Html.HiddenFor(model => model.Account);
+     @Html.HiddenFor(model => model.DisputeState);
+     @Html.HiddenFor(model => model.ExamineCurrencyCode);
+     @Html.HiddenFor(model => model.OrderAmount2);
+     @Html.HiddenFor(model => model.OrderAmount);
+     @Html.HiddenFor(model => model.Area);
+     @Html.HiddenFor(model => model.ExamineAmount);
+    @Html.HiddenFor(model => model.ExamineAmountRmb);
+
+
+    <fieldset>
+
+    <table class="editForm">
+  <tr>
+        <td>
+            @Html.LabelFor(model => model.ExamineTitle, "标题:")
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.ExamineTitle, new { @id = "e_ExamineTitle" })
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.ExamineType, "订单号:")
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.OrderNo, new { @id = "e_OrderNo" })
+        </td>
+    </tr>
+      <tr>
+        <td>
+            @Html.LabelFor(model => model.ExamineType, "SKU:")
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.SKU, new { @id = "e_SKU" })
+        </td>
+    </tr>
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineType, "店铺:")
+		</td>
+		<td>
+            @Html.DisplayFor(model => model.Account, new { @id = "e_Account" })
+		</td>
+	</tr>
+    @*    <tr>
+        <td>
+            @Html.LabelFor(model => model.ExamineType, "类型:")
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.ExamineType, new { @id = "e_ExamineType" })
+        </td>
+    </tr>*@
+    
+     <tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineClass, "纠纷状态:")
+		</td>
+		<td>
+            @Html.DisplayFor(model => model.DisputeState, new { @id = "e_DisputeState" })
+		</td>
+	</tr>
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineClass, "原因:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExamineClass, new { @id = "e_ExamineClass" })
+		</td>
+	</tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.ExamineCurrencyCode, "货币:")
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.ExamineCurrencyCode, new { @id = "e_ExamineCurrencyCode" })
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.ExamineAmount, "订单金额:")
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.OrderAmount2, new { @id = "e_OrderAmount2" })
+        </td>
+    </tr>
+     <tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineAmount, "预赔金额:")
+		</td>
+		<td>
+            @Html.DisplayFor(model => model.OrderAmount, new { @id = "e_OrderAmount" })
+		</td>
+	</tr>
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineAmount, "实赔金额:")
+		</td>
+		<td>
+            @Html.DisplayFor(model => model.ExamineAmount, new { @id = "e_ExamineAmount" })
+		</td>
+	</tr>
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Remark, "备注:")
+		</td>
+		<td>
+            @Html.TextAreaFor(model => model.Remark, new { @id = "e_Remark" })
+		</td>
+	</tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.Paypal, "Paypal账号:")
+
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.Paypal, new { @id = "e_Paypal" })
+        </td>
+
+    </tr>
+        </table>
+        </fieldset>
+
+}

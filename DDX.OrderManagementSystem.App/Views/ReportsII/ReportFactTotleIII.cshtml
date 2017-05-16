@@ -1,0 +1,271 @@
+﻿@{
+    ViewBag.Title = "ReportFactTotleII";
+}
+<script src="~/Scripts/easyUI/datagrid-groupview.js"></script>
+<script>
+
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("ReportFactIII", "ReportsII")',
+            showFooter: true,
+
+            pagination: true,//显示分页  
+            pageSize: 500,//分页大小  
+            pageList: [500],//每页的个数 
+            showPageList: false,
+            showRefresh: false,
+            //showFooter: false,
+            //onLoadSuccess: function (data) {
+            //    debugger;
+            //    var nI = 0;
+            //}
+        });
+        $('#sArea').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["0", "全部"], ["宁波", "宁波"], ["义乌", "义乌"]],
+            width: 100
+        });
+
+        $('#sYear').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["2014", "2014年"],
+                   ["2015", "2015年"],
+                   ["2016", "2016年"],
+                   ["2017", "2017年"],
+                   ["2018", "2018年"],
+                   ["2019", "2019年"],
+                   ["2020", "2020年"]],
+            width: 100
+        });
+
+        $('#IsFreight').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["-1", "全部"],
+                   ["1", "已导入"],
+                   ["0", "未导入"]],
+            width: 100
+        });
+
+        $('#sMonth').combobox({
+            valueField: 'value',
+            textField: 'label',
+            panelHeight: 'auto',
+            data: [{
+                label: '1月',
+                value: '1'
+            }, {
+                label: '2月',
+                value: '2'
+            }, {
+                label: '3月',
+                value: '3'
+            }, {
+                label: '4月',
+                value: '4'
+            }, {
+                label: '5月',
+                value: '5'
+            }, {
+                label: '6月',
+                value: '6'
+            }, {
+                label: '7月',
+                value: '7'
+            }, {
+                label: '8月',
+                value: '8'
+            }, {
+                label: '9月',
+                value: '9'
+            }, {
+                label: '10月',
+                value: '10'
+            }, {
+                label: '11月',
+                value: '11'
+            }, {
+                label: '12月',
+                value: '12'
+            }],
+            width: 100
+        });
+        $('#pp').combobox({
+            url: '@Url.Action("GetSearchOptions", "DataDictionaryDetail")/SalePlatform',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            required: true,
+            width: 150,
+            panelHeight: 'auto',
+            onChange: changePlatform,
+            onLoadSuccess: function () {
+                var val = $(this).combobox("getData");
+                for (var item in val[0]) {
+                    if (item == 'DicValue') {
+                        $(this).combobox("select", val[0][item]);
+                    }
+                }
+            }
+        });
+        $('#sYear').combobox("setValue", "2017");
+        $('#IsFreight').combobox("setValue", "-1");
+        $('#sMonth').combobox("setValue", "1");
+        $('#sArea').combobox("setValue", "0");
+    });
+
+    function changePlatform(n, o) {
+        comboboxInit('/Account/GetAccountListByPlatform/', "id=" + n + "&t=1", 'aa', 'Id', 'AccountName', null, null, 500, false);
+    }
+
+    function Search() {
+        search = $('#sArea').combobox("getValue") + "&"
+            + $('#sYear').combobox("getValue") + "&"
+            + $('#sMonth').combobox("getValue") + "&"
+            + $('#pp').combobox("getValue") + "&"
+            + $('#aa').combobox("getValue") + "&"
+            + $('#IsFreight').combobox("getValue");
+
+        $("#dg").datagrid("load", {
+            search: search
+        });
+    }
+    // 明细下载
+    function Download() {
+        search = $('#sArea').combobox("getValue") + "&"
+            + $('#sYear').combobox("getValue") + "&"
+            + $('#sMonth').combobox("getValue") + "&"
+            + $('#pp').combobox("getValue") + "&"
+            + $('#aa').combobox("getValue") + "&"
+            + $('#IsFreight').combobox("getValue");
+        var postUrl = "/Order/ExportDown/1";
+        $.ajax({
+            url: '@Url.Action("ReportFactDetailExcelII", "ReportsII")/',
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
+            success: function (result) {
+                $.messager.show({
+                    title: '提示',
+                    msg: result.ErrorMsg,
+                    timeout: 0,
+                    showType: 'slide'
+                });
+                location.href = postUrl;
+            }
+        });
+    }
+    // 赔款明细下载
+    function Download2() {
+        search = $('#sArea').combobox("getValue") + "&"
+            + $('#sYear').combobox("getValue") + "&"
+            + $('#sMonth').combobox("getValue") + "&"
+            + $('#pp').combobox("getValue") + "&"
+            + $('#aa').combobox("getValue") + "&"
+            + $('#IsFreight').combobox("getValue");
+        var postUrl = "/Order/ExportDown/1";
+        $.ajax({
+            url: '@Url.Action("PaymentDetailsToExcel", "ReportsII")/',
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
+            success: function (result) {
+                $.messager.show({
+                    title: '提示',
+                    msg: result.ErrorMsg,
+                    timeout: 0,
+                    showType: 'slide'
+                });
+                location.href = postUrl;
+            }
+        });
+    }
+    // 月库损明细下载
+    function Download3() {
+        search = $('#sArea').combobox("getValue") + "&"
+            + $('#sYear').combobox("getValue") + "&"
+            + $('#sMonth').combobox("getValue");
+        var postUrl = "/Order/ExportDown/1";
+        $.ajax({
+            url: '@Url.Action("ReportGoodsDiscountDetailExcel", "ReportsII")/',
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
+            success: function (result) {
+                $.messager.show({
+                    title: '提示',
+                    msg: result.ErrorMsg,
+                    timeout: 0,
+                    showType: 'slide'
+                });
+                location.href = postUrl;
+            }
+        });
+    }
+</script>
+<body class="easyui-layout">
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="地区" width="100">地区
+                    </th>
+                    <th field="平台" width="100">平台
+                    </th>
+                    <th field="帐号" width="100">帐号
+                    </th>
+                    <th field="订单数" width="100">订单数
+                    </th>
+                    <th field="销售额应收" width="100">销售额(USD)
+                    </th>
+                    <th field="销售金额应收" width="100">销售额(RMB)
+                    </th>
+                    <th field="平台费用" width="100">平台费用(RMB)
+                    </th>
+                    <th field="快递金额" width="100">快递金额(RMB)
+                    </th>
+                    <th field="商品金额" width="100">商品金额(RMB)
+                    </th>
+                    @*<th field="美元货值" width="100">实收款导入(USD)
+                    </th>*@
+                    <th field="应收款" width="100">应收款(RMB)
+                    </th>
+                    <th field="应付款" width="100">应付款(RMB)
+                    </th>
+                    <th field="利润" width="100">利润1(RMB)
+                    </th>
+                    @*<th field="利润率" width="100">利润率
+                    </th>*@
+                    <th field="赔款订单数" width="100">赔款订单数
+                    </th>
+                    <th field="赔款额人民币" width="100">赔款(RMB)
+                    </th>
+                    <th field="其它费用人民币" width="100">其它费用(RMB)
+                    </th>
+                    <th field="库损" width="100">库损(RMB)
+                    </th>
+                    <th field="利润2" width="100">利润2(RMB)
+                    </th>
+                    <th field="利润率2" width="100">利润率2
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            年份<input type="text" id="sYear" />&nbsp;&nbsp;
+            月份<input type="text" id="sMonth" />&nbsp;&nbsp;
+            地区<input type="text" id="sArea" />
+            平台<input id="pp" type="text">
+            账号<input id="aa" type="text">
+            运费<input id="IsFreight" type="text">
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="Search();">查询</a>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="Download();">明细下载</a>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="Download2();">赔款明细下载</a>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="Download3();">月库损明细下载</a>
+        </div>
+    </div>
+</body>
+

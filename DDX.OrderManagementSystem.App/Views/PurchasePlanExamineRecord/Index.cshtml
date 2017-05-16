@@ -1,0 +1,398 @@
+﻿
+@model IEnumerable<DDX.OrderManagementSystem.Domain.PurchasePlanExamineRecordType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List", "PurchasePlanExamineRecord")',
+            pageNumber: 1,
+            pageSize: 20,
+            nowrap: false,
+            showFooter: true,
+            pageList: [20, 40, 60, 80, 100]
+        });
+        $('#area').combobox({
+            url: '@Url.Action("GetSearchOptions", "DataDictionaryDetail")/FromArea',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            width: 120,
+            panelHeight: 'auto'
+        });
+        $('#StartDate').datebox();
+        $('#EndDate').datebox();
+        $('#StartDate').datebox("setValue", getStartDate(7));
+        $('#EndDate').datebox("setValue", getStartDate(0));
+
+    });
+
+
+    //新建
+    function c_dlg() {
+        var url_str = '@Url.Action("Create", "PurchasePlanExamineRecord")';
+        showdlg(url_str, 'c_dlg', ajaxAdd);
+    }
+
+    //编辑框
+    function e_dlg() {
+        var url = '@Url.Action("Edit", "PurchasePlanExamineRecord")/' + id;
+        if (id != undefined) {
+            var url = '@Url.Action("Edit", "Module")/' + id;
+            showdlg(url, 'e_dlg', ajaxEdit)
+        }
+    }
+
+    //异步新建提交
+    function ajaxAdd() {
+
+        var s_ids = [];
+        var rows = $('#planTo').datagrid('getRows');
+        for (var i = 0; i < rows.length; i++) {
+            s_ids.push(rows[i]["Id"]);
+        }
+        if (s_ids.length == 0) {
+            $.messager.alert("请选择采购计划");
+        } else {
+            $("#ec").val(s_ids.join(','));
+            formPost('c_form', '@Url.Action("Create", "PurchasePlanExamineRecord")', 'c_dlg', 'dg');
+        }
+    }
+    //异步修改提交
+    function ajaxEdit() {
+        formPost('e_form', '@Url.Action("Edit", "PurchasePlanExamineRecord")', 'e_dlg', 'dg');
+    }
+    //删除
+    function del() {
+        var id = getselectedRow();
+        if (id != undefined) {
+            var url = '@Url.Action("Delete", "PurchasePlanExamineRecord")/' + id;
+
+            delData(url, 'dg');
+
+        }
+    }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+    /*function doSearch() {
+        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        var c = $("#area").combobox("getValue");
+        if (c != "" && c != "0")
+            search += "Area_ds&" + c + "^";
+        $("#dg").datagrid("load", {
+            search: search
+        });
+    }*/
+    function doSearch() {
+        search = getSearch();
+        $("#dg").datagrid("load", {
+            search: search 
+        });
+    }
+
+    function getSearch() {
+        var search = "ExamineOn_st&" + $('#StartDate').datebox("getValue") + "^ExamineOn_et&" + $('#EndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        var c = $("#area").combobox("getValue");
+        if (c != '' &&c!='全部') {
+            search += "Area_ds&" + c + "^";
+        }
+        return search;
+    }
+
+    function printPur(id) {
+        jQuery.ajax({
+            url: "/PurchasePlanExamineRecord/PrintPur/" + id,
+            type: "post",
+            success: function (msg) {
+                $('#printdata').val(msg.Result);
+                window.open('/Home/PrintDetail/13');
+            }
+        });
+    }
+
+    function getAudit(v, r, i) {
+
+        if (r.Id == 0) return '';
+
+        var html = "";
+        //if (r.ExamineStatus == 0) {
+        //    html = '<a href="javascript:void(0);" onclick="DoAudit(' + v + ',1)">一审</a>' + ' <a href="javascript:void(0);" onclick="DoAudit(' + v + ',9)">拒绝</a>';
+        //}
+        if (r.ExamineStatus == 0 || r.ExamineStatus == 1) {
+            html = '<a href="javascript:void(0);" onclick="DoAudit(' + v + ',2)">一审</a>' + ' <a href="javascript:void(0);" onclick="DoAudit(' + v + ',9)">拒绝</a>';
+        }
+        if (r.ExamineStatus == 2) {
+            html += '<a href="javascript:void(0);" onclick="DoAudit(' + v + ',0)">撤销</a>';
+            html += '<a href="javascript:void(0);" onclick="DoAudit(' + v + ',3)">付款确认</a>';
+        }
+        if (r.ExamineStatus == 2 || r.ExamineStatus == 3) {
+            html += " <a href='javascript:printPur(" + v + ")' >打印</a>";
+        }
+
+        html += " <a href='/PurchasePlan/Details/" + v + "' target='_blank'>明细</a> ";
+        html += ' <a href="javascript:void(0);" onclick="toExcel(' + v + ')">导出</a> ';
+        html += ' <a href="javascript:void(0);" onclick="addtui(' + v + ')">添加退款</a> ';
+        return html;
+    }
+
+    function addtui(id) {
+        $('#t_dlg').dialog({
+                width: 400,
+                title: '审批',
+                modal: true,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '确定',
+                    handler: function () {
+                        jQuery.ajax({
+                            url: "/PurchasePlanExamineRecord/DoTui/",
+                            type: "post",
+                            data: "k=" + id + "&a=" + $("#txttui").val() + "&m=" + $("#txtM2").val(),
+                            success: function (res) {
+                                if (!res.IsSuccess) {
+                                    alert(res.ErrorMsg);
+                                }
+                                $('#dg').datagrid("reload");
+                            }
+                        });
+                        $("#txttui").val('');
+                        $("#txtM2").val('');
+                        $('#t_dlg').dialog('close');
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#t_dlg').dialog('close');
+                    }
+                }]
+            }).dialog('open');
+       
+    }
+
+    function DoAudit(id, v) {
+        if (v == 1 || v == 9) {
+            $('#m_dlg').dialog({
+                width: 300,
+                title: '审批',
+                modal: true,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '确定',
+                    handler: function () {
+                        DoAudit2(id, v, $("#txtM").val());
+                        $("#txtM").val('');
+                        $('#m_dlg').dialog('close');
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#m_dlg').dialog('close');
+                    }
+                }]
+            }).dialog('open');
+        }
+        else {
+            DoAudit2(id, v, "");
+        }
+    }
+
+    function toExcel(v) {
+
+        var postUrl = "/Order/ExportDown/1";
+        $.ajax({
+            url: '@Url.Action("ToExcel", "PurchasePlanExamineRecord")/',
+            type: 'post',
+            data: 'id=' + v,
+            success: function (result) {
+                $.messager.show({
+                    title: '提示',
+                    msg: result.ErrorMsg,
+                    timeout: 0,
+                    showType: 'slide'
+                });
+                location.href = postUrl;
+
+            }
+        });
+    }
+
+    function DoAudit2(id, v, m) {
+        jQuery.ajax({
+            url: "/PurchasePlanExamineRecord/DoAudit/",
+            type: "post",
+            data: "k=" + id + "&a=" + v + "&m=" + m,
+            success: function (res) {
+                if (!res.IsSuccess) {
+                    alert(res.ErrorMsg);
+                }
+                $('#dg').datagrid("reload");
+            }
+        });
+    }
+
+    function getAuditInfo(v, r, i) {
+       
+            if (r.Id == 0) return '';
+       
+        var html = "";
+        if (v == 1) {
+            html = "审核中";
+        } else if (v == 2) {
+            html = "已审核,等待付款";
+        } else if (v == 3) {
+            html = "已审核,已付款";
+        }
+        else if (v == 4) {
+            html = "已付款";
+        }
+        else if (v == 9) {
+            html = "审核失败";
+        } else {
+            html = "未审核";
+        }
+        return html;
+    }
+    function ExportOut() {
+        search = getSearch();
+
+        $('#dg').datagrid("loading");
+        var postUrl = "/Order/ExportDown/1";
+        jQuery.ajax({
+            url: '@Url.Action("ToExcelTotal", "PurchasePlanExamineRecord")/',
+            type: "post",
+            data: 'search=' + encodeURIComponent(search),
+            success: function (sss) {
+                location.href = postUrl;
+                $('#dg').datagrid("reload");
+            }
+        });
+    }
+</script>
+    <div region="center">
+        <input type="hidden" id="printdata" />
+        <table id="dg" 
+               toolbar="#toolbar"  
+               rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+            <thead>  
+                <tr>
+                    <th field="Id" width="160" formatter="getAudit">
+                        操作
+                    </th>
+                   
+                    <th field="ExamineTitle" width="200" sortable="true">
+                        审批名称
+                    </th>
+                    <th field="ExamineType" width="80" sortable="true">
+                        类型
+                    </th>
+                     <th field="Area" width="80" sortable="true">
+                        区域
+                    </th>
+                    <th field="ProcurementModel" width="80" sortable="true">
+                        采购模式
+                        </th>
+                    <th field="ExamineOn" width="100" formatter="getDate" sortable="true">
+                        审批时间
+                    </th>
+
+                    <th field="ExamineBy" width="100">
+                        审批人
+                    </th>
+                 
+                    <th field="ExamineContent" width="100" sortable="true">
+                        审批评语
+                    </th>
+
+                    <th field="ExamineStatus" width="100" formatter="getAuditInfo" sortable="true">
+                        审批状态
+                    </th>
+
+                    <th field="ExamineAmount" width="100" sortable="true">
+                        审批总金额
+                    </th>
+                     <th field="TuiAmount" width="100" sortable="true">
+                        退款金额
+                    </th>
+                    
+                    <th field="Remark" width="100" sortable="true">
+                        备注
+                    </th>
+                    <th field="ExamineCount" width="100" sortable="true">
+                        审批总计划数
+                    </th>
+
+                    <th field="CreateOn" width="100" formatter="getDate">
+                        创建时间
+                    </th>
+
+                    <th field="CreateBy" width="100">
+                        创建人
+                    </th>
+
+
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+            @* <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>*@
+            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>
+            <br />
+             地区:<input type="text" id="area" />
+             开始时间:<input id="StartDate" />
+             结束时间:<input id="EndDate" />&nbsp&nbsp
+
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ExportOut();">导出</a>
+        </div> 
+        <div id="mm" style="width: 120px">
+                       
+            <div data-options="name:'ExamineTetle'">审批名称</div>
+           
+            <div data-options="name:'ExamineBy'">审批人</div>
+            <div data-options="name:'ExamineContent'">审批评语</div>
+            <div data-options="name:'ExamineStatus'">审批状态</div>
+            <div data-options="name:'ExamineAmount'">审批总金额</div>
+            <div data-options="name:'ExamineCount'">审批总计划数</div>
+            <div data-options="name:'CreateBy'">创建人</div>
+           
+
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="m_dlg" class="easyui-dialog" closed="true">
+            理由:<textarea id="txtM"></textarea>
+          
+        </div>
+         <div id="t_dlg" class="easyui-dialog" closed="true">
+           <table>
+                 <tr>
+                    <td valign="middle"> 退款金额:</td>
+                    <td valign="middle">  <input type="text" id="txttui" style="width: 250px;"/></textarea></td>
+                </tr>
+                <tr>
+                    <td valign="middle"> 备注:</td>
+                    <td valign="middle"> <textarea id="txtM2" style="width: 250px;"></textarea></td>
+                </tr>
+            </table>
+          
+        </div>
+    </div>
+</body>

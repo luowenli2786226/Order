@@ -1,0 +1,288 @@
+﻿@{
+    ViewBag.Title = "PeiScan";
+}
+<script type="text/javascript">
+
+    if (document.all) {
+
+        document.write(' <OBJECT id="Player1"');
+        document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+        document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ring.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+        document.write(' <OBJECT id="Player2"');
+        document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+        document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/security.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+    }
+    else {
+
+        document.write(' <OBJECT id="Player1"');
+        document.write(' type="application/x-ms-wmp"');
+        document.write(' src= "/Content/Audio/ring.wav" width=0 height=0> </OBJECT>');
+        document.write(' <OBJECT id="Player2"');
+        document.write(' type="application/x-ms-wmp"');
+        document.write(' src= "/Content/Audio/security.wav" width=0 height=0> </OBJECT>');
+    }
+</script>
+<script type="text/javascript">
+    $(function () {
+        $('#cc').combobox({
+            url: '/User/QList2/',
+            valueField: 'Realname',
+            textField: 'Realname',
+            required: true,
+            width: 200
+
+        });
+        $('#ee').combobox({
+            url: '/User/QList2/',
+            valueField: 'Realname',
+            textField: 'Realname',
+            required: true,
+            width: 200
+
+        });
+        $('#cc').combobox("setValue", "邵大姐");
+        $('#ee').combobox("setValue", "邵大姐");
+    });
+</script>
+<body class="easyui-layout">
+<div region="center">
+    <fieldset>
+        <legend>
+            <label>
+                包裹出库扫描</label></legend>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td colspan="4" align="left" valign="top" style="padding-top: 10px;">
+                    <table cellspacing="0" cellpadding="1" bordercolor="#eeeeee" border="1" width="100%">
+                        <tbody>
+                            <tr>
+                                <td width="" colspan="2">
+                                    <font style="color: Red; font-size: 30px"><span id="spanStatus">等待扫描</span></font>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span id="spanInfo"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td height="26" align="right"></td>
+                                <td>配货人:
+                                    <input id="cc" type="text" />&nbsp;&nbsp;&nbsp;检验人:
+                                    <input id="ee" type="text" /></td>
+                            </tr>
+
+                            <tr>
+                                <td height="25" width="22%">
+                                    <h2>
+                                        <b>扫描扫描</b></h2>
+                                </td>
+                                <td width="">
+                                    <input id="txt" onkeydown="return txt_keydown(event);" style="font-size: 50px; background-image: none; width: 511px" />
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <script>
+        var txt = document.getElementById("txt");
+        var spanStatus = document.getElementById("spanStatus");
+        var spanInfo = document.getElementById("spanInfo");
+        var progress = 0;
+        var oldstr = "";
+        function txt_keydown(e) {
+            var keynum;
+            if (window.event) //IE
+            {
+                keynum = e.keyCode;
+            }
+            else if (e.which) //Netscape/Firefox/Opera
+            {
+                keynum = e.which;
+            }
+            if (keynum == 13) {
+
+                if (txt.value == "") {
+                    Reset();
+                    return true;
+                }
+                if (progress == 0) {
+                    getOrder(txt.value);
+                }
+                else if (progress == 1) {
+                    getSKU(txt.value);
+                }
+                else if (progress == 2) {
+                    OutStock(txt.value);
+                }
+                txt.value = "";
+                return false;
+            }
+            return true;
+        }
+
+        function getOrder(str) {
+            jQuery.ajax({
+                url: "/Order/GetOrderByPei/",
+                type: "post",
+                data: "orderNo=" + str,
+                success: function (msg) {
+                    if (msg.IsSuccess) {
+                        progress = 1;
+                        oldstr = str;
+                        ShowMessage(msg.Result, "", true);
+                        valiOrder();
+                        if (iscon) {
+                            ShowMessage(null, "所有产品扫描完成！请在一次扫描订单确认", true);
+                            progress = 2;
+                        }
+                        else {
+                            ShowMessage(null, "请扫描产品条码", true);
+                        }
+                    } else {
+                        progress = 0;
+                        oldstr = "";
+                        ShowMessage(msg.Result, "等待扫描", true);
+                    }
+                }
+            });
+        }
+
+        function OutStock(str) {
+            var p2 = $("#ee").combobox("getValue");
+            var p1 = $("#cc").combobox("getValue");
+            if (oldstr == str) {
+                jQuery.ajax({
+                    url: "/Order/OutStockByPei/",
+                    type: "post",
+                    data: "o=" + str + "&p1=" + p1 + "&p2=" + p2 + "&skuCode=" + skuCode.join(','),
+                    success: function (msg) {
+                        if (msg.IsSuccess) {
+                            skuCode = [];
+                            progress = 0;
+                            oldstr = "";
+                            ShowMessage(msg.Result, "等待扫描", true);
+                            Player2.controls.play();
+                        } else {
+                            progress = 0;
+                            oldstr = "";
+                            Player1.controls.play();
+                            ShowMessage(msg.Result, "等待扫描", false);
+                        }
+                    }
+                });
+            } else {
+                ShowMessage(null, "确认的的编码不正确", false);
+            }
+        }
+
+        //重置
+        function Reset() {
+            skuCode = [];
+            progress = 0;
+            txt.value = "";
+            ShowMessage("", "等待扫描", false);
+        }
+
+        function ShowMessage(msgInfo, msgStatus, isOk) {
+            if (msgInfo != null) {
+                spanInfo.innerHTML = msgInfo;
+            }
+            if (msgStatus != null) {
+                spanStatus.innerHTML = msgStatus;
+            }
+            if (isOk) {
+                spanInfo.style.color = "Blue";
+            }
+            else {
+                spanInfo.style.color = "Red";
+            }
+        }
+        var skuCode = [];
+        var code = "";
+        var iscon = true;
+
+        function getSKU(c) {
+            jQuery.ajax({
+                url: "/Product/GetSKUByCode/",
+                type: "post",
+                data: "code=" + c,
+                success: function (msg) {
+                    if (msg.IsSuccess) {
+                        progress = 1;
+                        code = c;
+                        setSKU(msg.Result);
+                    } else {
+                        progress = 1;
+
+                        ShowMessage(null, "错误：" + msg.Result, false);
+                        Player1.controls.play();
+                    }
+                }
+            });
+        }
+
+        function setSKU(sku) {
+
+            if ($("tr[name='tr_" + sku.toUpperCase() + "']").length == 0) {
+                ShowMessage(null, "条码不符！请输入正确的条码", true);
+                code = "";
+                Player1.controls.play();
+                return;
+            }
+            for (var i = 0; i < skuCode.length; i++) {
+                if (skuCode[i].toUpperCase() == code.toUpperCase()) {
+                    ShowMessage(null, "这个条码已经在这次配货中扫描了！", true);
+                    Player1.controls.play();
+                    return;
+                }
+            }
+            $("tr[name='tr_" + sku.toUpperCase() + "']").each(function () {
+                var qty = parseInt($(this).attr("qty"));
+                var cqty = parseInt($(this).attr("cqty"));
+                var c = $(this).attr("code");
+                if (qty > cqty) {
+                    cqty = parseInt(cqty) + 1;
+                    $(this).attr("cqty", cqty);
+                    skuCode.push(code);
+                    $("#r_" + c).html(cqty);
+                    // skuCode.add(code);
+                    //检查是不是所有的条码都好了
+                    iscon = true;
+                    valiOrder();
+                    if (iscon) {
+                        progress = 2;
+
+                        ShowMessage(null, "所有产品扫描完成！请在一次扫描订单确认", true);
+                    }
+                    else {
+
+                        ShowMessage(null, "产品 " + sku + " 数量加1,请继续扫描条码", true);
+                    }
+
+                    return false;
+                }
+            });
+
+        }
+
+        function valiOrder() {
+            iscon = true;
+            $("[name^='tr_']").each(function () {
+                var a = $(this).attr("qty");
+
+                var b = $(this).attr("cqty");
+
+                if (a != b) {
+                    iscon = false;
+                    return false;
+                }
+            });
+        }
+    </script>
+</div>
+    </body>

@@ -1,0 +1,161 @@
+﻿@model DDX.OrderManagementSystem.Domain.FixedRateType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+
+        $('#c_Year').combobox({
+            valueField: 0,
+            textField: 1,
+            editable: false,
+            panelHeight: 'auto',
+            data: [["2014", "2014年"],
+                   ["2015", "2015年"],
+                   ["2016", "2016年"],
+                   ["2017", "2017年"],
+                   ["2018", "2018年"],
+                   ["2019", "2019年"],
+                   ["2020", "2020年"]],
+            width: 100
+        });
+
+        $('#c_Month').combobox({
+            valueField: 'value',
+            textField: 'label',
+            editable: false,
+            panelHeight: 'auto',
+            data: [{
+                label: '1月',
+                value: '1'
+            }, {
+                label: '2月',
+                value: '2'
+            }, {
+                label: '3月',
+                value: '3'
+            }, {
+                label: '4月',
+                value: '4'
+            }, {
+                label: '5月',
+                value: '5'
+            }, {
+                label: '6月',
+                value: '6'
+            }, {
+                label: '7月',
+                value: '7'
+            }, {
+                label: '8月',
+                value: '8'
+            }, {
+                label: '9月',
+                value: '9'
+            }, {
+                label: '9月',
+                value: '9'
+            }, {
+                label: '10月',
+                value: '11'
+            }, {
+                label: '12月',
+                value: '12'
+            }],
+            width: 100
+        });
+
+@*        $('#c_CurrencyName').combobox({
+            url: '@Url.Action("GetCurrency", "FixedRate")/',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            required: true,
+            width: 150,
+            panelHeight: 'auto',
+            onChange: changePlatform
+        });*@
+
+        $('#c_CurrencyCode').combogrid({
+            width: 100,
+            value: 'USD',
+            idField: 'CurrencyCode',
+            textField: 'CurrencyName',
+            url: '/Currency/QList',
+            fit: true,
+            columns: [[
+                { field: 'CurrencyName', title: '货币', width: 150 },
+                { field: 'CurrencyCode', title: '代码', width: 100 },
+                { field: 'CurrencyValue', title: '汇率', width: 100 }
+            ]]
+            //onChange: function () {
+            //    debugger;
+            //}
+        });
+
+        $('#c_Year').combobox("setValue", "2016");
+        $('#c_Month').combobox("setValue", "1");
+    });
+</script>
+
+@using (Html.BeginForm("Create", "FixedRate", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+@*	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键表:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>*@
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CurrencyCode, "货币:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CurrencyCode, new { @id = "c_CurrencyCode" })
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Year, "年份:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Year, new { @id = "c_Year" })
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Month, "月份:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Month, new { @id = "c_Month" })
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CurrencyValue, "汇率:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CurrencyValue, new { @id = "c_CurrencyValue", @Value = "0.00" })
+		</td>
+	</tr>
+
+	@*<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn, "CreateOn:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn, new { @id = "c_CreateOn" })
+		</td>
+	</tr>*@
+
+
+</table>
+</fieldset>
+}

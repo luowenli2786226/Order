@@ -1,0 +1,167 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.WarehouseStockType>
+@{
+    ViewBag.Title = "MonthlyReport";
+}
+<script src="~/Scripts/easyUI/datagrid-detailview.js"></script>
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("GetMonthlyReport", "WarehouseStock")',
+                //showFooter: false,
+                //onLoadSuccess: function (data) {
+                //    debugger;
+                //    var nI = 0;
+                //}
+            });
+
+            $('#ww').combobox({
+                url: '/Warehouse/QListSearch',
+                valueField: 'Id',
+                textField: 'WName',
+                required: true
+            });
+
+            $('#sYear').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: [["2014", "2014年"],
+                       ["2015", "2015年"],
+                       ["2016", "2016年"],
+                       ["2017", "2017年"],
+                       ["2018", "2018年"],
+                       ["2019", "2019年"],
+                       ["2020", "2020年"]],
+                width: 100
+            });
+
+            $('#sMonth').combobox({
+                valueField: 'value',
+                textField: 'label',
+                panelHeight: 'auto',
+                //data: [["1", "1月"],
+                //       ["2", "2月"],
+                //       ["3", "3月"],
+                //       ["4", "4月"],
+                //       ["5", "5月"],
+                //       ["6", "6月"],
+                //       ["7", "7月"],
+                //       ["8", "8月"],
+                //       ["9", "9月"],
+                //       ["10", "10月"],
+                //       ["11", "11月"],
+                //       ["12", "12月"]],
+                data: [{
+                    label: '1月',
+                    value: '1'
+                }, {
+                    label: '2月',
+                    value: '2'
+                }, {
+                    label: '3月',
+                    value: '3'
+                }, {
+                    label: '4月',
+                    value: '4'
+                }, {
+                    label: '5月',
+                    value: '5'
+                }, {
+                    label: '6月',
+                    value: '6'
+                }, {
+                    label: '7月',
+                    value: '7'
+                }, {
+                    label: '8月',
+                    value: '8'
+                }, {
+                    label: '9月',
+                    value: '9'
+                }, {
+                    label: '9月',
+                    value: '9'
+                }, {
+                    label: '10月',
+                    value: '11'
+                }, {
+                    label: '12月',
+                    value: '12'
+                }],
+                width: 100
+            });
+
+            $('#ww').combobox("setValue", "0");
+            $('#sYear').combobox("setValue", "2016");
+            $('#sMonth').combobox("setValue", "1");
+        });
+
+        function exportdt() {
+            var postUrl = "/Order/ExportDown/1";
+            jQuery.ajax({
+                url: "/WarehouseStock/ExportMonthlyReport/",
+                type: "post",
+                data: "DepositoryId=" + $('#ww').combobox("getValue") + "&Year=" + $('#sYear').combobox("getValue") + "&Month=" + $('#sMonth').combobox("getValue") + "&Sku=" + ($('#txtSearch').searchbox("getValue") == "" ? "0" : $('#txtSearch').searchbox("getValue")),
+                success: function (sss) {
+                    location.href = postUrl;
+                }
+            });
+        }
+
+        function doSearch() {
+            //search = "DepositoryId=" + $('#ww').combobox("getValue") + "&Year=" + $('#sYear').combobox("getValue") + "&Month=" + $('#sMonth').combobox("getValue") + "&Sku=" + ($('#txtSearch').val() == "" ? "0" : $('#txtSearch').val());
+            //debugger;
+            search = $('#ww').combobox("getValue") + "&" + $('#sYear').combobox("getValue") + "&" + $('#sMonth').combobox("getValue") + "&" + ($('#txtSearch').searchbox("getValue") == "" ? "0" : $('#txtSearch').searchbox("getValue"));
+
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="仓库" width="100">仓库
+                    </th>
+                    <th field="SKU" width="100">SKU
+                    </th>
+                    <th field="名称" width="100">名称
+                    </th>
+                    <th field="规格" width="100">规格
+                    </th>
+                    <th field="上月结存数量" width="100" sortable="true">上月结存数量
+                    </th>
+                    <th field="本月入库数量" width="100" sortable="true">本月入库数量
+                    </th>
+                    <th field="本月出库数量" width="100" sortable="true">本月出库数量
+                    </th>
+                    <th field="本月结存数量" width="100" sortable="true">本月结存数量
+                    </th>
+                    <th field="上月结存金额" width="100" sortable="true">上月结存金额
+                    </th>
+                    <th field="本月入库金额" width="100" sortable="true">本月入库金额
+                    </th>
+                    <th field="本月出库金额" width="100" sortable="true">本月出库金额
+                    </th>
+                    <th field="本月结存金额" width="100" sortable="true">本月结存金额
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            仓库:<input type="text" id="ww" />
+            <input type="text" id="sYear" />
+            <input type="text" id="sMonth" />
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="exportdt();">导出</a>
+        </div>
+
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'SKU'">商品SKU</div>
+        </div>
+    </div>
+</body>

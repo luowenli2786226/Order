@@ -1,0 +1,66 @@
+﻿@model DDX.OrderManagementSystem.Domain.ShipmentslistType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $('#c_WareHouse').combogrid({
+            required: true,
+            editable: false,
+            panelWidth: 410,
+            idField: 'Id',
+            textField: 'WName',
+            url: '/Warehouse/QList',
+            fit: true,
+            columns: [[
+                { field: 'Id', title: 'Id', width: 100 },
+                { field: 'WCode', title: '仓库代码', width: 100 },
+                { field: 'WName', title: '仓库名称', width: 100 },
+                { field: 'Address', title: '仓位地址', width: 100 }
+            ]]
+        });
+    });
+
+</script>
+
+@using (Html.BeginForm("Confirm2Detail", "Shipmentslist", FormMethod.Post, new { id = "detail_form" }))
+{
+<fieldset>
+<table class="editForm">
+    <tr>
+         <td>@Html.HiddenFor(model=>model.Id)</td>
+            <td>@Html.HiddenFor(model=>model.ContractPNo)</td>
+            <td>@Html.HiddenFor(model=>model.ContractWNo)</td>
+            <td>@Html.HiddenFor(model=>model.IsExa)</td>
+            <td>@Html.HiddenFor(model=>model.ExaTime)</td>
+            <td>@Html.HiddenFor(model=>model.OverTime1)</td>
+            <td>@Html.HiddenFor(model=>model.AppliBy)</td>
+            <td>@Html.HiddenFor(model=>model.AgreeBy)</td>
+            <td>@Html.HiddenFor(model=>model.OkBy1)</td>
+            <td>@Html.HiddenFor(model=>model.OverTime2)</td>
+            <td>@Html.HiddenFor(model=>model.OkBy2)</td>
+            <td>@Html.HiddenFor(model=>model.AppliTime)</td>
+    </tr>
+    	<tr>
+           
+		<td>
+            @Html.LabelFor(model => model.WareHouse, "入库仓库:")
+		</td>
+            <td>
+            @Html.TextBoxFor(model => model.WareHouse, new { @id = "c_WareHouse" })
+		</td>
+      </tr>
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.Remark, "备注:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Remark, new { @id = "c_Remark" })
+		</td>
+	</tr>
+    </table>
+</fieldset>
+}

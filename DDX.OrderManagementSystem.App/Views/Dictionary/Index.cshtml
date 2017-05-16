@@ -1,0 +1,107 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.DictionaryType>
+@{
+    Layout = null;
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg1').datagrid({
+                toolbar: '#toolbar',
+                rownumbers: true,
+                fitColumns: true,
+                singleSelect: true,
+                pagination: true,
+                fit: true,
+                url: '@Url.Action("List", "Dictionary")/' + ViewData["code"]
+            });
+        });
+
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create","Dictionary")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            var url = '@Url.Action("Edit","Dictionary")/' + id;
+        if (id != undefined) {
+            showdlg(url, 'e_dlg', ajaxEdit)
+        }
+    }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "Dictionary")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "Dictionary")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+
+                var url = '@Url.Action("Delete", "Dictionary")/' + id;
+                alert(1);
+                delData(url, 'dg');
+
+            }
+        }
+
+
+            //获取选中行
+            function getselectedRow() {
+                var row = $('#dg').datagrid('getSelected');
+                if (row != undefined) {
+                    if (row.hasOwnProperty('Id')) {
+                        var id = row['Id'];
+                        return id;
+                    }
+                }
+                $.messager.show({
+                    title: '提示',
+                    msg: '请选择行',
+                    timeout: 3000,
+                    showType: 'slide'
+                });
+                return (undefined);
+            }
+
+    </script>
+    <div region="center">
+        <table id="dg1">
+            <thead>
+                <tr>
+                    <th field="Id" width="100">主键
+                    </th>
+
+                    <th field="DicCode" width="100">分类代码
+                    </th>
+
+                    <th field="FullName" width="100">名称
+                    </th>
+
+                    <th field="DicValue" width="100">值
+                    </th>
+
+                    <th field="AllowDelete" width="100">内置
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar1">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+        </div>
+
+
+
+    </div>
+   
+
+</body>

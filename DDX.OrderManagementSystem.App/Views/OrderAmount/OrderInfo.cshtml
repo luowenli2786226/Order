@@ -1,0 +1,407 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.OrderAmountType>
+@{
+    ViewBag.Title = "预计";
+}
+<script src="~/Scripts/easyUI/datagrid-groupview.js"></script>
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $("#cc").datebox({
+                parser: myparser
+            });
+            $("#cc2").datebox({
+                parser: myparser
+            });
+            $('#cc').datebox("setValue", getStartDate(1));
+            $('#cc2').datebox("setValue", getStartDate(1));
+            $('#dg').datagrid({
+                url: '@Url.Action("HeList", "Order")',
+                queryParams: { "search": "IsStop_ds&0^Status_ds&已处理^" + "CreateOn_et&" + $('#cc2').datebox("getValue") + "^" + "CreateOn_st&" + $('#cc').datebox("getValue") + "^", sort: "Profit", order: "Asc" },
+                nowrap: false,
+                rownumbers: true,
+                title: '订单预计核算',
+                toolbar: '#toolbar',
+                singleSelect: true,
+                pagination: true,
+                height: 580,
+                showFooter: true,
+                pageNumber: 1,
+                pageSize: 50,
+                pageList: [50, 100, 100],
+                onDblClickRow: function (i, r) {
+                    window.open('@Url.Action("Details", "Order")/' + r.Id);
+                },
+            });
+
+            $('#pp').combobox({
+                url: '/Home/Platform/1',
+                valueField: 'id',
+                textField: 'text',
+                width: 100,
+                panelHeight: 'auto',
+                onChange: changePlatform
+            });
+            $('#pp').combobox("setValue", "ALL");
+            $('#loss').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+                // doSearch();
+            });
+        })
+            function myparser(s) {
+                if (!s) return new Date();
+                var ss = s.split('-');
+                var y = parseInt(ss[0], 10);
+                var m = parseInt(ss[1], 10);
+                var d = parseInt(ss[2], 10);
+                if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+                    return new Date(y, m - 1, d);
+                } else {
+                    return new Date();
+                }
+            }
+
+            function changePlatform(n, o) {
+                $('#aa').combotree({
+                    url: '/Home/AccountList/' + n,
+                    valueField: 'id',
+                    textField: 'text',
+                    width: 150
+                });
+                $('#aa').combotree("setValue", "ALL");
+            }
+
+            //新建
+
+            function c_dlg(i, id) {
+                //0订单 1产品 2运费 3赔款
+                var url_str = "";
+                if (i == 0) {
+                    url_str = '@Url.Action("GetOrders", "OrderAmount")/' + id;
+                    showdlg(url_str, 'c_dlg', function () {
+                        $('#c_dlg').dialog('close');
+                    });
+                } else if (i == 1) {
+                    url_str = '@Url.Action("GetProducts", "OrderAmount")/' + id;
+                    showdlg(url_str, 'd_dlg', function () {
+                        $('#d_dlg').dialog('close');
+                    });
+                } else if (i == 2) {
+                    url_str = '@Url.Action("GetFreights", "OrderAmount")/' + id;
+                    showdlg(url_str, 'e_dlg', function () {
+                        $('#e_dlg').dialog('close');
+                    });
+                } else if (i == 3) {
+                    url_str = '@Url.Action("GetPeiKuan", "OrderAmount")/' + id;
+                    showdlg(url_str, 'p_dlg', function () {
+                        $('#p_dlg').dialog('close');
+                    });
+                } else if (i == 4) {
+                    url_str = '@Url.Action("GetProducts2", "OrderAmount")/' + id;
+                        showdlg(url_str, 'd_dlg', function () {
+                            $('#d_dlg').dialog('close');
+                        });
+                    }
+}
+
+//删除
+
+function del() {
+    var id = getselectedRow();
+    if (id != undefined) {
+
+        var url = '@Url.Action("Delete", "OrderAmount")/' + id;
+        delData(url, 'dg');
+
+    }
+}
+
+//获取选中行
+
+function getselectedRow() {
+    var row = $('#dg').datagrid('getSelected');
+    if (row != undefined) {
+        if (row.hasOwnProperty('Id')) {
+            var id = row['Id'];
+            return id;
+        }
+    }
+    $.messager.show({
+        title: '提示',
+        msg: '请选择行',
+        timeout: 3000,
+        showType: 'slide'
+    });
+    return (undefined);
+}
+
+function getSearch() {
+
+    var search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^IsXu_ds&0^IsStop_ds&0^Status_ds&已处理^";
+    //search += "Status_ds&已发货^";
+    var u = $('#pp').combobox("getValue");
+    if (u != "ALL" && u != "" && u != "0") {
+        search += "Platform_es&" + u + "^";
+    }
+    u = $('#aa').combobox("getText");
+    if (u != "ALL" && u != "" && u != "0") {
+        search += "Account_es&" + u + "^";
+    }
+
+
+    u = $('#cc').combobox("getValue");
+    if (u != "ALL" && u != "") {
+        search += "CreateOn_st&" + u + "^";
+
+    }
+    u = $('#cc2').combobox("getValue");
+    if (u != "ALL" && u != "") {
+        search += "CreateOn_et&" + u + "^";
+    }
+
+    u = $('#loss').combobox("getValue");
+    if (u != "ALL" && u != "") {
+        if (u == 2)
+            search += "Profit_si&0^";
+        else
+            search += "Profit_ei&-0.000001^";
+    }
+
+
+    return search;
+}
+
+function doSearch() {
+    var search = getSearch();
+    $("#dg").datagrid("load", {
+        search: search,
+        order: 'Asc',
+        sort: 'Profit'
+    });
+
+}
+
+function getAmount(v, r, i) {
+    if (r.Id > 0)
+        return r.CurrencyCode + ":" + v;
+    else
+        return v;
+}
+
+function getFreights(v, r, i) {
+    if (r.Id > 0)
+        return '<a href="javascript:void(0)" onclick="c_dlg(2,' + r.Id + ')">' + v + '</a>';
+    else
+        return v;
+}
+
+function getOrders(v, r, i) {
+    if (r.Id > 0)
+        return '<a href="javascript:void(0)" onclick="c_dlg(0,' + r.Id + ')">' + v + '</a>';
+    else
+        return v;
+}
+
+function getProducts(v, r, i) {
+    if (r.Id > 0)
+        return '<a href="javascript:void(0)" onclick="c_dlg(1,' + r.Id + ')">' + v + '</a>';
+    else
+        return v;
+}
+
+function getProducts2(v, r, i) {
+    if (r.Id > 0)
+        return '<a href="javascript:void(0)" onclick="c_dlg(4,' + r.Id + ')">' + v + '</a>';
+    else
+        return v;
+}
+
+function getPeiKuan(v, r, i) {
+    if (r.Id > 0)
+        return "#";
+    else
+        return v;
+    //return '<a href="javascript:void(0)" onclick="c_dlg(1,' + r.Id + ')">' + v + '</a>';
+}
+
+function getProfit(v, r, i) {
+    var html = "";
+    if (v < 0) {
+        html = '<font color="#F00"><b>' + v + '</b></font><br />';
+    } else {
+        html = v;
+    }
+    return html;
+}
+
+function getProfitRate(v, r, i) {
+    v = r.Profit;
+    if (r.Amount == 0 || v == 0) {
+        return 0 + "%";
+    }
+    var ccc = (v / (r.Amount * 6.1) * 100).toFixed(2);
+    if (ccc < 0) {
+        return '<font color="#F00"><b>' + ccc + '%</b></font><br />';
+    } else {
+        return ccc + "%";
+    }
+
+}
+
+function getFanState(v, r, i) {
+    if (v == 0) {
+        return "未放款";
+    }
+    if (v == 1) {
+        return "已放款";
+    }
+}
+
+function getYunState(v, r, i) {
+    if (v == 0) {
+        return "未结算";
+    }
+    if (v == 1) {
+        return "已结算";
+    }
+}
+
+
+function getAccount(v, r, i) {
+    var html = "";
+    html += "" + r.Account + "<br\>";
+    html += "" + r.Platform + "";
+    return html;
+}
+
+function toExcel() {
+    search = getSearch();
+
+    var postUrl = "/Order/ExportDown/1";
+    $.ajax({
+        url: '@Url.Action("ToExcel", "OrderAmount")/',
+        type: 'post',
+        data: 'search=' + encodeURIComponent(search),
+        success: function (result) {
+            $.messager.show({
+                title: '提示',
+                msg: result.ErrorMsg,
+                timeout: 0,
+                showType: 'slide'
+            });
+            location.href = postUrl;
+
+        }
+    });
+}
+
+function getOrderNo(v, r, i) {
+    if (r.Id > 0) {
+        var html = v;
+        v += "<br />" + r.OrderExNo;
+        return v;
+    }
+}
+
+function getDateOther(v, r, i) {
+    if (r.Id > 0) {
+        var html = v;
+        var date1 = new Date(parseInt(r.GenerateOn.replace("/Date(", "").replace(")/", ""), 10)); //开始时间
+        var date2 = new Date(); //结束时间
+        var date3 = date2.getTime() - date1.getTime(); //时间差的毫秒数
+        //计算出相差天数
+        var days = Math.floor(date3 / (24 * 3600 * 1000));
+        return '<font color="#F00"><b>' + days + '</b></font><br />';
+        //return html;
+    }
+}
+
+function getDate2(v, r, i) {
+    if (r.Id > 0) {
+
+        return getDate(r.GenerateOn);
+        //return html;
+    }
+}
+
+
+function getProfitRate(v, r, i) {
+    var ctx = r.Profit;
+    if (r.Amount == 0 || v == 0) {
+        return 0 + "%";
+    }
+    var ccc = (ctx / (r.Amount * 6.2) * 100).toFixed(2);
+    if (ccc < 0) {
+        return '<font color="#F00"><b>' + ccc + '%</b></font><br />';
+    } else {
+        return ccc + "%";
+    }
+
+}
+    </script>
+    <div region="center">
+
+        <div id="toolbar">
+            平台:<input id="pp" type="text" />
+            账户:<input id="aa" type="text" />
+            亏损:<input id="loss" type="text" />
+            开始:<input id="cc" type="text" />
+            结束:<input id="cc2" type="text" />
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'OrderNo'">订单号</div>
+            <div data-options="name:'OrderExNo'">平台订单号</div>
+            <div data-options="name:'TrackCode'">运单号</div>
+        </div>
+
+        <table id="dg">
+            <thead>
+                <tr>
+                    <th field="OrderNo" width="200" formatter="getOrderNo" align="center">订单号
+                    </th>
+                    <th field="TrackCode" width="120">运单号
+                    </th>
+                    <th field="LogisticMode" width="120">货运方式
+                    </th>
+                    <th field="Profit" width="120" formatter="getProfit" sortable="true">利润(RMB)
+                    </th>
+                    <th field="Account" width="120">账户/平台
+                    </th>
+                    <th field="IsXu" width="120" formatter="getTrue">虚假发货
+                    </th>
+                    <th field="Amount" width="120" sortable="true">订单金额
+                    </th>
+                    @*   <th field="ReFanAmount" width="120">预计收汇(USD)
+                                </th>*@
+                    <th field="ProductFees" width="120" formatter="getProducts" sortable="true">商品(RMB)
+                    </th>
+                    <th field="Freight" width="120" formatter="getProducts2" sortable="true">运费(RMB)
+                    </th>
+                    @* <th field="PeiKuan" width="120" formatter="getPeiKuan">赔款
+                                </th>*@
+                    <th field="OrderExNo" width="120" formatter="getProfitRate" sortable="true">预计毛利率
+                    </th>
+                    <th field="CreatePn" width="150" formatter="getDate2" sortable="true">下单时间
+                    </th>
+                    <th field="GenerateOn" width="120" formatter="getDateOther" sortable="true">存在时间
+                    </th>
+                    @*<th field="FanState" width="140" formatter="getYunState">运费结算
+                                </th>
+                                <th field="FanState" width="140" formatter="getFanState">放款情况
+                                </th>*@
+                </tr>
+            </thead>
+        </table>
+
+        <div id="c_dlg"></div>
+        <div id="d_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="p_dlg"></div>
+    </div>
+
+</body>

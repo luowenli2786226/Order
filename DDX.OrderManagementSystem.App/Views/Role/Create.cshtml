@@ -1,0 +1,64 @@
+﻿@model DDX.OrderManagementSystem.Domain.RoleType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+
+
+
+    });
+
+</script>
+
+@using (Html.BeginForm("Create", "Role", FormMethod.Post, new { id = "c_form" }))
+{
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Code, "角色代码:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Code, new { @id = "c_Code" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Realname, "角色名称:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Realname, new { @id = "c_Realname" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SortCode, "排序码:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SortCode, new { @id = "c_SortCode" })
+                </td>
+            </tr>
+
+
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Description, "描述:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Description, new { @id = "c_Description" })
+                </td>
+            </tr>
+
+
+
+
+        </table>
+    </fieldset>
+}

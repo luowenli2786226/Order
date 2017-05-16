@@ -1,0 +1,48 @@
+﻿@model DDX.OrderManagementSystem.Domain.WarehouseType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>DDX.OrderManagementSystem.Domain.WarehouseType</title>
+</head>
+<body>
+<fieldset>
+    <legend>DDX.OrderManagementSystem.Domain.WarehouseType</legend>
+    <div class="display-label">Id</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">仓库代码</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WCode)
+    </div>
+
+    <div class="display-label">仓库名称</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WName)
+    </div>
+
+    <div class="display-label">仓库地址</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Address)
+    </div>
+
+    <div class="display-label">地区</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Area)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

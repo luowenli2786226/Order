@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "GetPeiKuan";
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("GetListByOrderExNo", "ServiceExamination")',
+            queryParams:{"o":'@ViewData["OrderNo"]'}
+            pageNumber: 1,
+            nowrap: false,
+            showFooter: true,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+    });
+
+</script>
+<table id="dg">
+    <thead>
+        <tr>
+
+            <th field="ExamineTitle" width="100">标题
+            </th>
+            <th field="OrderNo" width="150">订单号
+            </th>
+            <th field="ExamineCurrencyCode" width="60">货币
+            </th>
+            <th field="ExamineAmount" width="100" formatter="getamount">金额
+            </th>
+        </tr>
+    </thead>
+</table>

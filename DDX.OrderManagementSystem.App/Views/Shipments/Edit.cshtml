@@ -1,0 +1,289 @@
+@model DDX.OrderManagementSystem.Domain.ShipmentsType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	        $('#e_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+        $('#e_CreatePlanBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+        $('#e_CreatetTrackBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+        });
+
+        $('#e_Sku').combogrid({
+            panelWidth: 410,
+            idField: 'SKU',
+            textField: 'SKU',
+            required: true,
+            mode: 'remote',
+            url: '/Product/ListQQ',
+            fit: true,
+            onSelect: function (r) {
+                $("#e_DescribeCn").attr("value", $('#e_Sku').combogrid('grid').datagrid("getRows")[r].DescribeCn);
+                $("#e_DescribeEn").attr("value", $('#e_Sku').combogrid('grid').datagrid("getRows")[r].DescribeEn);
+                // alert(r);
+            },
+            columns: [[
+                { field: 'SKU', title: 'SKU', width: 100 },
+                { field: 'ProductName', title: 'Title', width: 200 },
+                { field: 'Standard', title: '规格', width: 100 },
+                { field: 'DescribeEn', title: '英文描述', width: 200 },
+                { field: 'DescribeCn', title: '中文描述', width: 100 }
+
+            ]]
+        });
+
+        $('#e_IsCustoms').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["True", "是"],
+                   ["False", "否"]],
+            width: 100
+        });
+        $('#c_CreatePlanBy').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["许东旭", "许东旭"]],
+            width: 100
+        });
+       // $('#e_IsCustoms').combobox("setValue", "否");
+
+
+    });
+
+</script>
+@using (Html.BeginForm("Edit", "Shipments", FormMethod.Post, new { id = "e_form",type=0 }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"出货明细Id:")
+		</td>
+		<td>
+            @Html.HiddenFor(model => model.Id,new{@id="e_Id"})
+		</td>
+        <td>@Html.HiddenFor(model=>model.FirstQty)</td>
+        <td>@Html.HiddenFor(model=>model.ShipmentslistId)</td>
+	</tr>
+
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.Sku,"我司货号（SKU）:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Sku,new{@id="e_Sku"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.PurchaseNo,"采购合同编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PurchaseNo,new{@id="e_PurchaseNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExportNo,"外销合同号码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExportNo,new{@id="e_ExportNo"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.PriceUMax,"UMAX价格($):")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PriceUMax,new{@id="e_PriceUMax"})
+		</td>
+	</tr>
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DescribeEn,"英文描述:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DescribeEn,new{@id="e_DescribeEn"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.DescribeCn,"中文描述:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DescribeCn,new{@id="e_DescribeCn"})
+		</td>
+	</tr>
+
+	
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PriceFactory,"工厂价格(￥):")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PriceFactory,new{@id="e_PriceFactory"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.Unit,"单位:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Unit,new{@id="e_Unit"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PackageNo,"包装:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PackageNo,new{@id="e_PackageNo"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.Ctn,"箱数:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Ctn,new{@id="e_Ctn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsCustoms,"是否已报关:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsCustoms,new{@id="e_IsCustoms"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.WeightGross,"毛重（KG）:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WeightGross,new{@id="e_WeightGross"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WeightNet,"净重（KG）:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WeightNet,new{@id="e_WeightNet"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.TotalVolume,"总体积:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TotalVolume,new{@id="e_TotalVolume"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Qty,"实际数量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Qty,new{@id="e_Qty"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.TotalPrice,"客人含佣金总价($):")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TotalPrice,new{@id="e_TotalPrice"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TaxRate,"增值税率:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TaxRate,new{@id="e_TaxRate"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.Ratio,"比值:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Ratio,new{@id="e_Ratio"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"业务人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy", @readonly = "true"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.CreatePlanBy,"采购员:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreatePlanBy,new{@id="e_CreatePlanBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreatetTrackBy,"跟单员:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreatetTrackBy,new{@id="e_CreatetTrackBy"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.Paymethod,"付款方式:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Paymethod,new{@id="e_Paymethod"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.HeadloadCharges,"头程(元/公斤):")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.HeadloadCharges,new{@id="e_HeadloadCharges"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.YouShengPrice,"优胜价格($):")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.YouShengPrice,new{@id="e_YouShengPrice"})
+		</td>
+	</tr>
+    <tr>
+       <td>
+           @Html.LabelFor(model => model.CreateOn,"创建时间:")
+	   </td>
+	   <td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+        <td> @Html.LabelFor(model => model.Price,"单价(总):")</td>
+        <td> @Html.TextBoxFor(model => model.Price,new{@id="e_Price"})</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

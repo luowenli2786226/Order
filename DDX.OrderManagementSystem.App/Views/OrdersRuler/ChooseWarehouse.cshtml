@@ -1,0 +1,28 @@
+﻿@model DDX.OrderManagementSystem.Domain.OrdersRulersType
+
+@{
+    Layout = null;
+}
+<script src="~/Scripts/easyUI/jquery.min_.js"></script>
+<script type="text/javascript">
+
+    $(function () {
+        $.ajax({
+            type: "post",
+            url: '@Url.Action("QList", "Warehouse")',
+            data: "",
+            datatype: "json",
+            success: function (msg) {
+                var str = "<ul>";
+                $.each(msg, function (ids, obj) {
+                    str += "<li  id='platformchk" + obj.WCode + "'><input type='checkbox' onclick=\"ShowDetail('" + obj.WCode + "')\"/>" + obj.WName + "</li>";
+                })
+                str += "</ul>";
+                $("#Showwarehouse").html(str);
+            }
+
+        });
+
+    })
+</script>
+<div id="Showwarehouse"></div>

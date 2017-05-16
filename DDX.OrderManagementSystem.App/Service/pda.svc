@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="DDX.OrderManagementSystem.App.Service.pda" CodeBehind="pda.svc.cs" %>

@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://cxf.pl/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="ParcelOprWebService" targetNamespace="http://cxf.pl/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://cxf.pl/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="addParcelAndForecastService" type="tns:addParcelAndForecastService" />
+      <xs:element name="addParcelAndForecastServiceResponse" type="tns:addParcelAndForecastServiceResponse" />
+      <xs:element name="addParcelService" type="tns:addParcelService" />
+      <xs:element name="addParcelServiceResponse" type="tns:addParcelServiceResponse" />
+      <xs:element name="changeShippingMethodByRefNoService" type="tns:changeShippingMethodByRefNoService" />
+      <xs:element name="changeShippingMethodByRefNoServiceResponse" type="tns:changeShippingMethodByRefNoServiceResponse" />
+      <xs:element name="changeShippingMethodService" type="tns:changeShippingMethodService" />
+      <xs:element name="changeShippingMethodServiceResponse" type="tns:changeShippingMethodServiceResponse" />
+      <xs:element name="deleteParcelByNoService" type="tns:deleteParcelByNoService" />
+      <xs:element name="deleteParcelByNoServiceResponse" type="tns:deleteParcelByNoServiceResponse" />
+      <xs:element name="deleteParcelByRefNoService" type="tns:deleteParcelByRefNoService" />
+      <xs:element name="deleteParcelByRefNoServiceResponse" type="tns:deleteParcelByRefNoServiceResponse" />
+      <xs:element name="forecastByRefNoService" type="tns:forecastByRefNoService" />
+      <xs:element name="forecastByRefNoServiceResponse" type="tns:forecastByRefNoServiceResponse" />
+      <xs:element name="forecastService" type="tns:forecastService" />
+      <xs:element name="forecastServiceResponse" type="tns:forecastServiceResponse" />
+      <xs:element name="queryParcelByRefNoService" type="tns:queryParcelByRefNoService" />
+      <xs:element name="queryParcelByRefNoServiceResponse" type="tns:queryParcelByRefNoServiceResponse" />
+      <xs:element name="queryParcelService" type="tns:queryParcelService" />
+      <xs:element name="queryParcelServiceResponse" type="tns:queryParcelServiceResponse" />
+      <xs:element name="queryParcelShippingCostByRefNoService" type="tns:queryParcelShippingCostByRefNoService" />
+      <xs:element name="queryParcelShippingCostByRefNoServiceResponse" type="tns:queryParcelShippingCostByRefNoServiceResponse" />
+      <xs:element name="queryParcelShippingCostByTarckingNoService" type="tns:queryParcelShippingCostByTarckingNoService" />
+      <xs:element name="queryParcelShippingCostByTarckingNoServiceResponse" type="tns:queryParcelShippingCostByTarckingNoServiceResponse" />
+      <xs:element name="queryShipType" type="tns:queryShipType" />
+      <xs:element name="queryShipTypeResponse" type="tns:queryShipTypeResponse" />
+      <xs:element name="queryShipTypeZoning" type="tns:queryShipTypeZoning" />
+      <xs:element name="queryShipTypeZoningResponse" type="tns:queryShipTypeZoningResponse" />
+      <xs:complexType name="forecastByRefNoService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="companyID" type="xs:string" />
+          <xs:element minOccurs="0" name="pwd" type="xs:string" />
+          <xs:element minOccurs="0" name="refNos" type="tns:arrayOfString" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="arrayOfString">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="arrayOfString" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="forecastByRefNoServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:returnObject" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="returnObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="vsnumber" type="xs:string" />
+          <xs:element minOccurs="0" name="refNo" type="xs:string" />
+          <xs:element minOccurs="0" name="trackingNo" type="xs:string" />
+          <xs:element minOccurs="0" name="trackDedicatedNo" type="xs:string" />
+          <xs:element name="errorCode" type="xs:int" />
+          <xs:element name="success" type="xs:boolean" />
+          <xs:element minOccurs="0" name="errorMsg" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="queryParcelShippingCostByTarckingNoService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="xs:string" />
+          <xs:element minOccurs="0" name="arg1" type="xs:string" />
+          <xs:element minOccurs="0" name="arg2" type="tns:arrayOfString" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="queryParcelShippingCostByTarckingNoServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:parcelShippingCost" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="parcelShippingCost">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="trackingNo" type="xs:string" />
+          <xs:element minOccurs="0" name="refNo" type="xs:string" />
+          <xs:element name="charge" type="xs:double" />
+          <xs:element minOccurs="0" name="currency" type="xs:string" />
+          <xs:element name="weight" type="xs:double" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="deleteParcelByRefNoService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="companyID" type="xs:string" />
+          <xs:element minOccurs="0" name="pwd" type="xs:string" />
+          <xs:element minOccurs="0" name="refNos" type="tns:arrayOfString" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="deleteParcelByRefNoServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:returnObject" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="queryParcelShippingCostByRefNoService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="xs:string" />
+          <xs:element minOccurs="0" name="arg1" type="xs:string" />
+          <xs:element minOccurs="0" name="arg2" type="tns:arrayOfString" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="queryParcelShippingCostByRefNoServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:parcelShippingCost" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="changeShippingMethodByRefNoService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="companyID" type="xs:string" />
+          <xs:element minOccurs="0" name="pwd" type="xs:string" />
+          <xs:element minOccurs="0" name="refNos" type="tns:arrayOfString" />
+          <xs:element minOccurs="0" name="methods" type="tns:arrayOfString" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="changeShippingMethodByRefNoServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:returnObject" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="queryShipType">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="companyID" type="xs:string" />
+          <xs:element minOccurs="0" name="pwd" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="queryShipTypeResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:shipType" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="shipType">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="shipCode" type="xs:string" />
+          <xs:element minOccurs="0" name="shipName" type="xs:string" />
+          <xs:element name="traceable" type="xs:int" />
+          <xs:element minOccurs="0" name="returnAddress" type="xs:string" />
+          <xs:element name="barcodeAllocation" type="xs:int" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="queryParcelService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="companyID" type="xs:string" />
+          <xs:element minOccurs="0" name="pwd" type="xs:string" />
+          <xs:element minOccurs="0" name="vsnumbers" type="tns:arrayOfString" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="queryParcelServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:parcel" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="parcel">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="vsnumber" type="xs:string" />
+          <xs:element minOccurs="0" name="apTdate" type="xs:dateTime" />
+          <xs:element name="parcelstatus" type="xs:int" />
+          <xs:element minOccurs="0" name="apmethod" type="xs:string" />
+          <xs:element minOccurs="0" name="apname" type="xs:string" />
+          <xs:element minOccurs="0" name="apaddress" type="xs:string" />
+          <xs:element minOccurs="0" name="address2" type="xs:string" />
+          <xs:element minOccurs="0" name="apdestination" type="xs:string" />
+          <xs:element minOccurs="0" name="aplabel" type="xs:string" />
+          <xs:element minOccurs="0" name="aptrackingNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="apnote" type="xs:string" />
+          <xs:element minOccurs="0" name="apBuyerID" type="xs:string" />
+          <xs:element minOccurs="0" name="apItemurl" type="xs:string" />
+          <xs:element minOccurs="0" name="apItemTitle" type="xs:string" />
+          <xs:element minOccurs="0" name="apTransactionID" type="xs:string" />
+          <xs:element minOccurs="0" name="apFromEmail" type="xs:string" />
+          <xs:element minOccurs="0" name="ebayID" type="xs:string" />
+          <xs:element minOccurs="0" name="apTel" type="xs:string" />
+          <xs:element minOccurs="0" name="apTel2" type="xs:string" />
+          <xs:element minOccurs="0" name="zipCode" type="xs:string" />
+          <xs:element minOccurs="0" name="refNo" type="xs:string" />
+          <xs:element minOccurs="0" name="apinsurance" type="xs:string" />
+          <xs:element minOccurs="0" name="aptype" type="xs:string" />
+          <xs:element minOccurs="0" name="apdescription" type="xs:string" />
+          <xs:element minOccurs="0" name="customsArticleName" type="xs:string" />
+          <xs:element minOccurs="0" name="apquantity" type="xs:int" />
+          <xs:element name="apweight" type="xs:double" />
+          <xs:element minOccurs="0" name="actualWeight" type="xs:double" />
+          <xs:element name="apvalue" type="xs:double" />
+          <xs:element name="apGross" type="xs:double" />
+          <xs:element minOccurs="0" name="apdescriptions" type="xs:string" />
+          <xs:element minOccurs="0" name="customsArticleNames" type="xs:string" />
+          <xs:element minOccurs="0" name="apquantitys" type="xs:string" />
+          <xs:element minOccurs="0" name="apweights" type="xs:string" />
+          <xs:element minOccurs="0" name="apvalues" type="xs:string" />
+          <xs:element minOccurs="0" name="city" type="xs:string" />
+          <xs:element minOccurs="0" name="province" type="xs:string" />
+          <xs:element minOccurs="0" name="sku" type="xs:string" />
+          <xs:element minOccurs="0" name="imageUrl" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="queryShipTypeZoning">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="companyID" type="xs:string" />
+          <xs:element minOccurs="0" name="pwd" type="xs:string" />
+          <xs:element minOccurs="0" name="shipCode" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="queryShipTypeZoningResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:shipTypeZoning" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="shipTypeZoning">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="shipCode" type="xs:string" />
+          <xs:element minOccurs="0" name="countryCode" type="xs:string" />
+          <xs:element minOccurs="0" name="printZoneCode" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="changeShippingMethodService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="companyID" type="xs:string" />
+          <xs:element minOccurs="0" name="pwd" type="xs:string" />
+          <xs:element minOccurs="0" name="vsnumbers" type="tns:arrayOfString" />
+          <xs:element minOccurs="0" name="methods" type="tns:arrayOfString" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="changeShippingMethodServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:returnObject" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="queryParcelByRefNoService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="companyID" type="xs:string" />
+          <xs:element minOccurs="0" name="pwd" type="xs:string" />
+          <xs:element minOccurs="0" name="refNos" type="tns:arrayOfString" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="queryParcelByRefNoServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:parcel" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="forecastService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="companyID" type="xs:string" />
+          <xs:element minOccurs="0" name="pwd" type="xs:string" />
+          <xs:element minOccurs="0" name="vsnumbers" type="tns:arrayOfString" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="forecastServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:returnObject" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="addParcelService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="companyID" type="xs:string" />
+          <xs:element minOccurs="0" name="pwd" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="parcelList" type="tns:parcel" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="addParcelServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:returnObject" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="deleteParcelByNoService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="companyID" type="xs:string" />
+          <xs:element minOccurs="0" name="pwd" type="xs:string" />
+          <xs:element minOccurs="0" name="vsnumbers" type="tns:arrayOfString" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="deleteParcelByNoServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:returnObject" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="addParcelAndForecastService">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="companyID" type="xs:string" />
+          <xs:element minOccurs="0" name="pwd" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="parcelList" type="tns:parcel" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="addParcelAndForecastServiceResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:returnObject" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="deleteParcelByNoServiceResponse">
+    <wsdl:part name="parameters" element="tns:deleteParcelByNoServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="deleteParcelByNoService">
+    <wsdl:part name="parameters" element="tns:deleteParcelByNoService" />
+  </wsdl:message>
+  <wsdl:message name="queryShipTypeResponse">
+    <wsdl:part name="parameters" element="tns:queryShipTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="queryParcelServiceResponse">
+    <wsdl:part name="parameters" element="tns:queryParcelServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="queryParcelByRefNoService">
+    <wsdl:part name="parameters" element="tns:queryParcelByRefNoService" />
+  </wsdl:message>
+  <wsdl:message name="addParcelAndForecastService">
+    <wsdl:part name="parameters" element="tns:addParcelAndForecastService" />
+  </wsdl:message>
+  <wsdl:message name="addParcelAndForecastServiceResponse">
+    <wsdl:part name="parameters" element="tns:addParcelAndForecastServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="forecastByRefNoService">
+    <wsdl:part name="parameters" element="tns:forecastByRefNoService" />
+  </wsdl:message>
+  <wsdl:message name="forecastByRefNoServiceResponse">
+    <wsdl:part name="parameters" element="tns:forecastByRefNoServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="forecastService">
+    <wsdl:part name="parameters" element="tns:forecastService" />
+  </wsdl:message>
+  <wsdl:message name="queryParcelShippingCostByTarckingNoServiceResponse">
+    <wsdl:part name="parameters" element="tns:queryParcelShippingCostByTarckingNoServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="queryShipTypeZoning">
+    <wsdl:part name="parameters" element="tns:queryShipTypeZoning" />
+  </wsdl:message>
+  <wsdl:message name="addParcelService">
+    <wsdl:part name="parameters" element="tns:addParcelService" />
+  </wsdl:message>
+  <wsdl:message name="queryParcelShippingCostByRefNoService">
+    <wsdl:part name="parameters" element="tns:queryParcelShippingCostByRefNoService" />
+  </wsdl:message>
+  <wsdl:message name="forecastServiceResponse">
+    <wsdl:part name="parameters" element="tns:forecastServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="queryParcelShippingCostByTarckingNoService">
+    <wsdl:part name="parameters" element="tns:queryParcelShippingCostByTarckingNoService" />
+  </wsdl:message>
+  <wsdl:message name="deleteParcelByRefNoService">
+    <wsdl:part name="parameters" element="tns:deleteParcelByRefNoService" />
+  </wsdl:message>
+  <wsdl:message name="queryParcelByRefNoServiceResponse">
+    <wsdl:part name="parameters" element="tns:queryParcelByRefNoServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="changeShippingMethodByRefNoServiceResponse">
+    <wsdl:part name="parameters" element="tns:changeShippingMethodByRefNoServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="changeShippingMethodService">
+    <wsdl:part name="parameters" element="tns:changeShippingMethodService" />
+  </wsdl:message>
+  <wsdl:message name="queryParcelShippingCostByRefNoServiceResponse">
+    <wsdl:part name="parameters" element="tns:queryParcelShippingCostByRefNoServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="queryShipType">
+    <wsdl:part name="parameters" element="tns:queryShipType" />
+  </wsdl:message>
+  <wsdl:message name="addParcelServiceResponse">
+    <wsdl:part name="parameters" element="tns:addParcelServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="queryParcelService">
+    <wsdl:part name="parameters" element="tns:queryParcelService" />
+  </wsdl:message>
+  <wsdl:message name="changeShippingMethodByRefNoService">
+    <wsdl:part name="parameters" element="tns:changeShippingMethodByRefNoService" />
+  </wsdl:message>
+  <wsdl:message name="deleteParcelByRefNoServiceResponse">
+    <wsdl:part name="parameters" element="tns:deleteParcelByRefNoServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="queryShipTypeZoningResponse">
+    <wsdl:part name="parameters" element="tns:queryShipTypeZoningResponse" />
+  </wsdl:message>
+  <wsdl:message name="changeShippingMethodServiceResponse">
+    <wsdl:part name="parameters" element="tns:changeShippingMethodServiceResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ParcelOprWebService">
+    <wsdl:operation name="forecastByRefNoService">
+      <wsdl:input name="forecastByRefNoService" message="tns:forecastByRefNoService" />
+      <wsdl:output name="forecastByRefNoServiceResponse" message="tns:forecastByRefNoServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="queryParcelShippingCostByTarckingNoService">
+      <wsdl:input name="queryParcelShippingCostByTarckingNoService" message="tns:queryParcelShippingCostByTarckingNoService" />
+      <wsdl:output name="queryParcelShippingCostByTarckingNoServiceResponse" message="tns:queryParcelShippingCostByTarckingNoServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="deleteParcelByRefNoService">
+      <wsdl:input name="deleteParcelByRefNoService" message="tns:deleteParcelByRefNoService" />
+      <wsdl:output name="deleteParcelByRefNoServiceResponse" message="tns:deleteParcelByRefNoServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="queryParcelShippingCostByRefNoService">
+      <wsdl:input name="queryParcelShippingCostByRefNoService" message="tns:queryParcelShippingCostByRefNoService" />
+      <wsdl:output name="queryParcelShippingCostByRefNoServiceResponse" message="tns:queryParcelShippingCostByRefNoServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="changeShippingMethodByRefNoService">
+      <wsdl:input name="changeShippingMethodByRefNoService" message="tns:changeShippingMethodByRefNoService" />
+      <wsdl:output name="changeShippingMethodByRefNoServiceResponse" message="tns:changeShippingMethodByRefNoServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="queryShipType">
+      <wsdl:input name="queryShipType" message="tns:queryShipType" />
+      <wsdl:output name="queryShipTypeResponse" message="tns:queryShipTypeResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="queryParcelService">
+      <wsdl:input name="queryParcelService" message="tns:queryParcelService" />
+      <wsdl:output name="queryParcelServiceResponse" message="tns:queryParcelServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="queryShipTypeZoning">
+      <wsdl:input name="queryShipTypeZoning" message="tns:queryShipTypeZoning" />
+      <wsdl:output name="queryShipTypeZoningResponse" message="tns:queryShipTypeZoningResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="changeShippingMethodService">
+      <wsdl:input name="changeShippingMethodService" message="tns:changeShippingMethodService" />
+      <wsdl:output name="changeShippingMethodServiceResponse" message="tns:changeShippingMethodServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="queryParcelByRefNoService">
+      <wsdl:input name="queryParcelByRefNoService" message="tns:queryParcelByRefNoService" />
+      <wsdl:output name="queryParcelByRefNoServiceResponse" message="tns:queryParcelByRefNoServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="forecastService">
+      <wsdl:input name="forecastService" message="tns:forecastService" />
+      <wsdl:output name="forecastServiceResponse" message="tns:forecastServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="addParcelService">
+      <wsdl:input name="addParcelService" message="tns:addParcelService" />
+      <wsdl:output name="addParcelServiceResponse" message="tns:addParcelServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="deleteParcelByNoService">
+      <wsdl:input name="deleteParcelByNoService" message="tns:deleteParcelByNoService" />
+      <wsdl:output name="deleteParcelByNoServiceResponse" message="tns:deleteParcelByNoServiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="addParcelAndForecastService">
+      <wsdl:input name="addParcelAndForecastService" message="tns:addParcelAndForecastService" />
+      <wsdl:output name="addParcelAndForecastServiceResponse" message="tns:addParcelAndForecastServiceResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ParcelOprWebServiceSoapBinding" type="tns:ParcelOprWebService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="forecastByRefNoService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="forecastByRefNoService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="forecastByRefNoServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="queryParcelShippingCostByTarckingNoService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="queryParcelShippingCostByTarckingNoService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="queryParcelShippingCostByTarckingNoServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteParcelByRefNoService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="deleteParcelByRefNoService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="deleteParcelByRefNoServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="queryParcelShippingCostByRefNoService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="queryParcelShippingCostByRefNoService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="queryParcelShippingCostByRefNoServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="changeShippingMethodByRefNoService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="changeShippingMethodByRefNoService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="changeShippingMethodByRefNoServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="queryParcelService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="queryParcelService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="queryParcelServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="queryShipType">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="queryShipType">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="queryShipTypeResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="queryShipTypeZoning">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="queryShipTypeZoning">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="queryShipTypeZoningResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="changeShippingMethodService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="changeShippingMethodService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="changeShippingMethodServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="queryParcelByRefNoService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="queryParcelByRefNoService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="queryParcelByRefNoServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="forecastService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="forecastService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="forecastServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="addParcelService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="addParcelService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="addParcelServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteParcelByNoService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="deleteParcelByNoService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="deleteParcelByNoServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="addParcelAndForecastService">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="addParcelAndForecastService">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="addParcelAndForecastServiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ParcelOprWebService">
+    <wsdl:port name="ParcelOprWebServiceImplPort" binding="tns:ParcelOprWebServiceSoapBinding">
+      <soap:address location="http://post.8dt.com:8880/wb_lc/cxf/ParcelOprWebService" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

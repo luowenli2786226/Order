@@ -1,0 +1,159 @@
+﻿@model DDX.OrderManagementSystem.Domain.MachineType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $("#c_Code").validatebox({
+            required: true
+        });
+        $('#c_MachineClass').combobox({
+            url: '@Url.Action("GetDataByCode", "Dictionary")/MachineClass',
+                    valueField: 'DicValue',
+                    textField: 'FullName',
+                    panelHeight: 200,
+                    width: 150
+                });
+        $('#c_Status').combobox({
+            url: '@Url.Action("GetDataByCode", "Dictionary")/MachineStatus',
+                    valueField: 'DicValue',
+                    textField: 'FullName',
+                    panelHeight: 200,
+                    width: 150
+                });
+        $('#c_UserName').combobox({
+            url: '@Url.Action("ListQ","User")',
+                    panelHeight: 100,
+                    mode: 'remote',
+                    valueField: 'Realname',
+                    textField: 'Realname',
+                    editable: true
+                });
+		$('#c_BuyBy').combobox({
+		    url: '@Url.Action("ListQ","User")',
+                    panelHeight: 100,
+                    mode: 'remote',
+                    valueField: 'Realname',
+                    textField: 'Realname',
+                    editable: true
+                });
+		$('#c_BuyDate').datebox();
+
+        $('#c_StartDate').datebox();
+
+        $('#c_EndDate').datebox();
+        $('#c_MachineClass').combobox("setValue", "电脑");
+        $('#c_Status').combobox("setValue", "正常运行");
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "Machine", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+@*	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>*@
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Code,"编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Code,new{@id="c_Code"})
+		</td>
+	</tr>
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.MachineClass,"类别:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MachineClass,new{@id="c_MachineClass"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Name,"名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Name,new{@id="c_Name"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="c_Status"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserName,"使用人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserName,new{@id="c_UserName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.StartDate,"开始时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StartDate,new{@id="c_StartDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.EndDate,"结束时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EndDate,new{@id="c_EndDate"})
+		</td>
+	</tr>
+
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyMoney,"购买金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyMoney,new{@id="c_BuyMoney"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyDate,"购买日期:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyDate,new{@id="c_BuyDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyBy,"购买人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyBy,new{@id="c_BuyBy"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

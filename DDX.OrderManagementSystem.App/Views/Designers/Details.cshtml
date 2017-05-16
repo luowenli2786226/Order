@@ -1,0 +1,128 @@
+﻿@model DDX.OrderManagementSystem.Domain.DesignerType
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <fieldset>
+        <legend>DesignerType</legend>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.DesignerID)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.DesignerID)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Contentitle)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Contentitle)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Lasttime)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Lasttime)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Apllicant)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Apllicant)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Apllicantime)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Apllicantime)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Auditor)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Auditor)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Audittime)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Audittime)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Auditnotes)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Auditnotes)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Auditstatus)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Auditstatus)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Expectedtime)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Expectedtime)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Receivenotes)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Receivenotes)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Receiptor)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Receiptor)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Receivingsate)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Receivingsate)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Receivingtime)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Receivingtime)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Finishtime)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Finishtime)
+        </div>
+    </fieldset>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</body>
+</html>

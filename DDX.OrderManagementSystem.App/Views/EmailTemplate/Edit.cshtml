@@ -1,0 +1,58 @@
+﻿@model DDX.OrderManagementSystem.Domain.EmailTemplateType
+
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+
+    $(function () {
+
+
+    });
+
+</script>
+
+@using (Html.BeginForm("Edit", "EmailTemplate", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset style="border:0">
+<table class="editForm">
+	<tr>
+@*		<td >
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>*@
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id",style="display:none;"})
+		</td>
+	</tr>
+
+@*	<tr>
+		<td>
+            @Html.LabelFor(model => model.Subject,"主题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Subject,new{@id="e_Subject"})
+		</td>
+	</tr>*@
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Title,"标题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Title,new{@id="e_Title",style="width:600px;"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Content,"内容:")
+		</td>
+		<td>
+            @Html.TextAreaFor(model => model.Content,new{@id="e_Content",style="width:600px;height:300px;resize:none"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

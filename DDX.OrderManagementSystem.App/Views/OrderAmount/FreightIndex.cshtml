@@ -1,0 +1,256 @@
+﻿@{
+    ViewBag.Title = "FreightIndex";
+}
+<script type="text/javascript">
+
+    $(function () {
+
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        $('#orderdateType').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: orderDateType,
+            width: 100
+        });
+        $('#cc').datebox("setValue", getStartDate(7));
+        $('#cc2').datebox("setValue", getStartDate(0));
+        $('#pp').combobox({
+            url: '/Home/Platform/1',
+            valueField: 'id',
+            textField: 'text',
+            width: 100,
+            panelHeight: 'auto',
+            onChange: changePlatform
+        });
+        $('#pp').combobox("setValue", "ALL");
+        $('#status').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["ALL", "ALL"], ["0", "未发货"], ["1", "已发货"]],
+            width: 100
+        });
+        $('#ltype').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["ALL", "ALL"], ["0", "正常"], ["1", "重发"]],
+            width: 100
+        });
+        $('#lmode').combogrid({
+            panelWidth: 360,
+            idField: 'LogisticsCode',
+            textField: 'LogisticsName',
+            url: '/LogisticsMode/ALLList',
+            fit: true,
+            columns: [[
+                { field: 'LogisticsName', title: '名称', width: 250 },
+                { field: 'LogisticsCode', title: '代码', width: 100 }
+            ]]
+        });
+        $('#ltype').combobox("setValue", "ALL");
+        $('#status').combobox("setValue", "ALL");
+        $('#lmode').combogrid("setValue", "ALL");
+        $('#dg').datagrid({
+            url: '@Url.Action("GetFreightList", "OrderAmount")',
+            width: 900,
+            toolbar: '#toolbar',
+            fitColumns: true,
+            singleSelect: true,
+            pagination: true,
+            fit: true,
+            queryParams: { "st": $('#cc').combobox("getValue"), "et": $('#cc2').combobox("getValue") },
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+        $('#orderdateType').combobox("setValue", "CreateOn");
+    });
+    function changePlatform(n, o) {
+        $('#aa').combotree({
+            url: '/Home/AccountList/' + n,
+            valueField: 'id',
+            textField: 'text',
+            width: 150
+        });
+        $('#aa').combotree("setValue", "ALL");
+    }
+
+
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+    function getStatus(v, r, i) {
+        if (r.Status == "已发货" || r.Status == "已完成")
+            return "已发货";
+        else {
+            return "未发货";
+        }
+    }
+    function getScanningOn(v, r, i) {
+        if (r.Status == "已发货" || r.Status == "已完成")
+            return getDate(v);
+        else {
+            return "";
+        }
+    }
+
+    function getSearch() {
+        var search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        var u = $('#pp').combobox("getValue");
+        if (u != "ALL" && u != "" && u != "0") {
+            search += "Platform_es&" + u + "^";
+        }
+        u = $('#aa').combobox("getText");
+        if (u != "ALL" && u != "" && u != "0") {
+            search += "Account_es&" + u + "^";
+        }
+        u = $('#status').combobox("getValue");
+        if (u != "ALL" && u != "") {
+            if (u == "1") {
+                search += "Status_ds&已发货^";
+            } else {
+                search += "Status_un&已发货^";
+            }
+        }
+        var t = $('#orderdateType').combobox("getValue");
+        u = $('#cc').combobox("getValue");
+        if (u != "ALL" && u != "") {
+            search += t + "_st&" + u + "^";
+            if (t == "ScanningOn" && search.indexOf("Status_ds&已发货^")==-1) {
+                search += "Status_ds&已发货^";
+              
+            }
+
+        }
+
+        u = $('#cc2').combobox("getValue");
+        if (u != "ALL" && u != "") {
+            search += t + "_et&" + u + "^";
+            if (t == "ScanningOn" && search.indexOf("Status_ds&已发货^") == -1)
+                search += "Status_ds&已发货^";
+        }
+        u = $('#ltype').combobox("getValue");
+        if (u != "ALL" && u != "") {
+            if (u == "1") {
+                search += "IsRepeat_si&1^";
+            } else {
+                search += "IsRepeat_ei&0^";
+            }
+        }
+        u = $('#lmode').combogrid("getValue");
+        if (u != "ALL" && u != "" && u != "0") {
+            search += "LogisticMode_ds&" + u + "^";
+        }
+        return search;
+    }
+
+    function doSearch() {
+        var search = getSearch();
+        $("#dg").datagrid("load", {
+            search: search
+        });
+    }
+
+    function resetFreight() {
+        $('#dg').datagrid("loading");
+        var search = getSearch();
+        $.messager.prompt('重置运费', '折扣', function (r) {
+            if (r.length > 0) {
+                jQuery.ajax({
+                    url: "/OrderAmount/ResetFreight",
+                    type: "post",
+                    data: 'search=' + encodeURIComponent(search) + "&z=" + r,
+                    success: function (sss) {
+                        $('#dg').datagrid("reload");
+                    }
+                });
+            } else {
+                alert("请输入折扣");
+                return false;
+            }
+        });
+
+    }
+    function toExcel() {
+        search = getSearch();
+        $('#dg').datagrid('loading');
+        var postUrl = "/Order/ExportDown/1";
+        $.ajax({
+            url: '@Url.Action("ToExcel", "OrderAmount")/',
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
+            success: function (result) {
+                $.messager.show({
+                    title: '提示',
+                    msg: result.ErrorMsg,
+                    timeout: 0,
+                    showType: 'slide'
+                });
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
+            }
+        });
+    }
+</script>
+<table id="dg">
+    <thead>
+        <tr>
+            <th field="OrderType" width="100">运费类型
+            </th>
+            <th field="OrderNo" width="100">订单号
+            </th>
+            <th field="OrderExNo" width="100">平台订单号
+            </th>
+            <th field="Country" width="100">国家
+            </th>
+            <th field="TrackCode" width="100">追踪码
+            </th>
+            <th field="Weight" width="100">重量
+            </th>
+            <th field="LogisticMode" width="100">发货方式
+            </th>
+            <th field="Freight" width="100">运费
+            </th>
+            <th field="Status" width="100" formatter="getStatus">发货状态
+            </th>
+            <th field="SendOn" width="100" formatter="getScanningOn">发货时间
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="toolbar">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="resetFreight()">重置运费</a>
+    <br />
+    平台:<input id="pp" type="text" />
+    账户:<input id="aa" type="text" />
+    状态:<input id="status" type="text" />
+    类型:<input id="ltype" type="text" />
+    承运商:<input id="lmode" type="text">
+    时间类型:<input type="text" id="orderdateType" />
+    开始:<input id="cc" type="text" />
+    结束:<input id="cc2" type="text" />
+    <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+     <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
+</div>
+<div id="mm" style="width: 120px">
+    <div data-options="name:'OrderNo'">订单编号</div>
+    <div data-options="name:'OrderExNo'">追踪码</div>
+</div>
+<div id="c_dlg"></div>
+

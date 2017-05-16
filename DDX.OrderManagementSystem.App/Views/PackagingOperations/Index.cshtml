@@ -1,0 +1,144 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.PickingListType>
+@{
+    ViewBag.Title = "Index";
+}
+
+<body class="easyui-layout">
+         <script src="~/Scripts/easyUI/datagrid-detailview.js"></script>
+
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "PackagingOperations")',
+                singleselect: true,
+                nowrap: true,
+                pageNumber: 1,
+                pagination: true,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100, 200],
+                rownumbers: true,
+                height: 580,
+                fitcolumns:"true",
+                toolbar: "#toolbar",
+                onLoadSuccess: function () {
+                    setTimeout(function () {
+                        $('#dg').datagrid('fixDetailRowHeight', index);
+                    }, 0);
+                }
+                //,
+                //columns: [[
+                //    { field: 'PickingNo', title: '拣货单号', width: 100, fixed: true },
+                //    { field: 'PickingType', title: '拣货单类型', width: 100 },
+                //    {
+                //        field: 'BeginWorkTime', title: '作业开始时间', width: 100, formatter: function (value, row, index) {
+                //            if (value) {
+                //                return getDate(value);
+                //            }
+                //        }
+                //    },
+                //    {
+                //        field: 'WorkTimeLength', title: '时长', width: 100, formatter: function (value, row, index) {
+                //            var html = "";
+                //            var now = new Date();
+                //            var beginTime = new Date(parseInt(row.BeginWorkTime.slice(6)));
+
+                //            var total = (now - beginTime) / 1000;
+                //            var day = parseInt(total / (24 * 60 * 60));//计算整数天数
+                //            var afterDay = total - day * 24 * 60 * 60;//取得算出天数后剩余的秒数
+                //            var hour = parseInt(afterDay / (60 * 60));//计算整数小时数
+                //            var afterHour = total - day * 24 * 60 * 60 - hour * 60 * 60;//取得算出小时数后剩余的秒数
+                //            var min = parseInt(afterHour / 60);//计算整数分
+                //            var afterMin = total - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60;//取得算出分后剩余的秒数
+                //            html = hour + day * 24 + "小时" + min + "分";
+                //            return html;
+                //        }
+                //    },
+                //    { field: 'PrintOrderCount', title: '包裹进度', width: 100 },
+                //    { field: 'ScanProduct', title: '货品进度', width: 100 },
+                //    { field: 'Partner', title: '小组成员', width: 100 }
+                //]]
+            });
+            $('#dg').datagrid('fixDetailRowHeight', index);
+        });
+
+        // 回车操作
+        function txt_keydown(e) {
+            var keynum;
+            if (window.event) //IE
+            {
+                keynum = e.keyCode;
+            }
+            else if (e.which) //Netscape/Firefox/Opera
+            {
+                keynum = e.which;
+            }
+            if (keynum == 13) {
+                Scan();
+            }
+            if (keynum == 27) {
+                $('#PickingNo').val("");
+            }
+        }
+        function Scan() {
+            jQuery.ajax({
+                url: "/PackagingOperations/Search",
+                type: "post",
+                data: "PickingNo=" + $('#PickingNo').val(),
+                success: function (rrr) {
+                    debugger;
+                    if (rrr.IsSuccess) {
+
+                        window.open('@Url.Action("Scan", "PackagingOperations")/' + $('#PickingNo').val());
+
+                    }
+                    else {
+                        alert("该拣货单单号不存在!");
+                    }
+                }
+            });
+        }
+        function getWorkTime(v, r, i) {
+            if (v) {
+                return getDate(v);
+            }
+        }
+        function GetTimeLength(v, r, i)
+        {
+            var html = "";
+            var now = new Date();
+            var beginTime = new Date(parseInt(r.BeginWorkTime.slice(6)));
+
+            var total = (now - beginTime) / 1000;
+            var day = parseInt(total / (24 * 60 * 60));//计算整数天数
+            var afterDay = total - day * 24 * 60 * 60;//取得算出天数后剩余的秒数
+            var hour = parseInt(afterDay / (60 * 60));//计算整数小时数
+            var afterHour = total - day * 24 * 60 * 60 - hour * 60 * 60;//取得算出小时数后剩余的秒数
+            var min = parseInt(afterHour / 60);//计算整数分
+            var afterMin = total - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60;//取得算出分后剩余的秒数
+            html = hour + day * 24 + "小时" + min + "分";
+            return html;
+        }
+    </script>
+    <div region="center">
+        <p style="background: #0066FF; height: 30px; margin-bottom: 0px;">
+            <font color="white" size="3">扫描/录入拣货单单号开始包装作业</font>
+            <input id="PickingNo" type="text" style="width: 250px; height: 20px" onkeydown="return txt_keydown(event)" />
+        </p>
+        <font size="3">在进行的包装作业</font>
+        <table id="dg" class="easyui-datagrid">
+            <thead>
+                <tr>
+                    <th field="PickingNo" width="80">拣货单号</th>
+                    <th field="PickingType" width="80">拣货单类型</th>
+                    <th field="BeginWorkTime" width="130" formatter="getWorkTime">作业开始时间</th>
+                    <th field="WorkTimeLength" width="80" formatter="GetTimeLength">时长</th>
+                    <th field="PrintOrderCount" width="80">包裹进度</th>
+                    <th field="ScanProduct" width="80">货品进度</th>
+                    <th field="Partner">小组成员</th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div id="scan" style="height: 600px; width: 500px"></div>
+</body>

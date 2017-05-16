@@ -1,0 +1,60 @@
+﻿@model DDX.OrderManagementSystem.Domain.WarehouseLineType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+        $('#e_AreaId').combogrid({
+            required: true,
+            editable: false,
+            panelWidth: 120,
+            idField: 'AreaId',
+            textField: 'AreaCode',
+            url: '/WarehouseLine/QList',
+            fit: true,
+            columns: [[
+                { field: 'AreaId', title: '区域Id', width: 100, hidden: true },
+                { field: 'AreaCode', title: '区域编码', width: 100 }
+            ]]
+        });
+        $('#e_form').width(230);
+    });
+</script>
+@using (Html.BeginForm("Edit", "WarehouseLine", FormMethod.Post, new { id = "e_form" }))
+
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.LineId,new{@id="e_LineId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AreaId,"区域编码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AreaId,new{@id="e_AreaId"})
+		</td>
+        <td style="display: none">
+            @Html.TextBoxFor(model => model.AreaCode, new { @id = "e_AreaCode" })
+        </td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LineCode,"排位编码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LineCode,new{@id="e_LineCode"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

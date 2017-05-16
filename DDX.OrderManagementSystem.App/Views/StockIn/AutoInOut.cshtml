@@ -1,0 +1,142 @@
+﻿@model DDX.OrderManagementSystem.Domain.StockInType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('#t_WId').combogrid({
+            required: true,
+            editable: false,
+            panelWidth: 410,
+            idField: 'Id',
+            textField: 'WName',
+            url: '/Warehouse/QList',
+            fit: true,
+            columns: [[
+                { field: 'Id', title: 'Id', width: 100 },
+                { field: 'WCode', title: '仓库代码', width: 100 },
+                { field: 'WName', title: '仓库名称', width: 100 },
+                { field: 'Address', title: '仓位地址', width: 100 }
+            ]]
+        });
+        $('#t_WId').combogrid("setValue", 1);
+
+        $('#t_SKU').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'SKU',
+            textField: 'SKU',
+            required: true,
+            url: '/Product/ListQ',
+            fit: true,
+            columns: [[
+                { field: 'SKU', title: 'SKU', width: 100 },
+                { field: 'ProductName', title: 'Title', width: 200 },
+                { field: 'Standard', title: '规格', width: 100 }
+            ]]
+        });
+
+        $('#t_InType').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/StockIn',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            disabled: true
+        });
+        $('#t_InType').combobox("setValue", "快速出入库");
+        $('#t_Price').numberbox({
+            precision: 2,
+            disabled: true
+        });
+        $('#t_Price').numberbox("setValue", "0");
+        $('#t_Qty').numberbox({
+            required: true,
+            onChange: function () {
+                Qtynozero();
+            }
+        });
+
+    });
+
+    function Qtynozero() {
+        var num = $('#t_Qty').attr("value");
+        if (num != "" & num <= 0) {
+            alert("数量输入有误");
+            $('#t_Qty').numberbox("setValue", "1");
+        }
+    }
+
+
+</script>
+
+@using (Html.BeginForm("CreateAutoInOut", "StockIn", FormMethod.Post, new { id = "t_form" }))
+{
+    <fieldset>
+        <table class="editForm">
+
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.WId, "入库仓库:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.WId, new { @id = "t_WId" })
+                </td>
+                <td style="display: none">
+                    @Html.TextBoxFor(model => model.WName, new { @id = "t_WName" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.InType, "入库类型:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.InType, new { @id = "t_InType" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SKU, "商品:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SKU, new { @id = "t_SKU" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Qty, "数量:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Qty, new { @id = "t_Qty" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Price, "金额:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Price, new { @id = "t_Price" })
+                </td>
+            </tr>
+
+
+
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Memo, "备忘:")
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Memo, new { @id = "t_Memo", style = "resize:none" })
+                </td>
+            </tr>
+
+
+        </table>
+    </fieldset>
+}

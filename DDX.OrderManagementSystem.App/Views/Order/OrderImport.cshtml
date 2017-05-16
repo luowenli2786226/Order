@@ -1,0 +1,298 @@
+﻿@{
+    
+}
+
+<link href="@Url.Content("~/Scripts/uploadify/uploadify.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("~/Scripts/uploadify/jquery.uploadify-3.1.min.js")" type="text/javascript"></script>
+
+
+<script type="text/javascript">
+    var type = 0;
+    $(function () {
+        setTimeout(function() {
+            $('#up_file').uploadify({
+                'auto': false,
+                'buttonText': '请选择订单文件',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function(file, data, response) {
+                    eval("data=" + data);
+                    $('#hfile').val(data.FilePath);
+                    if (type == 1) {
+                        formPost('c_Import', '@Url.Action("ImportAmount", "Order")');
+                    } else {
+                        formPost('c_Import', '@Url.Action("Import", "Order")', null, null, null, '@Url.Action("Result", "Home")');
+                    }
+                    $('#c_Import').clear();
+                }
+            });
+            $('#up_file2').uploadify({
+                'auto': false,
+                'buttonText': '请选择Gmarket文件',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function(file, data, response) {
+                    eval("data=" + data);
+                    $('#hfile2').val(data.SaveName);
+
+                    var postUrl = "/Order/ExportDown/1";
+                    jQuery.ajax({
+                        url: "/Order/GExport/",
+                        type: "post",
+                        data: "f=" + data.SaveName,
+                        success: function(sss) {
+                            location.href = postUrl;
+                        }
+                    });
+                }
+            });
+        }, 10);
+        $('#Platform').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/SalePlatform',
+                  valueField: 'DicValue',
+                  textField: 'FullName',
+                  required: true,
+                  width: 150,
+                  panelHeight: 'auto',
+                  onChange: changePlatform
+              });
+        $('#Platform2').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/SalePlatform',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            required: true,
+            width: 150,
+            panelHeight: 'auto',
+            onChange: changePlatform2
+        });
+        var d = new Date(-1);
+        $('#st').datebox({
+            required: true
+        });
+        $('#et').datebox({
+            required: true
+        });
+
+        $('#et').datebox("setValue", getStartDate(-1));
+        $('#st').datebox("setValue", getStartDate(1));
+
+    });
+
+    function changePlatform2(n, o) {
+        comboboxInit('/Account/GetAccountListByPlatform/', "id=" + n, 'Account2', 'Id', 'AccountName', undefined, undefined, 500, true);
+    }
+
+    function changePlatform(n, o) {
+        comboboxInit('/Account/GetAccountListByPlatform/', "id=" + n, 'Account', 'Id', 'AccountName', undefined, undefined,500,true);
+    }
+    function addOrder() {
+        $.messager.prompt('手动导入订单验证', '请输入超级管理员密码', function (k) {
+            if (k) {
+                jQuery.ajax({
+                    url: "/Order/CheckPass",
+                    type: "post",
+                    data: "p=" + k,
+                    success: function (rrr) {
+                        if (rrr.IsSuccess) {
+                            $("#tt").tabs("loading", "导入中。。。");
+                            type = 0;
+                            $('#up_file').uploadify('upload', '*');
+                            $("#tt").tabs("loaded");
+                        } else {
+                            alert(rrr.Msg);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+
+    function importAmount() {
+        $.messager.prompt('手动导入订单验证', '请输入超级管理员密码', function (k) {
+            if (k) {
+                jQuery.ajax({
+                    url: "/Order/CheckPass",
+                    type: "post",
+                    data: "p=" + k,
+                    success: function (rrr) {
+                        if (rrr.IsSuccess) {
+                            $("#tt").tabs("loading", "导入中。。。");
+                            type = 1;
+                            $('#up_file').uploadify('upload', '*');
+                            $("#tt").tabs("loaded");
+                        } else {
+                            alert(rrr.Msg);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function Gexport() {
+        type = 1;
+        $('#up_file2').uploadify('upload', '*');
+    }
+
+    function closeLoad() {
+        $("#tt").tabs("loaded");
+    }
+
+    function Synchronous() {
+        $("#tt").tabs("loading", "导入中。。。");
+        formPost2('c_Synchronous', '@Url.Action("Synchronous", "Order")', '@Url.Action("Result", "Home")');
+
+    }
+
+    function formPost2(form, url, r) {
+        $('#' + form).form('submit', {
+            url: url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                result = eval('(' + result + ')');
+                if (result.IsSuccess) {
+                    alert("操作成功");
+                } else {
+                    if (result.ErrorMsg)
+                        alert("保存失败!" + result.ErrorMsg);
+                    else {
+                        alert("保存失败!");
+                    }
+                }
+                if (result.Info) {
+                    closeLoad();
+                    window.open(r);
+                }
+            }
+        });
+    }
+    (function () {
+        $.extend($.fn.tabs.methods, {
+            //显示遮罩  
+            loading: function (jq, msg) {
+                return jq.each(function () {
+                    var panel = $(this).tabs("getSelected");
+                    if (msg == undefined) {
+                        msg = "  正在加载数据，请稍候.                                                                                                                                                                                                                           ..";
+                    }
+                    $("<div class=\"datagrid-mask\"></div>").css({ display: "block", width: panel.width(), height: panel.height() }).appendTo(panel);
+                    $("<div class=\"datagrid-mask-msg\"></div>").html(msg).appendTo(panel).css({ display: "block", left: (panel.width() - $("div.datagrid-mask-msg", panel).outerWidth()) / 2, top: (panel.height() - $("div.datagrid-mask-msg", panel).outerHeight()) / 2 });
+                });
+            }
+    ,
+            //隐藏遮罩  
+            loaded: function (jq) {
+                return jq.each(function () {
+                    var panel = $(this).tabs("getSelected");
+                    panel.find("div.datagrid-mask-msg").remove();
+                    panel.find("div.datagrid-mask").remove();
+                });
+            }
+        });
+    })(jQuery);
+</script>
+
+<body class="easyui-layout">
+    <div region="center">
+    
+        <div id="tt" class="easyui-tabs" style="width: 600px; height: 400px;">
+            <div title="订单导入" style="padding: 20px;">
+                @using (Html.BeginForm("Import", "Order", FormMethod.Post, new { id = "c_Import" }))
+                {
+           
+                    <table class="dv-table" border="0" style="width: 400px; height: 250px;">
+                        <tr>
+                            <td>平台:</td>
+                            <td>
+                                <input id="Platform" name="Platform" /></td>
+                        </tr>
+                        <tr>
+                            <td>账户:</td>
+                            <td>
+                                <input id="Account" name="Account" /></td>
+                        </tr>
+                        <tr>
+                            <td>文件:</td>
+                            <td>
+                                <input id="hfile" type="hidden" value="" name="hfile" />
+                                <input id="up_file" type="file" name="up_file" /></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <input type="button" value="导入订单" onclick="addOrder();" />
+                                <input type="button" value="导入金额" onclick="importAmount();" />
+                            </td>
+                        </tr>
+                    </table>
+                }
+            </div>
+            <div title="订单同步" style="overflow: auto; padding: 20px;">
+                @using (Html.BeginForm("Synchronous", "Order", FormMethod.Post, new { id = "c_Synchronous" }))
+                {
+                    <table class="dv-table" border="0" style="width: 400px; height: 250px;">
+                        <tr>
+                            <td>平台:</td>
+                            <td>
+                                <input id="Platform2" name="Platform" /></td>
+                        </tr>
+                        <tr>
+                            <td>账户:</td>
+                            <td>
+                                <input id="Account2" name="Account" /></td>
+                        </tr>
+                        <tr>
+                            <td>开始时间:</td>
+                            <td>
+                                <input id="st" name="st" type="text"></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>结束时间:</td>
+                            <td>
+                                <input id="et" name="et" type="text"></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <input type="button" value="保存" onclick="Synchronous();" /></td>
+                        </tr>
+                    </table>
+                }
+            </div>
+           @* <div title="速卖通订单金额" style="overflow: auto; padding: 20px;">
+                @using (Html.BeginForm("GExport", "Order", FormMethod.Post, new { id = "c_GExport" }))
+                {
+                    <table class="dv-table" border="0" style="width: 400px; height: 250px;">
+
+                        <tr>
+                            <td>文件:</td>
+                            <td>
+                                <input id="hfile2" type="hidden" value="" name="hfile" />
+                                <input id="up_file2" type="file" name="up_file" /></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <input type="button" value="保存" onclick="Gexport();" /></td>
+                        </tr>
+                    </table>
+                }
+            </div>*@
+
+        </div>
+        <div style="width: 600px;">
+         <p>Lazada平台/WISH平台/CDiscount订单格式表下载:<a href="~/Content/File/导入订单模板.xlsx">下载</a></p>
+     <p>亚马逊平台订单导入格式：order-id、sku、quantity-purchased、currency、ship-country、buyer-name、buyer-email、payments-date、recipient-name、ship-address-1、ship-address-2、ship-address-3、ship-city、ship-state、ship-country、buyer-phone-number、ship-postal-code、sku、quantity-purchased、</p>
+     <p>SMT平台订单格式表下载：<a href="~/Content/File/速卖通导入订单模板.xls">下载</a></p>
+     </div>
+</div>
+    
+</body>
+ 

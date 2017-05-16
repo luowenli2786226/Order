@@ -1,0 +1,68 @@
+﻿@model DDX.OrderManagementSystem.Domain.PermissionScopeType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "PermissionScope", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ResourceCategory,"什么类型的(主体):")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ResourceCategory,new{@id="c_ResourceCategory"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ResourceId,"什么资源(主体):")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ResourceId,new{@id="c_ResourceId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TargetCategory,"对什么类型的:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TargetCategory,new{@id="c_TargetCategory"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TargetId,"对什么资源:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TargetId,new{@id="c_TargetId"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

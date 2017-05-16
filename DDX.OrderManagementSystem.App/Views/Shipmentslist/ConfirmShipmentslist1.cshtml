@@ -1,0 +1,363 @@
+﻿
+
+@model IEnumerable<DDX.OrderManagementSystem.Domain.ShipmentslistType>
+@{
+    ViewBag.Title = "ConfirmShipmentslist1";
+}
+<script src="~/Scripts/easyUI/datagrid-detailview.js"></script>
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List","Shipmentslist", new { search="txtIsExa&审核通过^"})',
+            showFooter: true,
+            view: detailview,
+            detailFormatter: function (index, row) {
+                return '<div style="padding:2px"><table id="ddv-' + index + '" style="padding:5px 0"></table></div>';
+            },
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100, 200],
+            nowrap: false,
+            onExpandRow: function (index, row) {
+
+                $('#ddv-' + index).datagrid({
+                    url: '@Url.Action("GetShipments", "Shipmentslist")',
+                    queryParams: { "ShipmentlistId": row.Id },
+                    nowrap: false,
+                    rownumbers: true,
+                    singleSelect: true,
+                    pagination: false,
+                    frozenColumns: [[
+                        { field: 'Id', title: '明细编号', width: 62 },
+                        { field: 'Sku', title: '我司货号(SKU)', width: 100 },
+                        { field: 'DescribeCn', title: '中文描述', width: 100 },
+                        { field: 'PurchaseNo', title: '采购合同号', width: 80 },
+                        { field: 'ExportNo', title: '外销合同号', width: 80 },
+                        { field: 'TotalPrice', title: '客人含佣金总价$', width: 110, formatter: formatter1 },
+                        { field: 'YouShengtotal', title: '总优胜价格$', width: 80, formatter: formatter1 },
+                        { field: 'PriceFactorytotal', title: '工厂总价$', width: 80, formatter: formatter1 },
+                        { field: 'Qty', title: '实际数量', width: 60, formatter: formatter1 },
+                        { field: 'WeightGrosstotal', title: '总毛重', width: 60, formatter: formatter1 },
+                        { field: 'WeightNettotal', title: '总净重', width: 60, formatter: formatter1 },
+                        { field: 'TotalVolume', title: '总体积', width: 60, formatter: formatter1 },
+                        { field: 'HeadloadCharges1', title: '单个头程$', width: 62, formatter: formatter1 }
+                    ]],
+                    columns: [[
+                        { field: 'PriceUMax', title: 'UMAX价格$', width: 80 },
+                        { field: 'HeadloadCharges', title: '头程(元/公斤)', width: 80 },
+                        { field: 'YouShengPrice', title: '优胜价格$', width: 80 },
+                        { field: 'PriceFactory', title: '工厂价格￥', width: 100 },
+                        { field: 'PackageNo', title: '包装', width: 60 },
+                        { field: 'Ctn', title: '箱数', width: 60 },
+                        { field: 'WeightGross', title: '毛重KG', width: 60 },
+                        { field: 'WeightNet', title: '净重KG', width: 60 },
+                        { field: 'Paymethod', title: '付款方式', width: 60 },
+                        { field: 'CreateBy', title: '业务人', width: 60 },
+                        { field: 'CreatePlanBy', title: '采购员', width: 60 },
+                        { field: 'CreatetTrackBy', title: '跟单员', width: 60 }
+
+                    ]], onResize: function () {
+                        $('#dg').datagrid('fixDetailRowHeight', index);
+                    },
+                    onDblClickRow: function (i, r) {
+                        var url = '@Url.Action("Edit", "Shipments")/' + r.Id;
+                        showdlg(url, 'e_dlg', ajaxEdit);
+
+                    },
+                    onLoadSuccess: function () {
+                        setTimeout(function () {
+                            $('#dg').datagrid('fixDetailRowHeight', index);
+                        }, 0);
+                    }
+                });
+                $('#dg').datagrid('fixDetailRowHeight', index);
+
+            }
+
+        });
+        //审批进程下拉框赋值
+        $("#txtIsExa").combobox({
+            url: '/Shipmentslist/GetShipmentapproval/1',
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            width: 100,
+            panelHeight: 'auto'
+
+        });
+        $("#txtIsExa").combobox("setValue", "审核通过");
+    })
+
+    function formatter1(val, rowData, rowIndex) {
+        if (val != null)
+            return val.toFixed(2);
+    }
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create","Shipmentslist")';
+        showdlg(url_str, 'c_dlg', ajaxAdd)
+    }
+
+
+    //异步新建提交
+    function ajaxAdd() {
+        formPost('c_form', '@Url.Action("Create", "Shipmentslist")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost2('e_form', '@Url.Action("Edit", "Shipments", new { type = 0 })', 'e_dlg', 'dg');
+        }
+        function formPost2(form, url, dlg, dg, t, r) {
+            $('#' + form).form('submit', {
+                url: url,
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                    result = eval('(' + result + ')');
+                    if (result.IsSuccess) {
+                        alert("操作成功");
+                        if (dlg) {
+                            $('#' + dlg).dialog('close');
+                        }
+                        if (dg) {
+                            if (t) {
+                                $('#' + dg).treegrid('reload');
+                            }
+                            else {
+                                $('#' + dg).datagrid('reload');
+                            }
+                        }
+                    } else {
+                        if (result.ErrorMsg)
+                            alert("保存失败!" + result.ErrorMsg);
+                        else {
+                            // alert("保存失败,请检查包装*箱数是否大于（实际库存-占用库存-已经创建的数量）");
+                            alert(result.Message);
+                        }
+                    }
+                    if (result.Info) {
+                        window.open(r);
+                    }
+                }
+            });
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "Shipmentslist")/' + id;
+            alert(1);
+            delData(url, 'dg');
+
+        }
+    }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+    function doSearch() {
+        search = "txtIsExa&" + $('#txtIsExa').combobox("getValue") + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        $("#dg").datagrid("load", {
+            search: search
+        });
+    }
+    function ShowAdvanced() {
+        showSrarch('@Url.Action("Search", "Shipmentslist")', 's_dlg', 'dg');
+        }
+    function getAudit(v, r, i)
+    {
+        var html = "";
+        if (r.Id == 0) return '';
+        if (r.IsExa == "审核通过") {
+            var html = '<a href="javascript:void(0);" onclick="DoConfirm1(' + r.Id + ',1)">确认</a>' + ' <a href="javascript:void(0);" onclick="DoConfirm1(' + r.Id + ',2)">拒绝</a>';
+        }
+        return html;
+    }
+    function DoConfirm1(id, type){
+        if (type == 2) {
+            $('#dlgrefuse').dialog('open');
+        }
+        else {
+            var remark = "";
+            jQuery.ajax({
+                url: "/Shipmentslist/DoConfirm1/",
+                type: "post",
+                data: "id=" + id + "&type=" + type + "&remark=" + remark,
+                success: function (res) {
+                    if (!res.IsSuccess) {
+                        alert(res.ErrorMsg);
+                    }
+                    else {
+                        alert("成功");
+                    }
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+    }
+    function DoConfirm12(type) {
+        var rows = $("#dg").datagrid("getSelected");
+        if (rows) {
+            var id = rows.Id;
+        }
+        jQuery.ajax({
+            url: "/Shipmentslist/DoConfirm1/",
+            type: "post",
+            data: "id=" + id + "&type=" + type + "&remark=" + $("#Remark").val(),
+            success: function (res) {
+                if (!res.IsSuccess) {
+                    alert(res.ErrorMsg);
+                }
+                else {
+                    alert("成功");
+                }
+                $('#dg').datagrid("reload");
+            }
+        });
+        $('#dlgrefuse').dialog('close');
+    }
+    function formatTimeType(v, r, i) {
+        if (r.Id == 0) {
+            return;
+        }
+        return '申请:' + datecheck(r.AppliTime) + "<br>" + '审批:' + datecheck(v) + "<br>" + '确认No1:' + datecheck(r.OverTime1) + "<br>" + '确认No2:' + datecheck(r.OverTime2);
+    }
+    function formatPeopleType(v, r, i) {
+        if (r.Id == 0) {
+            return;
+        }
+        return '申请人:' + peoplecheck(v) + "<br>" + '审批人:' + peoplecheck(r.AgreeBy) + "<br>" + '确认人No1:' + peoplecheck(r.OkBy1) + "<br>" + '确认人No2:' + peoplecheck(r.OkBy2);
+    }
+
+    function datecheck(value) {
+        var day = new Date("2000-01-02");
+        var date = new Date(getOnlyDate(value));
+        if (date < day)
+            return "";
+        return getDate(value);
+    }
+    function peoplecheck(value) {
+        if (value == null)
+            return "";
+        return value;
+    }
+</script>
+<div region="center">
+<table id="dg" class="easyui-datagrid" 
+           toolbar="#toolbar"  
+           rownumbers="true" singleSelect="true" pagination="true" fit="true">  
+        <thead>  
+        <tr>
+
+            <th width="160" formatter="getAudit" field="Id1">操作</th>
+             <th field="Id" width="80">
+                 清单编号
+            </th>
+            <th field="ContractPNo" width="100">
+                采购合同号码
+            </th>
+
+            <th field="ContractWNo" width="100">
+                外销合同号码
+            </th>
+
+            <th field="IsExa" width="100">
+                审批进程
+            </th>
+            <th field="TotalPrice" width="110">客人含佣金总价$</th>
+                 <th field="YouShengtotal" width="80">总优胜价格$</th>
+                 <th field="PriceFactorytotal" width="65">工厂总价$</th>
+                 <th field="Qty" width="65">实际数量 </th>
+                  <th field="WeightGrosstotal" width="60">总毛重</th>
+                 <th field="WeightNettotal" width="60">总净重</th>
+                <th field="TotalVolume" width="60">总体积</th>
+           <th field="ExaTime" width="200" formatter="formatTimeType">时间</th>
+
+            @*<th field="OverTime1" width="100">
+                第一次确认时间
+            </th>*@
+
+          <th field="AppliBy" width="150"  formatter="formatPeopleType">人员</th>
+            <th field="Remark" width="200">备注</th>
+
+           @* <th field="AgreeBy" width="100">
+                审批人
+            </th>
+
+            <th field="OkBy1" width="100">
+                第一确认人
+            </th>
+
+            <th field="OverTime2" width="100">
+                第二次确认时间
+            </th>
+
+            <th field="OkBy2" width="100">
+                第二次确认人
+            </th>
+
+            <th field="AppliTime" width="120" formatter="getDate ">
+                申请时间
+            </th>*@
+
+
+    	</tr>
+		</thead>
+		</table>
+        <div id="toolbar">
+           @* <input type="button" value="确认" />
+            <input type="button" value="拒绝" />*@
+                        审批进程:<input type="text" id="txtIsExa"/>
+
+		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div> 
+		<div id="mm" style="width: 120px">
+                        <div data-options="name:'Id'">出货清单Id</div>
+            <div data-options="name:'ContractPNo'">采购合同号码</div>
+            <div data-options="name:'ContractWNo'">外销合同号码</div>
+            <div data-options="name:'IsExa'">审批进程</div>
+            <div data-options="name:'ExaTime'">审批时间</div>
+            <div data-options="name:'OverTime1'">第一次确认时间</div>
+            <div data-options="name:'AppliBy'">申请人</div>
+            <div data-options="name:'AgreeBy'">审批人</div>
+            <div data-options="name:'OkBy1'">第一确认人</div>
+            <div data-options="name:'OverTime2'">第二次确认时间</div>
+            <div data-options="name:'OkBy2'">第二次确认人</div>
+            <div data-options="name:'AppliTime'" formatter="getDate ">申请时间</div>
+
+        </div>
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+     <div id="dlgrefuse" class="easyui-dialog" title="确认" style="width: 400px; height: 250px; padding: 10px" closed="true">
+            <table>
+                <tr>
+                    <td>拒绝备注:</td>
+                    <td>
+                         <textarea id="Remark" class="easyui-textbox" data-options="multiline:true" style="width: 330px; height: 95px;"></textarea></td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" value="确定" onclick="DoConfirm12(2)" /></td>
+                </tr>
+            </table>
+        </div>
+</div>
+</body>

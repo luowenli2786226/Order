@@ -1,0 +1,148 @@
+@model DDX.OrderManagementSystem.Domain.ShipmentsType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<fieldset>
+    <legend></legend>
+    <div class="display-label">出货明细Id: @Html.DisplayFor(model => model.Id)</div>
+    <div class="display-field">
+       
+    </div>
+
+    <div class="display-label">英文描述:@Html.DisplayFor(model => model.DescribeEn)</div>
+    <div class="display-field">
+        
+    </div>
+
+    <div class="display-label">中文描述:@Html.DisplayFor(model => model.DescribeCn)</div>
+    <div class="display-field">
+        
+    </div>
+
+    <div class="display-label">我司货号（SKU）:@Html.DisplayFor(model => model.Sku)</div>
+    <div class="display-field">
+        
+    </div>
+
+    <div class="display-label">采购合同编号: @Html.DisplayFor(model => model.PurchaseNo)</div>
+    <div class="display-field">
+      
+    </div>
+
+    <div class="display-label">外销合同号码: @Html.DisplayFor(model => model.ExportNo)</div>
+    <div class="display-field">
+       
+    </div>
+
+    <div class="display-label">UMAX价格($):@Html.DisplayFor(model => model.PriceUMax)</div>
+    <div class="display-field">
+        
+    </div>
+
+    <div class="display-label">工厂价格(￥):@Html.DisplayFor(model => model.PriceFactory)</div>
+    <div class="display-field">
+        
+    </div>
+
+    <div class="display-label">单位: @Html.DisplayFor(model => model.Unit)</div>
+@*    <div class="display-field">
+       
+    </div>*@
+
+    <div class="display-label">包装:@Html.DisplayFor(model => model.PackageNo)</div>
+    <div class="display-field">
+        
+    </div>
+
+    <div class="display-label">箱数:@Html.DisplayFor(model => model.Ctn)</div>
+    <div class="display-field">
+        
+    </div>
+
+    <div class="display-label">是否已报关:@Html.DisplayFor(model => model.IsCustoms)</div>
+    <div class="display-field">
+        
+    </div>
+
+    <div class="display-label">毛重（KG）: @Html.DisplayFor(model => model.WeightGross)</div>
+    <div class="display-field">
+       
+    </div>
+
+    <div class="display-label">净重（KG）: @Html.DisplayFor(model => model.WeightNet)</div>
+    <div class="display-field">
+       
+    </div>
+
+    <div class="display-label">总体积: @Html.DisplayFor(model => model.TotalVolume)</div>
+    <div class="display-field">
+       
+    </div>
+
+    <div class="display-label">实际数量:@Html.DisplayFor(model => model.Qty)</div>
+    <div class="display-field">
+        
+    </div>
+
+    <div class="display-label">客人含佣金总价: @Html.DisplayFor(model => model.TotalPrice)</div>
+    <div class="display-field">
+      
+    </div>
+
+    <div class="display-label">增值税率: @Html.DisplayFor(model => model.TaxRate)</div>
+    <div class="display-field">
+       
+    </div>
+
+    <div class="display-label">比值:@Html.DisplayFor(model => model.Ratio)</div>
+    <div class="display-field">
+        
+    </div>
+
+    <div class="display-label">业务人:@Html.DisplayFor(model => model.CreateBy)</div>
+    <div class="display-field">
+        
+    </div>
+
+    <div class="display-label">采购员:@Html.DisplayFor(model => model.CreatePlanBy)</div>
+    <div class="display-field">
+        
+    </div>
+
+    <div class="display-label">跟单员: @Html.DisplayFor(model => model.CreatetTrackBy)</div>
+    <div class="display-field">
+       
+    </div>
+
+    <div class="display-label">付款方式:@Html.DisplayFor(model => model.Paymethod)</div>
+    <div class="display-field">
+        
+    </div>
+
+    <div class="display-label">头程(元/公斤):@Html.DisplayFor(model => model.HeadloadCharges)</div>
+    <div class="display-field">
+        
+    </div>
+
+    <div class="display-label">优胜价格($): @Html.DisplayFor(model => model.YouShengPrice)</div>
+    <div class="display-field">
+       
+    </div>
+
+
+</fieldset>
+@*<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>*@
+</body>
+</html>

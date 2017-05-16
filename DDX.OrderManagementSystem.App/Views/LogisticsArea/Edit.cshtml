@@ -1,0 +1,29 @@
+﻿@model DDX.OrderManagementSystem.Domain.LogisticsAreaType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "LogisticsArea", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AreaName,"分区名称:")
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.LId)
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AreaName,new{@id="e_AreaName"})
+		</td>
+	</tr>
+
+</table>
+</fieldset>
+}

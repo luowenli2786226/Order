@@ -1,0 +1,149 @@
+﻿@{
+    ViewBag.Title = "OrderExport";
+}
+
+<script type="text/javascript">
+    $(function () {
+        $("#div1").show();
+        $("#div2").hide();
+
+        $('#area').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["0", "全部"], ["1", "宁波"], ["2", "义乌"]],
+            width: 100
+        });
+
+        $('#pp').combobox({
+            url: '@Url.Action("GetSearchOptions", "DataDictionaryDetail")/SalePlatform',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            required: true,
+            width: 150,
+            panelHeight: 'auto',
+            onChange: changePlatform,
+            onLoadSuccess: function () {
+                var val = $(this).combobox("getData");
+                for (var item in val[0]) {
+                    if (item == 'DicValue') {
+                        $(this).combobox("select", val[0][item]);
+                    }
+                }
+            }
+        });
+        $('#area').combobox("setValue", "0");
+    });
+
+    function changePlatform(n, o) {
+        comboboxInit('/Account/GetAccountListByPlatform/', "id=" + n + "&t=2", 'aa', 'Id', 'AccountName');
+    }
+
+    function exportexcel(c) {
+        var search = "";
+        if ($("input[name='r']:checked").val() == 1) {
+            if (c == 19 ) {//美东(CA)海外仓时间选择去除
+                search = "c=" + c + "&p=" + $('#pp').combobox("getValue") + "&aa=" + $('#aa').combobox("getText") + "&st=2013-01-01&et=2013-01-01&t=1&a=" +$('#area').combobox("getValue") + "&s=" + $("#txtSearch").val();
+            }
+            else if (c == 23 || c == 24 || c == 25 || c == 28 || c == 29 ) {//宁波美东谷仓(Gcus-East)、宁波美东(US-East)结束时间选择去除
+                search = "c=" + c + "&p=" + $('#pp').combobox("getValue") + "&aa=" + $('#aa').combobox("getText") + "&st=" + $('#st').combobox("getValue") + "&" + "et=2013-01-01" +"&t=1&a=" + $('#area').combobox("getValue") + "&s=" + $("#txtSearch").val();
+            }
+            else {
+                search = "c=" + c + "&p=" + $('#pp').combobox("getValue") + "&aa=" + $('#aa').combobox("getText") + "&st=" + $('#st').combobox("getValue") + "&" + "et=" + $('#et').combobox("getValue") + "&t=1&a=" + $('#area').combobox("getValue") + "&s=" + $("#txtSearch").val();
+            }
+        }
+        else {
+            search = "c=" + c + "&p=" + $('#pp').combobox("getValue") + "&aa=" + $('#aa').combobox("getText") + "&d=" + $("#data").val() + "&f=" + $('#state').combobox("getValue") + "&t=0&a=0&st=2013-01-01&et=2013-01-01";
+        }
+        var postUrl = "/Order/ExportDown/1";
+        jQuery.ajax({
+            url: "/Order/ExportOrderII/",
+            type: "post",
+            data: search,
+            success: function (sss) {
+                location.href = postUrl;
+            }
+        });
+    }
+
+    function exportexcel2(t) {
+        var search = "";
+        if ($("input[name='r']:checked").val() == 1)
+            search = "p=" + $('#pp').combobox("getValue") + "&aa=" + $('#aa').combobox("getText") + "&st=" + $('#st').combobox("getValue") + "&" + "et=" + $('#et').combobox("getValue") + "&t=1&a=" + $('#area').combobox("getValue") + "&s=" + $("#txtSearch").val();
+        else
+            search = "p=" + $('#pp').combobox("getValue") + "&aa=" + $('#aa').combobox("getText") + "&d=" + $("#data").val() + "&f=" + $('#state').combobox("getValue") + "&t=0&a=0&st=2013-01-01&et=2013-01-01";
+        var postUrl = "/Order/ExportDown/1";
+        jQuery.ajax({
+            url: "/Order/ExportOrderII2/",
+            type: "post",
+            data: search,
+            success: function (sss) {
+                location.href = postUrl;
+            }
+        });
+    }
+
+    function ckr(i) {
+        if (i == 1) {
+            $("#div1").show();
+            $("#div2").hide();
+        } else {
+            $("#div1").hide();
+            $("#div2").show();
+        }
+    }
+</script>
+<body class="easyui-layout">
+    <div region="center">
+        <input type="radio" name="r" value="1" onfocus="ckr(1)" checked="checked" />日期
+        <input type="radio" value="2" name="r" onfocus="ckr(0)" />明细
+        <div id="div1">
+            平台<input id="pp" type="text">
+            账户<input id="aa" type="text">
+            开始：<input type="text" id="st" name="st" class="easyui-datetimebox" style="width: 150px" />
+            结束：<input type="text" id="et" name="et" class="easyui-datetimebox" style="width: 150px" />
+            物流方式：<input type="text" id="txtSearch" name="txtSearch" style="width: 150px" />
+            地区：<input type="text" id="area" name="area" style="width: 150px" />
+        </div>
+        <div id="div2">
+            <textarea style="height: 420px; width: 446px;" id="data"></textarea>
+            <select class="easyui-combobox" id="state" style="width: 200px;">
+                <option value="OrderNo" selected="selected">订单号</option>
+                <option value="OrderExNo">平台订单号</option>
+                <option value="TrackCode">追踪码</option>
+            </select>
+        </div>
+        <input type="button" value="导出宁波邮局清单" onclick="exportexcel(1)" />
+        <input type="button" value="导出义乌马来清单" onclick="exportexcel(2)" />
+        <input type="button" value="导出金华清单" onclick="exportexcel(3)" />
+        <input type="button" value="导出俄速通清单" onclick="exportexcel(4)" />
+
+        <input type="button" value="导出义乌俄罗斯挂号小包(黑)" onclick="exportexcel(5)" />
+         <input type="button" value="欧亚速运" onclick="exportexcel(10)" />
+        <input type="button" value="福建小包" onclick="exportexcel(6)" />
+        <input type="button" value="导出邮政普货小包（商）清单" onclick="exportexcel(7)" />
+        <input type="button" value="导出荷兰小包清单" onclick="exportexcel(8)" />
+         <input type="button" value="导出EUB清单" onclick="exportexcel(11)" />
+        <input type="button" value="导出扫描清单" onclick="exportexcel2()" />
+         <input type="button" value="导出运费" onclick="exportexcel(9)" />
+        <input type="button" value="俄罗斯海外仓（义乌）" onclick="exportexcel(13)"/>
+        <input type="button" value="俄罗斯海外仓旧（宁波）" onclick="exportexcel(26)"/>
+        <input type="button" value="俄罗斯海外仓新（宁波）" onclick="exportexcel(30)"/>
+        <input type="button" value="C组海外仓日销" onclick="exportexcel(14)"/>
+        <input type="button" value="导出线上发货" onclick="exportexcel(15)"/>
+        <input type="button" value="导出亚欧快运（宁波）" onclick="exportexcel(16)"/>
+        <input type="button" value="导出CDEK（义乌）" onclick="exportexcel(18)"/>
+        <input type="button" value="美东海外仓（CA）" onclick="exportexcel(19)"/>
+        <input type="button" value="美西托盘海外仓（LAI）" onclick="exportexcel(20)"/>
+        <input type="button" value="美西（LAI）海外仓(仅一次)" onclick="exportexcel(21)"/>
+        <input type="button" value="英国仓库UKMAN导出" onclick="exportexcel(22)"/>
+        <input type="button" value="宁波美东谷仓(Gcus-East)导出" onclick="exportexcel(23)"/>
+        <input type="button" value="宁波美东(US-East)导出" onclick="exportexcel(24)"/>
+         <input type="button" value="宁波KS导出" onclick="exportexcel(25)"/>
+        <input type="button" value="导出义乌俄罗斯挂号小包(已处理)" onclick="exportexcel(27)"/>
+        <input type="button" value="义乌美西(董)【YWCA-WEST(DONG)】导出(开)" onclick="exportexcel(28)"/>
+        <input type="button" value="义乌美东(LEO)【YWNJ-EAST(LEO)】导出(开)" onclick="exportexcel(29)"/>
+        <input type="button" value="导出宁波邮局清单(新)" onclick="exportexcel(31)"/>
+    </div>
+</body>
+

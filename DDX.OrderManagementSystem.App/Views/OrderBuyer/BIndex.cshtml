@@ -1,0 +1,100 @@
+﻿
+@model IEnumerable<DDX.OrderManagementSystem.App.OrderBuyerCount>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    var grid;
+    $(function () {
+      $('#dg').datagrid({
+            url: '@Url.Action("BList", "OrderBuyer")',
+            idField: 'Id',
+            iconCls: 'icon-view',
+            height: 600,
+           
+            pagination: true,
+            pageNumber: 1,
+            pageSize: 50,
+            pageList: [50, 100, 200],
+            rownumbers: true,
+            columns: [[
+                { title: '客户名称', field: 'BuyerName', width: 180, sortable: true },
+                { title: '购买次数', field: 'BuyCount', width: 180, sortable: true },
+                { title: '无理取闹', field: 'BuyUnreason', width: 180, sortable: true },
+                { title: '第一次购买时间', field: 'FristBuyOn', width: 150, sortable: true, align: 'center', formatter: getDate },
+                { title: '最后一次购买时间', field: 'ListBuyOn', width: 150, sortable: true, align: 'center', formatter: getDate },
+                { title: '账户', field: 'Account', width: 150, sortable: true, align: 'center' },
+                { title: '平台', field: 'Platform', width: 150, sortable: true, align: 'center' }
+            ]]
+        })
+        $('#area').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["0", "全部"], ["1", "宁波"], ["2", "义乌"]],
+            width: 100
+        });
+        $('#area').combobox("setValue", "0");
+    });
+
+
+    function getSearch() {
+        var search = "";
+        if ($('#area').combobox("getValue") != 0) {
+            if ($('#area').combobox("getValue") == 1)
+                search += 'Account_uk&yw^';
+            if ($('#area').combobox("getValue") == 2)
+                search += 'Account&yw^';
+        }
+        if ($('#txtBuyerName').val().length != 0)
+            search += 'BuyerName&' + $('#txtBuyerName').val() + '^';
+        return search;
+  
+    }
+        function doSearch() {
+            var search = getSearch();
+           
+            $('#dg').datagrid("load", {
+                search: search
+            });
+        }
+        
+        function exportexcel(t) {
+          
+            search = getSearch();
+            var postUrl = "/Order/ExportDown/1";
+            jQuery.ajax({
+                url: "/OrderBuyer/ExportData/",
+                type: "post",
+                data: "search=" + encodeURIComponent(search),
+                success: function (sss) {
+                    location.href = postUrl;
+                }
+            });
+        }
+</script>
+<div region="center">
+		<fieldset>
+            <legend>数据查询</legend>
+            <table border="0">
+                <tr>
+                      <td class='z-searchlable'>地区:</td>
+                    <td><input type="text" id="area" name="area" /></td>
+                   
+                    <td class='z-searchlable'>客户名称:</td>
+                    <td><input type='text' id='txtBuyerName' /></td>
+                    @*<td class='z-searchlable'>客户邮件:</td>
+                    <td><input type='text' id='txtBuyerEmail' />*@
+                   <td> <a href='#' class='easyui-linkbutton' iconcls='icon-search' onclick='doSearch();'>查询</a></td>
+                    @*<td><a href='#' class='easyui-linkbutton'  onclick='exportexcel();'>导出客户信息</a></td>*@
+
+                </tr>
+            </table>
+        </fieldset>
+		
+        <table id="dg">
+        </table>
+
+</div>
+</body>

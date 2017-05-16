@@ -1,0 +1,906 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.OrderType>
+@{
+    ViewBag.Title = "Index";
+}
+<script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
+<body class="easyui-layout">
+    <script type="text/javascript">
+        var editIndex = undefined;
+        var editIndex1 = undefined;
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("UnHandleList", "Order")',
+                pageNumber: 1,
+                nowrap: false,
+                pageSize: 20,
+                fit: true,
+                toolbar: "#toolbar",
+                rownumbers: true,
+                pagination: true,
+                pageList: [20, 40, 60, 80, 100, 200],
+                view: detailview,
+                onDblClickRow: function (i, r) {
+                    window.open('@Url.Action("Details", "Order")/' + r.Id);
+                },
+                detailFormatter: function (index, row) {
+                    var html = '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+                    html += '<div  style="padding:5px 0"><b>留言:' + row.BuyerMemo + '</b></div>';
+                    return html;
+                },
+                onExpandRow: function (index, row) {
+                    $('#ddv-' + index).panel({
+                        border: false,
+                        cache: false,
+                        href: '@Url.Action("GetProduct", "OrderProduct")' + "/" + row.Id,
+                        onLoad: function () {
+                            $('#dg').datagrid('fixDetailRowHeight', index);
+                        }
+                    });
+                    $('#dg').datagrid('fixDetailRowHeight', index);
+                }
+            });
+
+            $('#Platform').combobox({
+                url: '/Home/Platform/1',
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 100,
+                panelHeight: 'auto',
+                onChange: changePlatform
+            });
+
+            $('#ProductAttribute').combobox({
+                url: '@Url.Action("GetSearchOptions", "DataDictionaryDetail")/ProductAttr',
+                valueField: 'DicValue',
+                textField: 'FullName',
+                panelHeight: 'auto'
+            });
+
+            $('#LogisticMode').combogrid({
+                panelWidth: 360,
+                idField: 'LogisticsCode',
+                textField: 'LogisticsName',
+                url: '/LogisticsMode/QListSearch',
+                fit: true,
+                keyHandler: {
+                    query: function (q) {
+                        $('#LogisticMode').combogrid("textbox").val(q);
+                    },
+                    enter: function () {
+                        query = $('#LogisticMode').combogrid("textbox").val();
+                        $('#LogisticMode').combogrid({
+                            url: '/LogisticsMode/QListSearch',
+                            queryParams: { q: query }
+                        });
+                        $('#LogisticMode').combogrid("setValue", query);
+                    }
+                },
+                columns: [[
+                    { field: 'LogisticsName', title: '名称', width: 250 },
+                    { field: 'LogisticsCode', title: '代码', width: 100 }
+                ]]
+            });
+            $('#LogisticMode').combogrid("setValue", "==请选择==");
+
+
+            $('#Platform').combobox("setValue", "ALL");
+            $('#ProductAttribute').combobox("setValue", "0");
+            $('#Account').combotree("setValue", "ALL");
+            $('#IsLiu').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+            $('#IsLiu').combobox("setValue", "ALL");
+        });
+
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "Order")';
+            showdlg(url_str, 'c_dlg', ajaxAdd);
+        }
+
+
+
+
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Order")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit);
+            }
+        }
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "Order")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "Order")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var ids = getselectedRows();
+            if (ids != undefined) {
+                if (confirm("你确定要删除吗？")) {
+                    jQuery.ajax({
+                        url: '@Url.Action("Delete", "Order")',
+                        type: "post",
+                        data: "o=" + ids.join(','),
+                        success: function (sss) {
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+
+            }
+        }
+
+        function getselectedRows() {
+            var s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                $.messager.alert("请选择一条数据");
+                return s_ids;
+            }
+            return s_ids;
+        }
+        function getselectedRows2(i, b) {
+            var s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            if (rows.length > 0) {
+                for (var i = 0; i < rows.length; i++) {
+                    s_ids.push(rows[i]["Id"]);
+                }
+            }
+            if (s_ids.length == 0) {
+                if (i == 1) {
+
+                } else {
+                    if (b) {
+
+                    } else {
+                        $.messager.alert("请选择一条数据");
+                    }
+                }
+                return s_ids;
+            }
+            return s_ids;
+        }
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+
+        function GetOrder(v, r, i) {
+            return v + "<br/>" + r.OrderExNo;
+        }
+
+        function GeStatus(v, r, i) {
+            var html = v + "<br/>";
+            if (r.IsPrint == 1)
+                html += "<img src='/Content/imgs/Print.gif'> ";
+            if (r.IsMerger == 1)
+                html += "<img src='/Content/imgs/Merger.gif'> ";
+            if (r.IsSplit == 1)
+                html += "<img src='/Content/imgs/Split.gif'> ";
+            if (r.IsOutOfStock == 1)
+                html += "<img src='/Content/imgs/OutOfStock.gif'> ";
+            if (r.IsRepeat == 1)
+                html += "<img src='/Content/imgs/Repeat.gif'> ";
+            if (r.IsFBA == 1)
+                html += " 海外仓:" + r.FBABy;
+            return html;
+        }
+
+        function GetAmount(v, r, i) {
+            var html = v + ":" + r.Amount;
+            return html;
+        }
+
+        function GetBuyer(v, r, i) {
+            var html = v + "<br />" + r.BuyerEmail;
+            return html;
+        }
+
+        function getAccount(v, r, i) {
+
+            var html = v + "<br />" + r.Platform;
+            return html;
+        }
+
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            search += $('#txtSearch1').searchbox("getName") + "&" + $('#txtSearch1').searchbox("getValue") + "^";
+            var a = $('#Account').combobox("getText");
+            if (a != "ALL") {
+                search += "Account_es&" + a + "^";
+            }
+
+            var b = $('#Platform').combobox("getText");
+            if (b != "ALL") {
+                search += "Platform_es&" + b + "^";
+            }
+            var d = $('#IsLiu').combobox("getValue");
+            if (d != "ALL") {
+                if (d == "1") {
+                    search += "IsLiu_si&1^";
+                } else {
+                    search += "IsLiu_ei&0^";
+
+                }
+            }
+            var p = $('#ProductAttribute').combobox("getValue");
+            if (p != "0") {
+                search += "ProductAttribute_Product&" + p + "^";
+            }
+            var l = $('#LogisticMode').combobox("getValue");
+            //   debugger;
+            if (l != "" && l != "==请选择==") {
+                search += "LogisticMode&" + l + "^";
+            }
+
+
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+
+        var s_ids = [];
+        function showEdit() {
+            s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            $('#s_dlg').show();
+            $("#s_dlg").dialog({
+                title: '替换',
+                modal: true,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '提交',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        jQuery.ajax({
+                            url: "/Order/EditOrderReplace/",
+                            type: "post",
+                            data: "ids=" + s_ids.join(',') + "&newField=" + $('#txtNew').combogrid("getValue") + "&FieldName=" + $('#cc').combobox("getValue"),
+                            success: function () {
+                                $('#s_dlg').dialog('close');
+                                $('#dg').datagrid("reload");
+                            }
+                        });
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#s_dlg').dialog('close');
+                    }
+                }]
+            }).dialog('open');
+        }
+
+
+        function allocation() {
+            s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                alert("请选择一条数据");
+                return;
+            }
+            jQuery.ajax({
+                url: "/Order/EditLogisticsAllocation/",
+                type: "post",
+                data: "ids=" + s_ids.join(','),
+                success: function (sss) {
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+
+
+        function e_order() {
+            var id = getselectedRow();
+            window.open('@Url.Action("Edit", "Order")/' + id);
+        }
+
+        function o_vali() {
+            var ids = getselectedRows();
+            if (ids.length == 0) {
+                return;
+            }
+            $('#dg').datagrid("loading");
+            jQuery.ajax({
+                url: "/Order/EditOrderVali",
+                data: "ids=" + ids,
+                type: "post",
+                success: function (sss) {
+                    $('#dg').datagrid("reload");
+                }
+            });
+
+        }
+
+        function e_Meger() {
+            jQuery.ajax({
+                url: "/Order/EditOrderMerger",
+                type: "post",
+                success: function (sss) {
+
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+
+        function changePlatform(n, o) {
+            $('#Account').combotree({
+                url: '/Home/AccountList/' + n,
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 150
+            });
+        }
+
+        function getOrderDate(v, r, i) {
+            var html = "下:" + getDate(r.GenerateOn) + "<br />";
+            html += "同:" + getDate(r.CreateOn);
+            return html;
+        }
+
+        function editOrderByFBA(v) {
+            var ids = getselectedRows();
+            if (ids.length == 0) {
+                return;
+            }
+            $('#dg').datagrid("loading");
+            jQuery.ajax({
+                url: "/Order/EditOrderByFBA",
+                data: "ids=" + ids + "&f=" + v,
+                type: "post",
+                success: function (sss) {
+                    if (sss.IsSuccess == true) {
+                        alert("成功！");
+                    } else {
+                        alert("失败！" + sss.ErrorMsg);
+                    }
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+        function editOrderXinyi()
+        {
+            var ids = getselectedRows();
+            if (ids.length == 0) {
+                return;
+            }
+            $('#dg').datagrid("loading");
+            jQuery.ajax({
+                url: "/Order/editOrderXinyi",
+                data: "ids=" + ids ,
+                type: "post",
+                success: function (sss) {
+                    if (sss.IsSuccess == true) {
+                        alert("成功！");
+                    } else {
+                        alert("失败！" + sss.ErrorMsg);
+                    }
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+        // 拆分订单
+        function splitOrder(x) {
+            // debugger;
+            $('#divm').hide();
+            if (x == 0) {
+                showProduct("缺货拆分--选择产品", function () {
+                    if (endEditing1()) {
+                        var effectRow = new Object();
+                        var id = getselectedRow();
+                        effectRow["o"] = id;
+                        effectRow["rows"] = JSON.stringify($('#dg_p').datagrid("getSelections"));
+                        $.post("/Order/EditSplitOrder/", effectRow, function (rsp) {
+                            $('#dlg').dialog('close');
+                            if (rsp.IsSuccess) {
+                                alert("提交成功！");
+                            }
+                        }, "JSON").error(function () {
+                            alert("提交错误！");
+
+                        });
+                    }
+                });
+            }
+        }
+
+        // 合并订单
+        function mergerOrder() {
+            var s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            $.post("/Order/unhandOrderMerger/", "ids=" + s_ids.join(','), function (rsp) {
+                $('#m_dlg').dialog('close');
+                if (rsp.IsSuccess) {
+                    alert("合并成功！");
+                    $('#dg').datagrid("reload");
+                } else {
+                    alert("合并失败！");
+                }
+            }, "JSON").error(function () {
+                alert("提交错误！");
+
+            });
+        }
+
+        function kuai(v) {
+            $("#dg").datagrid("load", {
+                v: 1
+            });
+        }
+        function showProduct(title, handle) {
+            // debugger;
+            var id = getselectedRow();
+            $('#dg_p').datagrid({
+                url: '@Url.Action("List", "OrderProduct")/' + id,
+                width: 700,
+                onClickRow: onClickRow1
+            });
+
+            $('#dlg').dialog({
+                width: 750,
+                title: title,
+                modal: true,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '提交',
+                    iconCls: 'icon-ok',
+                    handler: handle
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#dlg').dialog('close');
+                        // 模块内【拆包】功能内双击数量变成编辑框目前只能操作一次bug修正
+                        editIndex1 = undefined;
+                    }
+                }]
+            }).dialog('open');
+        }
+        // 单击行
+        function onClickRow1(index) {
+            //debugger;
+            if (editIndex1 != index) {
+                if (endEditing1()) {
+                    $('#dg_p').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    editIndex1 = index;
+                } else {
+                    $('#dg').datagrid('selectRow', editIndex1);
+                }
+            }
+        }
+        // 编辑数量
+        function endEditing1() {
+            //debugger;
+            if (editIndex1 == undefined) {
+                return true;
+            }
+            if ($('#dg_p').datagrid('validateRow', editIndex1)) {
+                var t1 = $('#dg_p').datagrid('getRows')[editIndex1]['Qty'];
+                var t2 = $('#dg_p').datagrid('getEditor', { index: editIndex1, field: 'Qty' }).target.numberbox("getValue");
+                if (t1 < t2) {
+                    alert("数量不能大于原来的数量:");
+                    return false;
+                }
+                $('#dg_p').datagrid('endEdit', editIndex1);
+                editIndex1 = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        }
+        //获取选中行
+        function getselectedRow2() {
+            var s_ids = getselectedRows(1);
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        //订单导出
+        function ExportUnsolve()
+        {
+            var postUrl = "/Order/ExportDown/1";
+            var s_ids = getselectedRows2(1);
+            var search = "";
+            if (s_ids.length == 0) {
+                debugger
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                search += $('#txtSearch1').searchbox("getName") + "&" + $('#txtSearch1').searchbox("getValue") + "^";
+                var a = $('#Account').combobox("getText");
+                if (a != "ALL") {
+                    search += "Account_es&" + a + "^";
+                }
+
+                var b = $('#Platform').combobox("getText");
+                if (b != "ALL") {
+                    search += "Platform_es&" + b + "^";
+                }
+                var d = $('#IsLiu').combobox("getValue");
+                if (d != "ALL") {
+                    if (d == "1") {
+                        search += "IsLiu_si&1^";
+                    } else {
+                        search += "IsLiu_ei&0^";
+
+                    }
+                }
+                var p = $('#ProductAttribute').combobox("getValue");
+                if (p != "0") {
+                    search += "ProductAttribute_Product&" + p + "^";
+                }
+                var l = $('#LogisticMode').combobox("getValue");
+                if (l != "" && l != "==请选择==") {
+                    search += "LogisticMode&" + l + "^";
+                }
+            }
+            jQuery.ajax({
+                url: "/Order/ExportUnhandler/",
+                type: "post",
+                data: "o=" + s_ids.join(',') + "&search=" + encodeURIComponent(search) + "",
+                success: function (res) {
+                    location.href = postUrl;
+
+                }
+            });
+        }
+
+    </script>
+    <div region="center">
+                <input type="hidden" id="printdata" />
+
+        <table id="dg">
+            <thead>
+                <tr>
+                    <th field="Id" width="60" checkbox="true"></th>
+
+                    <th field="OrderNo" width="100" formatter="GetOrder">订单编号
+                    </th>
+                    <th field="Status" width="150" formatter="GeStatus">订单状态
+                    </th>
+                    <th field="CurrencyCode" width="80" formatter="GetAmount">货币
+                    </th>
+                    <th field="Weight" width="80">预估重量</th>
+
+                    <th field="BuyerName" width="130" formatter="GetBuyer">买家
+                    </th>
+                    <th field="Country" width="80">国家
+                    </th>
+                     <th field="Province" width="60">省
+                    </th>
+                    <th field="LogisticMode" width="100">发货方式
+                    </th>
+                    <th field="GenerateOn" width="200" formatter="getOrderDate">时间
+                    </th>
+                    <th field="Account" width="100" formatter="getAccount">账户
+                    </th>
+
+                    <th field="ErrorInfo" width="250">错误信息
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_vali()">验证订单</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_order()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_Meger()">相同卖家合并订单</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit()">修改选中</a>
+            @*<a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="allocation()">划分渠道</a>*@
+            <a href="#" class="easyui-menubutton" data-options="menu:'#mm1',iconCls:'icon-redo'">设置海外仓</a>
+            <div id="mm1" style="width: 150px;">
+                <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA');">亚马逊FBA</div>
+                <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('ST');">赛兔</div>
+                <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('CKY');">出口易</div>
+                <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('YWRU-AEA');">YWRU-AEA仓库</div>
+                <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('YWRU-AEB');">YWRU-AEB仓库</div>
+                <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('NBRU-AEA');">NBRU-AEA仓库</div>
+                    <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('YWMRU-AEA');">YWMRU-AEA仓库</div>
+                       <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('YWMRU-AEB');">YWMRU-AEB仓库</div>
+                <div class="menu-sep"></div>
+                <div>
+                    <span>(宁波)海外仓发货扣库存</span>
+                    <div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('KS');">KS仓库(宁波)</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('US-East');">美东(宁波)</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('GCUS-East');">谷仓美东（宁波）</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('GCUS-West');">谷仓美西（宁波）</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderXinyi();">鑫弈仓库（自动）</div>
+                    </div>
+                </div>
+
+                <div class="menu-sep"></div>
+                <div>
+                    <span>(义乌)海外仓发货扣库存</span>
+                    <div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('LAI');">LAI仓库</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('KS-YW');">KS仓库(义乌)</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('CA');">美东(义乌)</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('UKMAN');">UKMAN仓库</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('YWAZDE');">德国三方海外仓</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('YWGCUS-West');">谷仓美西(义乌)</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('YWGCUS-East');">谷仓美东(义乌)</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('YWCA-WEST(DONG)');">美西(董)</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('YWNJ-EAST(LEO)');">美东(LEO)</div>
+                    </div>
+                </div>
+
+                <div class="menu-sep"></div>
+                <div>
+                    <span>(宁波)代发货扣库存</span>
+                    <div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-NB01');">(代发)FBA-NB01</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-NB02');">(代发)FBA-NB02</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-NB03');">(代发)FBA-NB03</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-NB04');">(代发)FBA-NB04</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-NB05');">(代发)FBA-NB05</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-NB06');">(代发)FBA-NB06</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-NB07');">(代发)FBA-NB07</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-NB08');">(代发)FBA-NB08</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-NB09');">(代发)FBA-NB09</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBC-NBCD01');">(代发)FBC-NBCD01</div>
+                       
+                    </div>
+                </div>
+                <div class="menu-sep"></div>
+                <div>
+                    <span>(义乌)代发货扣库存</span>
+                    <div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-YWAZUS');">(代发)FBA-YWAZUS</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-YWAZUS01');">(代发)FBA-YWAZUS01</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-YWAZUS02');">(代发)FBA-YWAZUS02</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-YWAZUK');">(代发)FBA-YWAZUK</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-YWAZUK02');">(代发)FBA-YWAZUK02</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-YWAZDE');">(代发)FBA-YWAZDE</div>
+                        <div data-options="iconCls:'icon-redo'" onclick="editOrderByFBA('FBA-YWAZFR');">(代发)FBA-YWAZFR</div>
+                    </div>
+                </div>
+            </div>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="splitOrder(0);">拆包</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="mergerOrder();">合并</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-redo" plain="true" onclick="ExportUnsolve()">订单导出</a>
+            <br />
+            平台：
+            <input type="text" id="Platform" />
+            账户<input type="text" id="Account" />
+            留言:<input type="text" id="IsLiu" />
+            特性:
+            <input type='text' name='ProductAttribute' id='ProductAttribute'></input>
+            发货方式:<input type='text' id='LogisticMode'>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <input id="txtSearch1" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mmm'"></input>
+            <br />
+            快捷查询：
+            <a href="#" onclick="kuai(1)">可合并</a>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'OrderNo'">订单编号</div>
+            <div data-options="name:'OrderExNo'">外部编号</div>
+            <div data-options="name:'TId'">流水交易号</div>
+            <div data-options="name:'SKU_OrderProduct'">SKU</div>
+            <div data-options="name:'Amount_si'">金额大于</div>
+            <div data-options="name:'Amount_ei'">金额小于</div>
+            <div data-options="name:'BuyerName'">买家</div>
+            <div data-options="name:'FBABy'">海外仓</div>
+
+            <div data-options="name:'BuyerEmail'">买家邮箱</div>
+            <div data-options="name:'LogisticMode'">发货方式</div>
+            <div data-options="name:'Country'">国家</div>
+            <div data-options="name:'ScanningBy'">扫描人</div>
+        </div>
+
+        <div id="mmm" style="width: 120px">
+            <div data-options="name:'OrderNo'">订单编号</div>
+            <div data-options="name:'OrderExNo'">外部编号</div>
+            <div data-options="name:'TId'">流水交易号</div>
+            <div data-options="name:'SKU_OrderProduct'">SKU</div>
+            <div data-options="name:'Amount_si'">金额大于</div>
+            <div data-options="name:'Amount_ei'">金额小于</div>
+            <div data-options="name:'BuyerName'">买家</div>
+            <div data-options="name:'FBABy'">海外仓</div>
+
+            <div data-options="name:'BuyerEmail'">买家邮箱</div>
+            <div data-options="name:'LogisticMode'">发货方式</div>
+            <div data-options="name:'Country'">国家</div>
+            <div data-options="name:'ScanningBy'">扫描人</div>
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="o_dlg"></div>
+        <script type="text/javascript">
+            $(function () {
+                $('#cc').combobox({
+                    panelHeight: 'auto',
+                    onChange: changeText
+                });
+                $('#txtNew').combogrid({
+                    panelWidth: 360,
+                    idField: 'ECountry',
+                    textField: 'ECountry',
+                    url: '/Country/ListALL',
+                    columns: [[
+                        { field: 'CCountry', title: '中文', width: 150 },
+                        { field: 'ECountry', title: '英文', width: 100 },
+                        { field: 'CountryCode', title: '简码', width: 100 }
+                    ]]
+
+                });
+            });
+
+
+            function changeText(n, o) {
+                if (n == "Country") {
+                    $('#txtNew').combogrid({
+                        panelWidth: 360,
+                        idField: 'ECountry',
+                        textField: 'ECountry',
+                        url: '/Country/ListALL',
+
+                        columns: [[
+                            { field: 'CCountry', title: '中文', width: 150 },
+                            { field: 'ECountry', title: '英文', width: 100 },
+                            { field: 'CountryCode', title: '简码', width: 100 }
+                        ]]
+
+                    });
+                }
+                if (n == "SKU") {
+                    $('#txtNew').combogrid({
+                        panelWidth: 410,
+                        mode: 'remote',
+                        idField: 'SKU',
+                        textField: 'SKU',
+                        url: '/Product/ListQ',
+
+                        columns: [[
+                            { field: 'SKU', title: 'SKU', width: 100 },
+                            { field: 'ProductName', title: 'Title', width: 200 },
+                            { field: 'Standard', title: '规格', width: 100 }
+
+                        ]]
+
+                    });
+                }
+                if (n == "LogisticMode") {
+                    $('#txtNew').combogrid({
+                        panelWidth: 360,
+                        idField: 'LogisticsCode',
+                        textField: 'LogisticsName',
+                        url: '/LogisticsMode/ALLList',
+                        keyHandler: {
+                            query: function (q) {
+                                $('#txtNew').combogrid("textbox").val(q);
+                            },
+                            enter: function () {
+                                query = $('#txtNew').combogrid("textbox").val();
+                                $('#txtNew').combogrid({
+                                    url: '/LogisticsMode/ALLList',
+                                    queryParams: { q: query }
+                                });
+                                $('#txtNew').combogrid("setValue", query);
+                            }
+                        },
+                        columns: [[
+                            { field: 'LogisticsName', title: '名称', width: 250 },
+                            { field: 'LogisticsCode', title: '代码', width: 100 }
+
+
+                        ]]
+
+                    });
+                }
+                if (n == "CurrencyCode") {
+                    $('#txtNew').combogrid({
+                        panelWidth: 360,
+                        idField: 'CurrencyCode',
+                        textField: 'CurrencyCode',
+                        url: '/Currency/List',
+                        columns: [[
+                            { field: 'CurrencyName', title: '货币', width: 150 },
+                            { field: 'CurrencyCode', title: '代码', width: 100 },
+                            { field: 'CurrencyValue', title: '汇率', width: 100 }
+                        ]]
+                    });
+                }
+            }
+
+        </script>
+        <div id="s_dlg" style="display: none">
+            <table>
+                <tr>
+                    <td>替换信息:
+                        <select id="cc" style="width: 200px;">
+                            <option value="Country">国家</option>
+                            <option value="CurrencyCode">货币</option>
+                            <option value="SKU">SKU</option>
+                            <option value="LogisticMode">运输方式</option>
+                        </select>
+                    </td>
+
+                </tr>
+                <tr>
+
+                    <td>替换值</td>
+                </tr>
+                <tr>
+
+
+                    <td>
+                        <input type="text" id="txtNew" /></td>
+                </tr>
+
+            </table>
+        </div>
+
+        <div id="dlg" class="easyui-dialog" closed="true">
+            <table id="dg_p" class="easyui-datagrid" rownumbers="true">
+                <thead>
+                    <tr>
+                        <th data-options="field:'Id',checkbox:true"></th>
+                        <th field="ExSKU" width="80">ExSKU
+                        </th>
+                        <th field="Title" width="100">名称
+                        </th>
+                        <th field="SKU" width="80">SKU
+                        </th>
+                        <th field="Qty" width="80" data-options="editor:{ type: 'numberbox'}">数量
+                        </th>
+                        <th field="Remark" width="100">描述
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="divm">
+                <h3>重发原因:</h3>
+                <textarea id="m" rows="3" style="width: 700px;"></textarea>
+            </div>
+        </div>
+
+    </div>
+</body>

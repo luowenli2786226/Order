@@ -1,0 +1,187 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.PurchasePlanType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("NBList", "PurchasePlan")',
+                title: "宁波采购",
+                queryParams: { search: "Status&已收到^FromTo_un&耗材^FromTo_un&运费^" },
+                nowrap: false,
+                rownumbers: true,
+                singleSelect: true,
+                pagination: true,
+                height: 600,
+                width: 600,
+                showFooter: true,
+                pageNumber: 1,
+                pageSize: 50,
+                pageList: [50, 100],
+                columns: [[
+                    { field: 'PlanNo', title: '计划编号', width: 80, sortable: true },
+                    { field: 'SKU', title: 'SKU', width: 100, sortable: true },
+                     {
+                         field: 'Price', title: '单价', width: 40, sortable: true,
+                         formatter: function (v, r, i) {
+                             if (r.Id != 0)
+                                 return v;
+                         }
+                     },
+                     {
+                         field: 'Qty', title: 'Qty', width: 60, sortable: true,
+                         formatter: function (v, r, i) {
+                             if (r.Id != 0)
+                                 return v;
+                             else
+                                 return "总计：";
+                         }
+                     },
+                     {
+                         field: 'Profit', title: '利润', width: 80, sortable: true,
+                         formatter: function (v, r, i) {
+
+                             return v.toFixed(2);
+                         }
+                     },
+
+                    { field: 'Suppliers', title: '供应商', width: 80, sortable: true },
+                    { field: 'BuyBy', title: '采购人', width: 80, sortable: true },
+                    {
+                        field: 'CreateOn',
+                        title: '时间',
+                        width: 250,
+                        sortable: true,
+                        formatter: function (v, r, i) {
+                            if (r.Id != 0)
+                                return '创建时间:' + getDate(v);
+                        }
+                    }
+                ]]
+            });
+            $('#dg2').datagrid({
+                url: '@Url.Action("YWList", "PurchasePlan")',
+                title: "义乌采购",
+                queryParams: { search: "Status&已收到^FromTo_un&耗材^FromTo_un&运费^" },
+                nowrap: false,
+                rownumbers: true,
+                singleSelect: true,
+                pagination: true,
+                height: 600,
+                width: 600,
+                showFooter: true,
+                pageNumber: 1,
+                pageSize: 50,
+                pageList: [50, 100],
+                columns: [[
+                    { field: 'PlanNo', title: '计划编号', width: 80, sortable: true },
+                    { field: 'SKU', title: 'SKU', width: 100, sortable: true },
+                    {
+                        field: 'Price', title: '单价', width: 60, sortable: true,
+                        formatter: function (v, r, i) {
+                            if (r.Id != 0)
+                                return v;
+                        }
+                    },
+                    {
+                        field: 'Qty', title: 'Qty', width: 30, sortable: true,
+                        formatter: function (v, r, i) {
+                            if (r.Id != 0)
+                                return v;
+                            else
+                                return "总计：";
+                        }
+                    },
+                    {
+                        field: 'Profit', title: '利润', width: 80, sortable: true,
+                        formatter: function (v, r, i) {
+
+                            return v.toFixed(2);
+                        }
+                    },
+
+                    { field: 'Suppliers', title: '供应商', width: 80, sortable: true },
+                    { field: 'BuyBy', title: '采购人', width: 80, sortable: true },
+                    {
+                        field: 'CreateOn',
+                        title: '时间',
+                        width: 250,
+                        sortable: true,
+                        formatter: function (v, r, i) {
+                            if (r.Id != 0)
+                                return '创建时间:' + getDate(v);
+                        }
+                    }
+                ]]
+            });
+            $('#StartDate').datebox();
+            $('#EndDate').datebox();
+            $('#StartDate').datebox("setValue", getStartDate(7));
+            $('#EndDate').datebox("setValue", getStartDate(-1));
+        });
+
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function doSearch() {
+            search = getSearch();
+            $("#dg").datagrid("load", {
+                search: search + "Status&已收到^FromTo_un&耗材^FromTo_un&运费^"
+            });
+            $("#dg2").datagrid("load", {
+                search: search + "Status&已收到^FromTo_un&耗材^FromTo_un&运费^"
+            });
+        }
+
+        function getSearch() {
+            var search = "CreateOn_st&" + $('#StartDate').datebox("getValue") + "^CreateOn_et&" + $('#EndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+
+            return search;
+        }
+
+
+    </script>
+
+    <div region="center">
+        开始时间:<input id="StartDate" />
+        结束时间:<input id="EndDate" />&nbsp&nbsp
+        <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'PlanNo'">计划编号</div>
+            <div data-options="name:'SKU'">SKU</div>
+            <div data-options="name:'ProductName'">名称</div>
+            <div data-options="name:'Suppliers'">供应商</div>
+            <div data-options="name:'BuyBy'">采购人</div>
+
+        </div>
+        <table>
+            <tr>
+                <td>
+                    <table id="dg">
+                    </table>
+                </td>
+                <td>
+                    <table id="dg2">
+                    </table>
+                </td>
+
+            </tr>
+        </table>
+    </div>
+</body>

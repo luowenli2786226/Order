@@ -1,0 +1,38 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.OrderProductType>
+@{
+    Layout = null;
+    ViewBag.Title = "";
+}
+
+<table class="dv-table" border="0" style="width: 100%;">
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td style="width: 70px;">
+                <img src="/Product/GetPic/@p.SKU" width="64px" height="64px" /></td>
+            <td style="width: 80px;">ExSKU:@p.ExSKU</td>
+            <td style="width: 80px;">SKU:<b>@p.SKU</b></td>
+            <td style="width: 40px;">Qty:@p.Qty</td>
+            <td style="width: 120px;">Status:
+        @if (p.IsQue == 1)
+        {
+            <b>缺货</b><br />
+            <b>库存:@DDX.OrderManagementSystem.App.Utilities.GetUnPeiQty(p.SKU, DDX.NHibernateHelper.NhbHelper.GetCurrentSession())
+            </b>
+            <br />
+            <b>@DDX.OrderManagementSystem.App.Utilities.GetLastCai(p.SKU, DDX.NHibernateHelper.NhbHelper.GetCurrentSession())</b>
+        }
+        else if (p.IsQue == 2)
+        {
+            <b>停产</b>
+        }
+        else if (p.IsQue == 3)
+        {
+            <b>占用库存</b>
+        }
+            </td>
+            <td style="width: 80px;">规格: @p.Standard</td>
+            <td style="width: 80px;">描述: @p.Remark</td>
+        </tr>
+    }
+</table>

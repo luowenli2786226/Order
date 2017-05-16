@@ -1,0 +1,80 @@
+﻿<link href="@Url.Content("~/Scripts/easyUI/themes/portal.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("~/Scripts/easyUI/jquery.portal.js")"></script>
+<script type="text/javascript" charset="utf-8">
+    var panels = [];
+    $(function () {
+        panels = [{
+            id: 'p1',
+            title: '当日速卖通活动',
+            height: 600,
+            collapsible: true,
+            href: '/AliActivityRecord/ReportIndex'
+        }
+            , {
+                id: 'p2',
+                title: '物流信息',
+                height: 600,
+                collapsible: true,
+                href: '/PostTrackCode/Details'
+                // content: '<div style="text-align: center"><img  src="/Images/user/zeng.jpg" height="150"/><div><h2>&nbsp;&nbsp;&nbsp;&nbsp;第二个钻石店铺玩具店将于<b>2014.7.7</b>诞生，感谢<b>曾学俊</b>这段时间的辛苦付出，他在工作能力和工作态度上有很多值得大家学习的地方，大家可以以他为榜样，希望在接下去的大促中都能创造出更多的奇迹</h2>'
+
+            }
+            , {
+                id: 'p4',
+                title: '表彰栏',
+                height: 600,
+                collapsible: true,
+                href: '/JiangCheng/Details'
+            }
+        ];
+
+        $('#layout_portal_portal').portal({
+            border: false,
+            fit: true
+        });
+
+
+        var state = 'p1,p2:p4';
+
+        addPortalPanels(state);
+        $('#layout_portal_portal').portal('resize');
+
+    });
+
+    function getPanelOptions(id) {
+        for (var i = 0; i < panels.length; i++) {
+            if (panels[i].id == id) {
+                return panels[i];
+            }
+        }
+        return undefined;
+    }
+    function addPortalPanels(portalState) {
+        var columns = portalState.split(':');
+        for (var i = 0; i < columns.length; i++) {
+            var cc = columns[i].split(',');
+            for (var j = 0; j < cc.length; j++) {
+                var options = getPanelOptions(cc[j]);
+                if (options) {
+                    var p = $('<div/>').attr('id', options.id).appendTo('body');
+                    p.panel(options);
+                    $('#layout_portal_portal').portal('add', {
+                        panel: p,
+                        columnIndex: i
+                    });
+                }
+            }
+        }
+    }
+</script>
+<body class="easyui-layout">
+
+    <div region="center" border="false">
+        <div id="layout_portal_portal" style="position: relative">
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+
+</body>

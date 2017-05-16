@@ -1,0 +1,103 @@
+﻿@model DDX.OrderManagementSystem.Domain.UserRoleType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+        $('#c_CreateOn').datebox();
+
+        $('#c_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "UserRole", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserId,"用户主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserId,new{@id="c_UserId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.RoleId,"角色主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.RoleId,new{@id="c_RoleId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Description,"描述:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Description,new{@id="c_Description"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DeletionStateCode,"删除标记:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DeletionStateCode,new{@id="c_DeletionStateCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SortCode,"排序码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SortCode,new{@id="c_SortCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建日期:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"创建用户:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

@@ -1,0 +1,89 @@
+﻿@{
+    ViewBag.Title = "AliTools";
+}
+<script>
+
+    $(function () {
+        var dt = new Date().getFullYear() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getDate();
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        $('#cc').datebox("setValue", getStartDate(0));
+        $('#cc2').datebox("setValue", getStartDate(0));
+
+        changePlatform("AliExpress");
+    });
+
+    function changePlatform(n, o) {
+        $('#aa').combotree({
+            url: '/Home/AccountList/' + n,
+            valueField: 'id',
+            textField: 'text',
+            width: 150
+        });
+
+    }
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+
+    function docui() {
+        jQuery.ajax({
+            url: "/Order/DoAliCui",
+            type: "post",
+            data: "a=" + $("#aa").combobox("getValue") + "&st=" + $("#cc").datebox("getValue") + "&et=" + $("#cc2").datebox("getValue") + "&c=" + $("#c").val(),
+            success: function (sss) {
+                alert("成功");
+            }
+        });
+    }
+    function docui2() {
+        jQuery.ajax({
+            url: "/Order/DoAliCui",
+            type: "post",
+            data: "a=" + $("#aa").combobox("getValue") + "&st=" + $("#cc").datebox("getValue") + "&et=" + $("#cc2").datebox("getValue") + "&c=" + $("#c").val() + "&s=FINISH",
+            success: function (sss) {
+                alert("成功");
+            }
+        });
+    }
+</script>
+<body class="easyui-layout">
+    <div region="center">
+        <table>
+            <tr>
+                <td colspan="2">账户<input id="aa" type="text">
+                    开始<input id="cc" type="text">
+                    结束<input id="cc2" type="text">
+                </td>
+
+            </tr>
+            <tr>
+                <td>内容
+                </td>
+                <td>
+                    <textarea id="c" style="width: 600px; height: 200px;"></textarea></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="button" value="待付款订单执行" onclick="docui()" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="已完成订单执行" onclick="    docui2()" /></td>
+            </tr>
+
+        </table>
+    </div>
+</body>
+
+

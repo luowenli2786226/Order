@@ -1,0 +1,171 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.WarehouseRackType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "WarehouseRack")',
+                pagination: true,
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+        });
+
+    });
+
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "WarehouseRack")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "WarehouseRack")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "WarehouseRack")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "WarehouseRack")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "WarehouseRack")/' + id;
+                delData(url, 'dg');
+            }
+        }
+
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('RackId')) {
+                var id = row['RackId'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+
+    function getselectedRowss(gird, c) {
+        if (!c) c = "RackId";
+        var rows = gird.datagrid('getSelections');
+        var ids = [];
+        for (var i = 0; i < rows.length; i++) {
+            ids.push(rows[i][c]);
+        }
+        if (ids.length == 0)
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+        return ids;
+    }
+    function doSearch() {
+        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        $("#dg").datagrid("load", {
+            search: search
+
+        });       
+    }
+    function getDateinfo(v, r, i) {
+        if (v) {
+            return getDate(v);
+        }
+    }
+
+    function printCode(id) {
+        jQuery.ajax({            
+            url: "/WarehouseRack/printCode/" + id,
+            type: "post",
+            success: function (msg) {
+                $('#printdata').val(msg.Result);
+                window.open('/Home/PrintDetail/102');
+            }
+        });
+    }
+
+    function printall() {
+        var ids = getselectedRowss($("#dg"));     
+        if (ids.length == 0) {
+            return;
+        }
+        jQuery.ajax({
+            url: "/WarehouseRack/printCode/",
+            data: "id=" + ids.join(','),
+            type: "post",
+            success: function (msg) {
+                $('#printdata').val(msg.Result);
+                window.open('/Home/PrintDetail/102');
+            }
+        });
+    }
+    function showPrint(v, r) {
+        return '<a href="javascript:void(0)" onclick="printCode(' + v + ')">打印条码</a>';
+    }
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true"  fit="true">
+            <thead>
+                <tr>
+                    <th field="RackId" width="100" formatter="showPrint">操作
+                    </th>
+                    <th field="LineCode" width="100" sortable="true">排位编码
+                    </th>
+
+                    <th field="RackCode" width="100" sortable="true">货架编码
+                    </th>
+
+                    <th field="CreateBy" width="100" sortable="true">操作人
+                    </th>
+
+                    <th field="CreateOn" width="100" sortable="true" formatter="getDateinfo">操作日期
+                    </th>
+
+
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="printall()">打印</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'LineCode'">排位编码</div>
+            <div data-options="name:'RackCode'">货架编码</div>
+            <div data-options="name:'CreateBy'">操作人</div>
+             <div data-options="name:'CreateOn'">操作日期</div>
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+
+    </div>
+    <input type="hidden" id="printdata" />
+</body>
+

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.example.org/Ec/" name="Ec" targetNamespace="http://www.example.org/Ec/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.example.org/Ec/">
+      <xsd:element name="callService">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="1" name="paramsJson" type="xsd:string">
+              <xsd:annotation>
+                <xsd:documentation>json格式化后的数据</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element minOccurs="1" maxOccurs="1" name="appToken" type="xsd:string">
+              <xsd:annotation>
+                <xsd:documentation>用户Token</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element minOccurs="1" maxOccurs="1" name="appKey" type="xsd:string">
+              <xsd:annotation>
+                <xsd:documentation>用户Key</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element minOccurs="1" maxOccurs="1" name="service" type="xsd:string">
+              <xsd:annotation>
+                <xsd:documentation>请求的方法</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="callServiceResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="response" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="callServiceRequest">
+    <wsdl:part name="parameters" element="tns:callService" />
+  </wsdl:message>
+  <wsdl:message name="callServiceResponse">
+    <wsdl:part name="parameters" element="tns:callServiceResponse" />
+  </wsdl:message>
+  <wsdl:portType name="Ec">
+    <wsdl:operation name="callService">
+      <wsdl:input message="tns:callServiceRequest" />
+      <wsdl:output message="tns:callServiceResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="EcSOAP" type="tns:Ec">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="callService">
+      <soap:operation soapAction="http://www.example.org/Ec/callService" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Ec">
+    <wsdl:port name="EcSOAP" binding="tns:EcSOAP">
+      <soap:address location="http://121.40.249.183/default/svc/web-service" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

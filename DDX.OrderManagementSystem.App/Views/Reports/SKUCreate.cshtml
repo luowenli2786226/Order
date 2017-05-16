@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = "SKUCreate";
+}
+<script>
+    
+
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+    function onSelect1() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetColumns", "Statistics")',
+                data: "st=" + $('#cc').combobox("getValue") + "&et=" + $('#cc2').combobox("getValue"),
+                success: function (data) {
+                    var arr = new Array();
+                    arr[0] = data.columns;
+                    var options = $("#dg").datagrid("options");                   //取出当前datagrid的配置 
+                    var options2 = $("#dg2").datagrid("options");
+                    options.frozenColumns = [[{ field: '人员', title: '人员', width: 100 }]];
+                    options2.frozenColumns = [[{ field: '人员', title: '人员', width: 100 }]];
+                    options.columns = arr;
+                    options2.columns = arr;
+                    //添加查询参数  
+                    $("#dg").datagrid(options);
+                    $('#dg').datagrid("load", {
+                        st: $('#cc').combobox("getValue"),
+                        et: $('#cc2').combobox("getValue")
+                    });
+                    $("#dg2").datagrid(options2);
+                    $('#dg2').datagrid("load", {
+                        st: $('#cc').combobox("getValue"),
+                        et: $('#cc2').combobox("getValue")
+                    });
+                }
+            });
+    }
+    $(function () {
+
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        $('#cc').datebox("setValue", getStartDate(6));
+        $('#cc2').datebox("setValue", getStartDate(0));
+        $('#dg').datagrid({
+            title: "挂贴数据",
+            rownumbers: true,
+            collapsible:true,
+            singleselect: true,
+            url: '@Url.Action("SKUCreateData", "Reports")',
+            queryParams: { "st": $('#cc').combobox("getValue"), "et": $('#cc2').combobox("getValue") },
+            showFooter: true,
+            width: 1100,
+            striped: true
+        });
+        
+        $('#dg2').datagrid({
+            title: "订单所属(PS：人员空白为订单的的产品没有存在系统中)",
+            rownumbers: true,
+            collapsible: true,
+            singleselect: true,
+            url: '@Url.Action("SKUToOrderData", "Reports")',
+            queryParams: { "st": $('#cc').combobox("getValue"), "et": $('#cc2').combobox("getValue") },
+            showFooter: true,
+            width: 1100,
+            striped: true
+         });
+
+        onSelect1();
+    });
+</script>
+<body class="easyui-layout">
+    <div region="center">
+        开始<input id="cc" type="text">
+        结束<input id="cc2" type="text">
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="onSelect1();">查询</a>
+        <table>
+            <tr>
+                <td>
+                    <table id="dg">
+                        <thead>
+                            <tr>
+                            </tr>
+                        </thead>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table id="dg2">
+                        <thead>
+                            <tr>
+                            </tr>
+                        </thead>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>

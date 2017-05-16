@@ -1,0 +1,208 @@
+﻿@{
+    ViewBag.Title = "经营数据";
+}
+
+
+
+@*<script src="~/Scripts/easyUI/jquery.pivotgrid.js"></script>*@
+<script>
+
+    $(function () {
+
+        $('#dg').datagrid({
+            url: '/Reports/GetDealReport',
+            method: 'post',
+            width: 1200,
+            title: "销售额订单数据",
+            frozenColumn: "Account",
+            fitColumns: true,
+            pagination: false,
+            rownumbers: true,
+            singleSelect: true,
+            nowrap: false,
+            showFooter: true,
+            frozenColumns: [[
+                { field: 'Account', title: '店铺', width: 150, align: 'center' }
+            ]],
+            columns: [[
+                { field: 'A', title: '货币', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                //{
+                //    field: 'B', title: '类型', width: 100, align: 'center', formatter: function (v, r, i) {
+                //        return "<b>" + v + "</b>";
+                //    }, styler: cellStyler
+                //},
+                { field: 'B', title: '上月订单数', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'C', title: '本月订单数', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'D', title: '订单增长率', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'E', title: '上月销售额', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'F', title: '本月销售额', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'G', title: '销售额增长率', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'H', title: '上月客单价', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'I', title: '本月客单价', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'J', title: '客单价增长率', width: 100, align: 'center', formatter: setcol, styler: cellStyler }
+            ]]
+
+        });
+
+        $('#dg2').datagrid({
+            url: '/Reports/GetDealReport2',
+            method: 'post',
+            width: 1200,
+            title: "人均操作数据",
+            frozenColumn: "Account",
+            fitColumns: true,
+            pagination: false,
+            rownumbers: true,
+            singleSelect: true,
+            nowrap: false,
+            showFooter: true,
+            frozenColumns: [[
+                { field: 'Account', title: '人均/月份', width: 150, align: 'center' }
+            ]],
+            columns: [[
+                { field: 'B', title: '上月', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'C', title: '本月', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'D', title: '增长量', width: 100, align: 'center', formatter: setcol, styler: cellStyler }
+            ]]
+        });
+
+        $('#dg3').datagrid({
+            url: '/Reports/GetDealReport3',
+            method: 'post',
+            width: 1200,
+            title: "人均挂贴效率数据",
+            frozenColumn: "Account",
+            fitColumns: true,
+            pagination: false,
+            rownumbers: true,
+            singleSelect: true,
+            nowrap: false,
+            showFooter: true,
+            frozenColumns: [[
+                { field: 'Account', title: '挂贴人', width: 150, align: 'center' }
+            ]],
+            columns: [[
+                { field: 'A', title: '总挂贴量', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'B', title: '总出单数', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'C', title: '上月挂贴出单率(总出单数/总挂贴)环比', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'D', title: '本月挂贴出单率(总出单数/总挂贴)环比', width: 100, align: 'center', formatter: setcol, styler: cellStyler }
+
+            ]]
+
+        });
+
+        $('#pp').combobox({
+            url: '@Url.Action("GetSearchOptions", "DataDictionaryDetail")/SalePlatform',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            required: true,
+            width: 100,
+            panelHeight: 'auto',
+            onChange: changePlatform,
+            onLoadSuccess: function () {
+                var val = $(this).combobox("getData");
+                for (var item in val[0]) {
+                    if (item == 'DicValue') {
+                        $(this).combobox("select", val[0][item]);
+                    }
+                }
+            }
+        });
+        $('#uu').combobox({
+            url: '@Url.Action("QQList", "User")',
+            valueField: 'Realname',
+            textField: 'Realname',
+            multiple: true,
+            width: 350,
+            panelHeight: 350
+
+        });
+    });
+    function changePlatform(n, o) {
+        comboboxInit('/Account/GetAccountListByPlatform/', "id=" + n + "&t=1", 'aa', 'AccountName', 'AccountName', null, null,500, true);
+    }
+    function setcol(v, r, i) {
+        if (v == 0 || v == "0%" || v == "null")
+            return "";
+        return v;
+    }
+    function cellStyler(value, row, index) {
+        if (value == 0 || value == "0%" || value == "null" || value == null)
+            return "";
+        if (value.indexOf('%') != -1) {
+            if (value.indexOf('-') != -1) {
+                return 'background-color:green;color:#C7BDFE';
+            } else
+                return 'background-color:red;color:#FFFFFF';
+        }
+    }
+
+
+
+    function getUrlByName(v, r, i) {
+        if (v == null) {
+            return "";
+        }
+        return '<a href="' + r.L + '" target="_blank">' + v + '</a>';
+    }
+
+    function myformatter(date) {
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        var d = date.getDate();
+        return y + '-' + (m < 10 ? ('0' + m) : m);
+    }
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = (s.split('-'));
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+
+    function onSelect1() {
+        $('#dg').datagrid("load", {
+            d: $('#dd').combobox("getValue"),
+            p: $('#pp').combobox("getValue"),
+            a: $('#aa').combobox("getText")
+        });
+        $('#dg2').datagrid("load", {
+            d: $('#dd').combobox("getValue"),
+            p: $('#pp').combobox("getValue"),
+            a: $('#aa').combobox("getText"),
+            u: $('#uu').combobox("getText")
+        });
+        $('#dg3').datagrid("load", {
+            d: $('#dd').combobox("getValue"),
+            p: $('#pp').combobox("getValue"),
+            a: $('#aa').combobox("getText"),
+            u: $('#uu').combobox("getText")
+        });
+    }
+</script>
+<body class="easyui-layout">
+    <div region="center">
+        时间：<input type="text" id="dd" style="width: 100px;" class="easyui-datebox" data-options="formatter:myformatter,parser:myparser">
+        平台：<input type="text" id="pp">
+        账户：<input type="text" id="aa">
+        人员：<input type="text" id="uu">
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="onSelect1();">查询</a>
+        <table id="dg">
+        </table>
+
+        <br />
+        <br />
+        <table id="dg2">
+        </table>
+        <br />
+        <br />
+        <table id="dg3">
+        </table>
+    </div>
+</body>
+

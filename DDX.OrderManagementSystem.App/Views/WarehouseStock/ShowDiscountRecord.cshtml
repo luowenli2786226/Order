@@ -1,0 +1,39 @@
+﻿@model DDX.OrderManagementSystem.Domain.GoodsDiscountRecordType
+
+@{
+   Layout = null;
+}
+
+<body class="easyui-layout">
+    <script type="text/javascript">
+        $(function () {
+            $('#dg_detail').datagrid({
+                url: '@Url.Action("DiscountRecord", "WarehouseStock")',
+                queryParams: {
+                    planNo: '@ViewData["PlanNo"]'
+                },
+                nowrap: false,             
+                rownumbers: true,
+                pageSize: 20,
+                pagination: true,
+                pageNumber: 1,
+                pageList: [20, 40, 60, 80, 100, 200],
+                singleselect: true,
+                width: 700,
+                height: 300,
+                columns: [[
+                    {
+                        field: 'BeforeUnitPrice', title: '折前单价', width: 100 },
+                    { field: 'DiscountRate', title: '折损率', width: 80 },
+                    { field: 'DiscountQty', title: '库损数量', width: 80 },
+                    { field: 'DiscountCycle', title: '库损周期', width: 80 },
+                { field: 'GmtCreate', title: '库损日期', width: 160,formatter:getDate, sortable: true }
+                ]]
+            });
+        });
+    </script>
+    <div region="center">
+        <table id="dg_detail">         
+        </table>
+    </div>
+</body>

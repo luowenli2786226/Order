@@ -1,0 +1,262 @@
+﻿@{
+    ViewBag.Title = "销售统计";
+
+}
+
+<script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
+<script src="@Url.Content("~/Scripts/FusionCharts/FusionCharts.js")"></script>
+<script>
+    //debugger;
+    $(function () {
+        $('#area').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["0", "全部"], ["1", "宁波"], ["2", "义乌"]],
+            width: 100
+        });
+        $('#area').combobox("setValue", "0");
+        var dt = getStartDate(2) + " 10:00:00";
+        var dt2 = getStartDate(1) + " 10:00:00";
+        $('#dg').datagrid({
+            url: '@Url.Action("SellCount", "Reports")',
+            queryParams: { "st": dt, "et": dt2, "p": "ALL", "a": "ALL" },
+            showFooter: true,
+            title: "订单数量统计",
+            height: 330,
+            nowrap: false,
+            width: 1200,
+            pagination: true,
+            rownumbers: true,
+            striped: true,
+            view: detailview,
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10, 20],
+            detailFormatter: function (index, row) {
+                return '<div style="padding:2px"><table id="ddv-' + index + '" style="padding:5px 0"></table></div>';
+            },
+            onDblClickRow: function (rowIndex, rowData) {
+                sku = rowData["SKU"];
+                setChart();
+            },
+            onExpandRow: function (index, row) {
+                var search = row.SKU + "$" + $('#cc').combobox("getValue") + "$" + $('#cc2').combobox("getValue") + "$" + $('#pp').combobox("getText") + "$" + $('#aa').combobox("getText");
+                $('#ddv-' + index).datagrid({
+                    fitColumns: true,
+                    singleSelect: true,
+                    rownumbers: true,
+                    loadMsg: '',
+                    height: 'auto',
+                    url: '@Url.Action("GetOrder", "Reports")' + "/" + search,
+                    columns: [[
+                        {
+                            field: 'CreateOn', title: '日期', width: 200, formatter: function (value) {
+                                return getDate(value);
+                            }
+                        },
+                        { field: 'OrderNo', title: '订单号', width: 200 },
+                        { field: 'Country', title: '国家', width: 100 },
+
+                        {
+                            field: 'Amount', title: '金额', width: 100, formatter: function (v, r, i) {
+                                return r.CurrencyCode + "<br>" + v;
+                            }
+                        },
+                        {
+                            field: 'BuyerEmail', title: '买家', width: 200, formatter: function (v, r, i) {
+                                return r.BuyerName + "<br>" + v;
+                            }
+                        },
+                        {
+                            field: 'Account', title: '账号', width: 200, formatter: function (v, r, i) {
+                                return r.Platform + "<br>" + v;
+                            }
+                        },
+                        {
+                            field: 'LogisticMode', title: '物流方式', width: 200, formatter: function (v, r, i) {
+                                return v + "<br>" + r.TrackCode;
+                            }
+                        }
+                    ]],
+                    onResize: function () {
+                        $('#dg').datagrid('fixDetailRowHeight', index);
+                    },
+                    onLoadSuccess: function () {
+                        setTimeout(function () {
+                            $('#dg').datagrid('fixDetailRowHeight', index);
+                        }, 0);
+                    }
+                });
+                $('#dg').datagrid('fixDetailRowHeight', index);
+            }
+
+        });
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        $("#st").datebox({
+            parser: myparser,
+            onChange: function () {
+                setChart();
+            }
+        });
+        $('#cc').datebox("setValue", dt);
+        $('#cc2').datebox("setValue",dt2);
+        $('#st').datebox("setValue", getStartDate(30));
+
+        $('#pp').combobox({
+            url: '/Home/Platform/1',
+            valueField: 'id',
+            textField: 'text',
+            width: 100,
+            panelHeight: 'auto',
+            onChange: changePlatform
+        });
+        $('#pp').combobox("setValue", "ALL");
+        $('#pp2').combobox({
+            url: '/Home/Platform/1',
+            valueField: 'id',
+            textField: 'text',
+            width: 100,
+            panelHeight: 'auto',
+            onSelect: function () {
+                //debugger;
+                setChart();
+            }
+
+        });
+        $('#pp2').combobox("setValue", "ALL");
+
+
+    });
+    var sku = "";
+    function setChart() {
+        if (sku.length == 0)
+            return;
+        jQuery.ajax({
+            url: "/Reports/GetSaleChart",
+            type: "post",
+            data: "s=" + sku + "&p=" + $('#pp2').combobox("getText") + "&st=" + $('#st').combobox("getValue") + "&area=" + $('#area').combobox("getValue"),
+            success: function (data) {
+                var chart = new FusionCharts("/Scripts/FusionCharts/MSLine.swf", "ChartId", "1200", "300", "0", "0");
+                chart.setDataXML(data);
+                chart.render("chart2div");
+            }
+        });
+    }
+    function onSelect1() {
+        $('#dg').datagrid("load", {
+            st: $('#cc').combobox("getValue"),
+            et: $('#cc2').combobox("getValue"),
+            p: $('#pp').combobox("getText"),
+            a: $('#aa').combobox("getText"),
+            s: $('#ss').val(),
+            area: $('#area').combobox("getValue")
+        });
+        //jQuery.ajax({
+        //    url: "/Reports/SellCountTotal",
+        //    type: "post",
+        //    data: "a=" + $('#aa').combobox("getText") + "&p=" + $('#pp').combobox("getText") + "&st=" + $('#cc').combobox("getValue") + "&et=" + $('#cc2').combobox("getValue") + "&s=" + $('#ss').val(),
+        //    success: function (sss) {
+        //        $("#totalspan").html("产品销售总额：" + sss.toFixed(2));
+        //    }
+
+        //});
+
+    }
+    function changePlatform(n, o) {
+        //$('#aa').combotree({
+        //    url: '/Home/AccountList/' + n,
+        //    valueField: 'id',
+        //    textField: 'text',
+        //    width: 150
+        //});
+        //$('#aa').combotree("setValue", "ALL");
+        comboboxInit('/Account/GetAccountListByPlatform/', "id=" + n + "&t=1", 'aa', 'Id', 'AccountName', null, null, 500, true);
+
+    }
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+    function ExportOut() {
+        $('#dg').datagrid("loading");
+        var postUrl = "/Order/ExportDown/1";
+        jQuery.ajax({
+            url: "/Reports/ExportSellCount",
+            type: "post",
+            data: "a=" + $('#aa').combobox("getText") + "&p=" + $('#pp').combobox("getText") + "&st=" + $('#cc').combobox("getValue") + "&et=" + $('#cc2').combobox("getValue") + "&ss=" + $('#ss').val(),
+            success: function (sss) {
+                location.href = postUrl;
+                $('#dg').datagrid("reload");
+            }
+        });
+    }
+</script>
+<body class="easyui-layout">
+    <div region="center">
+        地区：<input type="text" id="area" name="area" style="width: 100px" />
+        开始<input id="cc" type="text">
+        结束<input id="cc2" type="text">
+        平台<input id="pp" type="text">
+        账户<input id="aa" type="text">
+        SKU<input id="ss" type="text">
+
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="onSelect1();">查询</a>
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ExportOut();">导出</a>
+        <table>
+            <tr>
+                <td><span id="totalspan" style="font-size: 18px; color: red; font-weight: bold; margin-left: 30px;"></span>
+                    <table id="dg">
+                        <thead>
+                            <tr>
+                                <th field="Title" width="200">标题
+                                </th>
+                                <th field="SKU" width="150">SKU
+                                </th>
+                                <th field="Category" width="150">分类
+                                </th>
+                                <th field="Qty" width="80">销售数
+                                </th>
+                                <th field="OQty" width="80">订单数
+                                </th>
+                                <th field="Rate" width="80">比重
+                                </th>
+                                <th field="OAmount" width="80">订单总金额
+                                </th>
+                                <th field="Price" width="80">产品单价
+                                </th>
+                                <th field="SourceQty" width="80">库存(义/海)
+                                </th>
+                                <th field="SourceAmount" width="80">库存总金额
+                                </th>
+                                 <th field="PurchaseplanQty" width="95">采购未到-缺货数
+                                </th>
+                                 <th field="HandingQty" width="95">待发数
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        平台<input id="pp2" type="text">
+        开始<input id="st" type="text">
+        <div>
+            <div id="chart2div">
+            </div>
+        </div>
+    </div>
+</body>

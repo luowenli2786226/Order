@@ -1,0 +1,83 @@
+﻿@model DDX.OrderManagementSystem.Domain.ShipmentslistType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<fieldset>
+    <legend></legend>
+    <div class="display-label">出货清单Id</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">采购合同号码</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ContractPNo)
+    </div>
+
+    <div class="display-label">外销合同号码</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ContractWNo)
+    </div>
+
+    <div class="display-label">审批进程</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsExa)
+    </div>
+
+    <div class="display-label">审批时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExaTime)
+    </div>
+
+    <div class="display-label">第一次确认时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OverTime1)
+    </div>
+
+    <div class="display-label">申请人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AppliBy)
+    </div>
+
+    <div class="display-label">审批人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AgreeBy)
+    </div>
+
+    <div class="display-label">第一确认人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OkBy1)
+    </div>
+
+    <div class="display-label">第二次确认时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OverTime2)
+    </div>
+
+    <div class="display-label">第二次确认人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OkBy2)
+    </div>
+
+    <div class="display-label">申请时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AppliTime)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

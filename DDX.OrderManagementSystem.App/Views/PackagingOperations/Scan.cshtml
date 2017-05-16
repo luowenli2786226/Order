@@ -1,0 +1,497 @@
+﻿@model DDX.OrderManagementSystem.Domain.PickingListType
+@{
+    ViewBag.Title = "包装作业";
+}
+<script type="text/javascript">
+
+
+    document.write(' <OBJECT id="Player1"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ring.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+    document.write(' <OBJECT id="Player2"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ok.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+    document.write(' <OBJECT id="Player3"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/fk.mp3" /> <param name="AutoStart" value="false" /> </OBJECT>');
+    document.write(' <OBJECT id="Player4"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/cd.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+    document.write(' <OBJECT id="Player5"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ymd.mp3" /> <param name="AutoStart" value="false" /> </OBJECT>');
+</script>
+    <script src="~/Scripts/easyUI/datagrid-detailview.js"></script>
+<script src="~/Scripts/Report/CreateControl.js"></script>
+    <script src="/Scripts/Report/GRInstall.js"></script>
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        CreateReport("Report");
+        $(function () {
+            $("#txt").focus();
+           // document.getElementById("PickingNo").innerText = window.opener.document.all.PickingNo.value;
+            $('#unit').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: [["g", "g"],
+                       ["ks", "kg"],
+                       ],
+                width: 40
+            });
+           
+            $('#unit').combobox('setValue', 'g');
+            
+        $('#tPrintOrder').datagrid({
+            url: '@Url.Action("ScanGrid", "PackagingOperations")',
+            nowrap: true,
+            queryParams: { "PickingNo": $("#PickingNo").val() },
+            fit: true,
+            rownumbers: true,
+            pagination: true,
+            columns: [[
+                    { field: 'OrderNo', title: '已扫描订单号', width: 100, fixed: true }
+            ]]
+        })
+        });
+        function print() {
+            //if ($('#ckBGD').attr("checked")) {
+            //    Report.LoadDataFromURL("/Home/PrintOrder/" + id);
+            //    Report.Print(true);
+            //}
+            var strids = $("#spanOrderNo").text();
+            var postUrl = "/PackagingOperations/Scan/" + $("#PickingNo").val();
+            jQuery.ajax({
+                url: "/PickingList/SetPrintData/",
+                type: "post",
+                data: "ids=" + strids,
+                success: function (msg) {
+                    $('#printdata').val(msg.Result);
+                    var printid = msg.TmpID;
+                    
+
+                    var url = "/Home/PrintGrf/" + printid;
+                    var dataurl = "/Home/PrintData/" + msg.Result;
+                    Report.LoadFromURL(url);
+                    Report.LoadDataFromURL(dataurl);
+                    Report.Print(false);
+
+                    //Report.Print(false);
+                    //window.navigate(location);
+
+
+                    // CreatePrintViewerEx("100%", "100%", url, dataurl, true, "");
+                }
+            });
+        }
+        function EndPackage()
+        {
+            var id = $("#PickingNo").val();
+            var url_str = '@Url.Action("EndPackage", "PackagingOperations")/' + id
+            $('#DivEndPackage').load(url_str, function () {
+                $(this).dialog({
+                    modal: true,
+                    title: '包装作业--结束作业',
+                    loadingMessage: '正在加载...',
+                    width: 500,
+                    height:600,
+                    buttons: [{
+                        text: '返回继续包装',
+                        handler: function () {
+                            $('#DivEndPackage').dialog('close');
+                        }
+                    }]
+                });
+            }).dialog('open');
+        }
+    
+    </script>
+    <div id="scan" region="center">
+         <input type="hidden" id="printdata" />
+        <table width="95%" border="0" cellspacing="0" cellpadding="0" style="margin:auto;">
+        <tr style="background: #FFAA33;height:30px;margin-bottom:0px" width="100%" >
+            <td>
+                <font size="4">当前包装作业拣货单：</font>
+                 <font size="4"><strong> @Html.DisplayFor(model => model.PickingNo)
+                     @Html.HiddenFor(model => model.PickingNo, new { @id="PickingNo"})
+                 @Html.DisplayFor(model => model.PickingType)</strong></font>             
+           </td>
+            <td  style="text-align:right">
+          <input type="button" value="结束本次作业" onclick="EndPackage()" /></td>
+        </tr>
+          <tr style="background: #fff;height:30px;margin-bottom:0px" width="100%"  region="center"> <td><span id="spanStatus"> </span></td></tr> 
+        </table>
+        <table width="95%" border="0" cellspacing="0" cellpadding="0" style="margin:auto;">
+            <tr style="background: #5555FF;height:50px;margin-bottom:0px" width="100%" >
+            <td>
+                <font size="4" color="white">SKU/货品身份码：</font>
+                 <input id="txt" type="text" style="width: 250px; height: 20px" onkeydown="return txt_keydown(event)" />              
+           </td>
+            <td  style="text-align:right">
+                <font size="4" color="white">当前操作员： @Html.DisplayFor(model => model.Partner)</font>
+                <input type="button" value="我要退出作业" onclick="window.close()" />
+            </td>
+        </tr>
+        </table>
+       
+        <table width="95%" border="0" cellspacing="0" cellpadding="0" style="margin:auto;">
+            <tr style="background: #5555FF;height:50px;margin-bottom:0px" width="100%" >
+            <td>
+                <font size="1" color="white">自动匹配包裹：等待扫描后获取包裹信息&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称重：</font>
+                 <input id="SKU" type="text" style="width: 50px; height: 20px" onkeydown="return txt_keydown(event)" />   
+                <object id='tc' width="200" height="25" classid="clsid:5FE3EF45-DBFE-3C80-BD1B-D60C9502039C">
+                                                            </object>
+                <input id="unit" />           
+           </td>
+        </tr>
+        </table>
+         <table width="100%" border="0" cellpadding="5" id="tOrder">
+                                                                    <tr>
+                                                                        <td width="100" align="right"><font size='2'>系统单号：</font></td>
+                                                                        <td width="200"><font size='2'><span id="spanOrderNo">----</span></font></td>
+                                                                        <td width="100" align="right"><font size='2'>平台单号：</font></td>
+                                                                        <td width="200"><font size='2'><span id="OrderExNo">----</span></font></td>
+                                                                        <td width="100" align="right"><font size='2'>跟踪码：</font></td>
+                                                                        <td width="200"><font size='2'><span id="TrackCode">----</span></font></td>
+                                                                      
+                                                                    </tr>
+                                                                  
+                                                                </table>
+        <table id="tProducts" width="100%" border="0" cellpadding="5" style="color: black; font-size: 10px" ;>
+        <thead>
+            <tr>
+                <th width="80" align="center">NO.</th> 
+                <th width="200" align="center">品名/规格</th>
+                <th width="200" align="center">SKU</th>
+                <th width="80" align="center">应发数量</th>
+                <th width="100" align="center">扫描次数</th>
+                <th align="center"></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+   <table id="tPrintOrder" class="easyui-datagrid">
+    <thead>
+                <tr>
+                    <th field="OrderNo" width="60" ></th>
+                   
+                </tr>
+            </thead>
+    </table>
+    </div>
+    <div id="DivEndPackage"></div>
+            <script type="text/javascript">
+                var zl = 0; //重量
+                var o = ""; //包裹编号
+                var progress = 0;  // 处理状态0：等待扫描跟踪码，1：等待扫描商品SKU code，2：订单状态转变为待发货 3.将订单发货
+                var txt = document.getElementById("txt");
+                var TrackCodeLength = -1;
+                var TrackCodeLength2 = -1;
+                var oldstr = "";
+                //var spanInfo = document.getElementById("spanInfo");
+                var spanStatus = document.getElementById("spanStatus");
+                var skuCode = [];
+
+                function txt_keydown(e) {
+                    var keynum;
+                    if (window.event) //IE
+                    {
+                        keynum = e.keyCode;
+                    }
+                    else if (e.which) //Netscape/Firefox/Opera
+                    {
+                        keynum = e.which;
+                    }
+                    if (keynum == 13) {
+                        Scan();
+                        return false;
+                    }
+                    if (keynum == 27) {
+                        Reset();
+                    }
+                    return true;
+                }
+                function Scan() {
+                    if (txt.value == "") { Reset(); return; }
+                    if (progress == 0) {
+                       
+                        //TrackCodeLength = -1;
+                        //TrackCodeLength2 = -1;
+                        getOrder(txt.value);
+                    }
+                    else if (progress == 1) {
+                        getSKU(txt.value);
+                    }
+                    else if (progress == 2) {
+                        DeliveryScan(txt.value);
+                    }
+                    txt.value = "";
+                    $("#txt").focus();
+                }
+                // 获取订单信息
+                function getOrder(d) {
+                    jQuery.ajax({
+                        url: "/PickingList/GetSKUByCode/",
+                        type: "post",
+                        data: "code=" + d + "&PickingNo=" +$("#PickingNo").val(),
+                        success: function (msg) {
+                            if (msg.IsSuccess) {
+                                TrackCodeLength = msg.Code;
+                                $("#spanOrderNo").text(msg.Result.OrderNo);
+                                $("#OrderExNo").text(msg.Result.OrderExNo);
+                                $("#TrackCode").text(msg.Result.TrackCode);
+                                ShowMessage("", "等待扫描商品...", false);
+                                for (var nI = 0; nI < msg.Result.Products.length; nI++) {
+                                    var tr = $("<tr name=\"tr_" + msg.Result.Products[nI].SKU.toUpperCase() + "\"></tr>")
+                                    tr.append($("<td align=\"center\">" + (nI + 1) + "</td>"));
+                                    tr.append($("<td>" + msg.Result.Products[nI].SKU + "</td>"));
+                                    tr.append($("<td>" + msg.Result.Products[nI].Title + "</td>"));
+                                    tr.append($("<td name=\"qty\" align=\"center\">" + msg.Result.Products[nI].Qty + "</td>"));
+                                    tr.append($("<td name=\"cqty\" align=\"center\">" + 0 + "</td>"));
+                                    $("#tProducts tbody").append(tr)
+                                }
+                                
+                                progress = 1;
+                               
+                            } else {
+                                progress = 0;
+                                ShowMessage("", msg.Result, false);
+                            }
+                        }
+                    });
+                }
+
+                // 获取SKU
+                function getSKU(c) {
+                    jQuery.ajax({
+                        url: "/PickingList/GetSKUByCode3/",
+                        type: "post",
+                        data: "code=" + c,
+                        success: function (msg) {
+                            if (msg.IsSuccess) {
+                                progress = 1;
+                                code = c;
+                                setSKU(msg.Result);
+                            } else {
+                                progress = 1;
+
+                                ShowMessage(null, "错误：" + msg.Result, false);
+                                Player1.controls.play();
+                            }
+                        }
+                    });
+                }
+
+               
+
+                // 包装扫描
+                function PackingScan(TrackCode, skuCodeList) {
+                    if (TrackCodeLength == 0) {
+                        if (o != TrackCode) {
+                            ShowMessage("前后输入不一致，请重新输入", "等待扫描", false);
+                            return;
+                        } else {
+                            TrackCode = "";
+                        }
+                    }
+
+                    jQuery.ajax({
+                        url: "/PackingScan/PackingScan/",
+                        type: "post",
+                        data: "TrackCode=" + TrackCode + "&SkuCodeList=" + skuCodeList + "&Type=" + $("#OrderType").text(),
+                        success: function (msg) {
+                            if (msg.IsSuccess) {
+                                progress = 2;
+                                //$("#tOrder")[0].style.textDecorationLineThrough = true;
+                                //$("#tProducts")[0].style.textDecorationLineThrough = true;
+                                msg.Result = msg.Result.replace('扫描商品条码', '再次扫描跟踪码');
+                                ShowMessage("包装扫描结束，等待再次扫描跟踪码...", msg.Result, true);
+                                Player2.controls.play();
+                                //if (confirm('确认打印？'))
+                                //{
+                                print();
+                                //}
+                                // Reset();
+                            } else {
+                                ShowMessage("", msg.Result, false);
+                                Player5.controls.play();
+                            }
+                        }
+                    });
+                }
+                // 发货扫描
+                function DeliveryScan(TrackCode) {
+                    if (TrackCodeLength == 0) {
+                        if (o != TrackCode) {
+                            ShowMessage("前后输入不一致，请重新输入", "等待扫描", false);
+                            return;
+                        } else {
+                            TrackCode = "";
+                        }
+                    }
+                    //var LogisticMode = $("#ll").combogrid("getValue");
+                    //var WarehouseId = $("#ww").combobox("getValue");
+                  
+                    // var Weight = $("#tc").val();
+                    var Weight = $("#tc").val();
+                    if (!Weight)
+                    {
+                        alert("请称重");
+                    }
+                    jQuery.ajax({
+                        url: "/PickingList/Scan/",
+                        type: "post",
+                        data: "TrackCode=" + TrackCode + "&Weight=" + Weight + "&WarehouseId=1" + "&LogisticMode=NB&PickingListNo=" + $("#PickingNo").val(),
+                        success: function (msg) {
+                            if (msg.IsSuccess) {
+                                if (msg.Result == "包装扫描结束")
+                                {
+                                    alert("包装作业结束");
+                                    window.close();
+                                }
+                                progress = 0;
+                                $("#tOrder")[0].style.textDecorationLineThrough = true;
+                                $("#tProducts")[0].style.textDecorationLineThrough = true;
+                                Player2.controls.play();
+                                Reset();
+                                $('#tPrintOrder').datagrid('reload');
+                                msg.Result = msg.Result.replace('跟踪码', '商品条码');
+                                ShowMessage("", msg.Result, true);
+
+                            } else {
+                                ShowMessage("", msg.Result, false);
+                                Player5.controls.play();
+                            }
+                        }
+                    });
+                }
+                // 初始化操作界面
+                function Reset() {
+                    progress = 0;
+                    txt.value = "";
+                    skuCode = [];
+                    $("#spanOrderNo").text("----");
+                    $("#OrderExNo").text("----");
+                    $("#LogisticMode").text("----");
+                    $("#Country").text("----");
+                    $("#TrackCode").text("----");
+                    $("#OrderType").text("----");
+
+                    $("#tProducts tbody tr").remove();
+                    $("#tOrder")[0].style.textDecorationLineThrough = false;
+                    $("#tProducts")[0].style.textDecorationLineThrough = false;
+                    ShowMessage("", "等待扫描商品...", true);
+                    $("#txt").focus();
+                }
+                function ShowMessage(msgInfo, msgStatus, isOk) {
+                    if (msgInfo != null) {
+                        //spanInfo.innerHTML = msgInfo;
+                    }
+                    if (msgStatus != null) {
+                        spanStatus.innerHTML = msgStatus;
+                    }
+                    if (isOk) {
+                        spanStatus.style.color = "Blue";
+                    }
+                    else {
+                        spanStatus.style.color = "Red";
+                    }
+                }
+
+                // 记录并设置当前商品扫描状态
+                function setSKU(sku) {
+                    if ($("tr[name='tr_" + sku.toUpperCase() + "']").length == 0) {
+                        ShowMessage(null, "扫描错误！该商品SKU条码与订单SKU不符！请检查！", false);
+                        code = "";
+                        Player5.controls.play();
+                        return;
+                    }
+                    for (var i = 0; i < skuCode.length; i++) {
+                        if (skuCode[i].toUpperCase() == code.toUpperCase()) {
+                            ShowMessage(null, "扫描错误！该条码已被配货扫描了！禁止重复操作！", false);
+                            Player5.controls.play();
+                            return;
+                        }
+                    }
+                    $("tr[name='tr_" + sku.toUpperCase() + "']").each(function () {
+                        //debugger;
+                        var qty = parseFloat($(this).find("[name='qty']").text());
+                        var cqty = parseFloat($(this).find("[name='cqty']").text());
+
+                        if (qty > cqty) {
+                            cqty = parseFloat(cqty) + 1;
+                            //$(this).attr("cqty", cqty);
+                            $(this).find("[name='cqty']").text(cqty);
+                            skuCode.push(code);
+                            //$("#r_" + c).html(cqty);
+                            // skuCode.add(code);
+                            //检查是不是所有的条码都好了
+                            iscon = true;
+                            valiOrder();
+                            if (iscon) {
+                                //if ($("#ckCheng").prop("checked")) {
+                                //    progress = 3;
+                                //    if ($("#ckCheng").prop("checked")) {
+                                //        var tc = document.getElementById('tc');
+                                //        zl = tc.Value;
+                                //    } else {
+                                //        zl = 0;
+                                //    }
+                                //    ShowMessage(null, "所有产品扫描完成！请输入追踪码", true);
+                                //} else {
+                                //    progress = 2;
+                                //    ShowMessage(null, "订单商品扫描结束！等待扫描跟踪码...", true);
+                                //}
+                                progress = 0;
+                                //$("#tOrder")[0].style.textDecorationLineThrough = true;
+                                //$("#tProducts")[0].style.textDecorationLineThrough = true;
+                                //ShowMessage(null, "订单包装扫描结束！等待扫描跟踪码...", true);
+                                PackingScan($("#TrackCode").text(), skuCode.join(','));
+                            }
+                            else {
+                                ShowMessage(null, "商品条码：" + code + " [" + sku + "]扫描成功！等待扫描商品条码...", true);
+                            }
+                            return false;
+                        }
+                    });
+
+                }
+
+                function valiOrder() {
+                    iscon = true;
+                    $("[name^='tr_']").each(function () {
+                        var a = parseFloat($(this).find("[name='qty']").text());
+                        var b = parseFloat($(this).find("[name='cqty']").text());
+                        if (a != b) {
+                            iscon = false;
+                            return false;
+                        }
+                    });
+                }
+
+                //function setWeight(s, w) {
+                //    $.messager.confirm('修改的重量', "修改" + s + "的重量为:" + w, function (r) {
+                //        if (r) {
+                //            jQuery.ajax({
+                //                url: "/Product/EditProductWeight/",
+                //                type: "post",
+                //                data: "s=" + s + "&w=" + w,
+                //                success: function (msg) {
+                //                    if (msg.IsSuccess) {
+                //                        txt.foucs();
+
+                //                    } else {
+
+                //                    }
+                //                }
+                //            });
+                //        }
+                //    });
+
+                //}
+                $.messager.defaults = { ok: "确定", cancel: "取消" };
+        </script>
+
+</body>
+

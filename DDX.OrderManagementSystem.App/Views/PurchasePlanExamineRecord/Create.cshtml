@@ -1,0 +1,161 @@
+﻿@model DDX.OrderManagementSystem.Domain.PurchasePlanExamineRecordType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $('#st2').datetimebox();
+        $('#et2').datetimebox();
+        $('#st2').datebox("setValue", getStartDate(7));
+        $('#et2').datebox("setValue", getStartDate(0));
+        $('#SettlementType').combobox({
+            url: '@Url.Action("GetSearchOptions", "DataDictionaryDetail")/JieType',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 'auto'
+        });
+        $('#planTo').datagrid({
+            title: '已选择的计划',
+            width: 400,
+            singleSelect: true,
+            height: 300,
+            columns: [[
+                { field: 'Suppliers', title: '供应商', width: 100, sortable: "true" },
+                { field: 'SKU', title: 'SKU', width: 120, sortable: "true" },
+                { field: 'Qty', title: 'Qty', width: 100, sortable: "true" }
+            ]],
+            onSelect: function (rowindex, rowData) {
+                if (rowindex == undefined) {
+                    return;
+                }
+                $('#planForm').datagrid('appendRow', rowData);
+                $('#planTo').datagrid('deleteRow', rowindex);
+                $('#planTo').datagrid('deleteRow', unselectRow);
+            }
+        });
+        $('#txtSearch2').searchbox({
+            searcher: doSearch2,
+            menu: '#ww',
+            prompt: '查询关键字'
+        });
+        $('#c_ProcurementModel').combobox({
+            valueField: 'id',
+            textField: 'text',
+            panelHeight: 'auto',
+            editable: false,
+            data: [{ id: "小包仓采购", text: "小包仓采购" }, { id: "海外仓采购", text: "海外仓采购" }]
+        });
+        $('#c_ProcurementModel').combobox("setValue", "小包仓采购");
+        doSearch2();
+    });
+
+    function doSearch2() {
+        $('#planForm').datagrid({
+            url: '/PurchasePlanExamineRecord/GetPlan',
+            title: '采购计划',
+            queryParams: { "search": "CreateBy&" + $("#txtBy").val() + "^CreateOn_st&" + $("#st2").datebox("getText") + "^CreateOn_et&" + $("#et2").datebox("getText") + "^" + $('#txtSearch2').searchbox("getName") + "&" + $('#txtSearch2').searchbox("getValue") + "^IsExamine_ds&0^SettlementType_ds&" + $("#SettlementType").combobox("getValue") + "^Status_uk&异常" },
+            width: 350,
+            singleSelect: true,
+            height: 300,
+            columns: [[
+               { field: 'Suppliers', title: '供应商', width: 100, sortable: "true" },
+               { field: 'SKU', title: 'SKU', width: 120, sortable: "true" },
+               { field: 'Qty', title: 'Qty', width: 100, sortable: "true" }
+            ]],
+            onSelect: function (rowindex, rowData) {
+                if (rowindex == undefined) {
+                    return;
+                }
+                $('#planTo').datagrid('appendRow', rowData);
+                $('#planForm').datagrid('deleteRow', rowindex);
+                $('#planForm').datagrid('deleteRow', unselectRow);
+            }
+        });
+    }
+
+    function toALL() {
+
+        var rows = $('#planForm').datagrid('getRows');
+        for (var i = 0; i < rows.length; i++) {
+            $('#planTo').datagrid('appendRow', rows[i]);
+        }
+        $('#planForm').datagrid('loadData', { total: 0, rows: [] });
+    }
+    function toClear() {
+        $('#planTo').datagrid('loadData', { total: 0, rows: [] });
+    }
+</script>
+@using (Html.BeginForm("Create", "PurchasePlanExamineRecord", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExamineTitle, "审批名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExamineTitle, new { @id = "c_ExamineTetle", @style = "width:330px;" })
+            <input type="hidden" id="ec" name="c"/>
+		</td>
+	</tr>
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.Remark, "备注:")
+		</td>
+		<td>
+            @Html.TextAreaFor(model => model.Remark, new { @id = "c_Remark", @style = "width:330px;" })
+          
+		</td>
+   </tr>
+       @* <tr>
+            <td> @Html.LabelFor(model => model.ProcurementModel, "采购模式:")</td>
+        <td>
+            @Html.TextBoxFor(model => model.ProcurementModel, new { @id = "c_ProcurementModel" })
+        </td>
+	</tr>*@
+		<tr>
+		<td colspan="2">
+            <table border="0">
+
+                <tr>
+                    <td colspan="3"> 
+                        开始:<input id="st2" name="BeginDate" />
+                        结束:<input id="et2" name="EndDate" />
+                        结算方式:<input id="SettlementType"  type="text" /><br />
+                        采购人：<input id="txtBy" type="text"> 
+                        <input id="txtSearch2" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#ww'">
+                        <div id="ww" style="width: 70px">
+                            <div data-options="name:'SKU'">SKU</div>
+                            <div data-options="name:'ProductName'">名称</div>
+                            <div data-options="name:'Suppliers'">供应商</div>
+                        </div>
+                      采购模式:@Html.TextBoxFor(model => model.ProcurementModel, new { @id = "c_ProcurementModel" })
+
+                 </td>
+                </tr>
+
+                <tr>
+                    <td>
+                           <table id='planForm'>
+                           </table>
+                    </td>
+                    <td>
+                        <input type="button" value="全选" onclick="toALL()"/><br />
+                        <input type="button" value="全删" onclick="toClear()"/>
+                    </td>
+                    <td>
+                        <table id='planTo'>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+		</td>
+		
+	</tr>
+
+</table>
+</fieldset>
+}

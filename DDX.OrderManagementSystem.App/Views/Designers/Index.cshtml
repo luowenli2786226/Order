@@ -1,0 +1,749 @@
+﻿@model DDX.OrderManagementSystem.Domain.DesignerType
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/Scripts/easy/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="/Scripts/easy/themes/icon.css" />
+    <script type="text/javascript" src="/Scripts/easy/jquery.min.js"></script>
+    <script type="text/javascript" src="/Scripts/easy/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/Scripts/easy/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="/Scripts/easy/plugins/easyuiExtension.js"></script>
+    <script src="@Url.Content("~/Scripts/js/App.js")"></script>
+    <style>
+        .fitem
+        {
+            font-size: 20px;
+            font: bold;
+        }
+    </style>
+
+
+    <script type="text/javascript">
+
+        //确认弹出框;  
+        function confirmInfo() {
+            var rows = $("#dg").datagrid("getSelected");
+            if (rows) {
+                var designerid = rows.DesignerID;
+                var contentitle = rows.Contentitle;
+                var lasttime = rows.Lasttime;
+                var auditor = rows.Auditor;
+                var str = '@Session["login"].ToString()';
+                //选择要删除的行
+                if (rows && (auditor == null && str == rows.Apllicant)) {
+                    $.messager.confirm('提示:', '你确认要删除吗?', function (event) {
+                        if (event) {
+                            $.ajax({
+                                type: "post",
+                                url: "/Designers/Delete?&designerid=" + designerid,
+                                success: function (data) {
+                                    // if (data == "ok") {
+                                    // $.messager.alert("系统提示", "删除成功！");
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: '删除成功！',
+                                        timeout: 1000,
+                                        showType: 'slide'
+                                    });
+                                    //$.messager.show({
+                                    //    title: '提示',
+                                    //    msg: '删除成功！',
+                                    //    timeout: 3000,
+                                    //    showType: 'slide'
+                                    //});
+                                    location.reload();
+                                }
+                            })
+                            // alert("删除成功！");
+                        }
+
+                        else {
+                            $.messager.alert("系统提示", "删除取消！");
+                        }
+                    });
+                }
+                else if (auditor != null) {
+                    $.messager.alert("系统提示", "该项目已审核！删除失败！");
+                }
+                else if (str != rows.Apllicant) {
+                    $.messager.alert("系统提示", "权限不足！");
+                }
+
+                else {
+                    slide();
+                }
+            }
+            else {
+                slide();
+            }
+        }
+
+
+        function add() {
+            var str = '@Session["RoleName"].ToString()';
+            if (str != "设计") {
+                var contentitle = $("#contentitle1").textbox('getValue');
+                var lasttime = $("#lasttime1").textbox('getValue');
+                if ($("#contentitle1").textbox('getValue') == "" || $("#lasttime1").textbox('getValue') == "") {
+                    slideadd();
+                }
+                else {
+                    $.ajax({
+                        type: "post",
+                        url: "/Designers/Create?&contentitle=" + contentitle + "&lasttime=" + lasttime,
+                        success: function (data) {
+                            //  if (data == 1) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '添加成功！',
+                                timeout: 1000,
+                                showType: 'slide'
+                            });
+                            $('#dlgadd').dialog('close');
+                            //alert(data);
+                            location.reload();
+                        }
+                    });
+                }
+            }
+            else {
+                $.messager.alert("系统提示", "无法新建！");
+            }
+
+        }
+
+        function edit() {
+            var rows = $("#dg").datagrid("getSelected");
+            if (rows) {
+                var designerid = rows.DesignerID;
+                var contentitle = $("#contentitle2").textbox('getValue');
+                var lasttime = $("#lasttime2").datebox('getValue');
+                var auditor = rows.Auditor;
+                //选择要编辑的行
+                if (rows && auditor == null) {
+                    if ($("#contentitle2").textbox('getValue') == "" || $("#lasttime2").textbox('getValue') == "") {
+                        $('#win').window('open');
+                    }
+                    else {
+                        $.ajax({
+                            type: "post",
+                            url: "/Designers/Edit?&designerid=" + designerid + "&contentitle=" + contentitle + "&lasttime=" + lasttime,
+                            success: function (data) {
+                                //  if (data == 1) {
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: '修改成功！',
+                                    timeout: 1000,
+                                    showType: 'slide'
+                                });
+                                $('#dlgedit').dialog('close');
+                                //alert(data);
+                                location.reload();
+                            }
+                        })
+                    }
+                }
+                else if (auditor != null) {
+                    $.messager.alert("系统提示", "该项目已审核！无法修改！");
+                }
+                else {
+                    $.messager.alert("系统提示", "修改取消！");
+                }
+            }
+            else {
+                slide();
+            }
+        }
+
+        //保存审核备注
+        function edit_auditnotes(m) {
+            var rows = $("#dg").datagrid("getSelected");
+            if (rows) {
+                var designerid = rows.DesignerID;
+                var auditnotes = $("#auditnotes").textbox('getValue');
+                //选择要编辑的行
+                $.ajax({
+                    type: "post",
+                    url: "/Designers/Edit_auditnotes?&designerid=" + designerid + "&auditnotes=" + auditnotes + "&m=" + m,
+                    success: function (data) {
+                        //  if (data == 1) {
+                        if (m == 1 || m == 2) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '审核成功！',
+                                timeout: 1000,
+                                showType: 'slide'
+                            });
+                            location.reload();
+                        }
+                        if (m == 3 && rows.Receivingtime == null && rows.Audittime != null) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '审核撤销成功！',
+                                timeout: 1000,
+                                showType: 'slide'
+                            });
+                            location.reload();
+                        }
+                        if (m = 3 && rows.Receivingtime != null) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '无法撤销！',
+                                timeout: 1000,
+                                showType: 'slide'
+                            });
+                        }
+                        $('#dlgappli').dialog('close');
+
+                    }
+                })
+            }
+            else {
+                slide();
+            }
+
+        }
+
+        //保存领取备注
+        function edit_receiptor(m, index) {
+            var rows = $("#dg").datagrid("getSelected");
+            if (rows) {
+                var designerid = rows.DesignerID;
+                var receivenotes = $("#receivenotes").textbox('getValue');
+                var expectedtime = $("#expectedtime").datebox('getValue');
+                // alert(rows.Receiptor);
+                if (expectedtime != "") {
+                    //选择要编辑的行
+                    $.ajax({
+                        type: "post",
+                        url: "/Designers/Edit_receiptor?&designerid=" + designerid + "&receivenotes=" + receivenotes + "&expectedtime=" + expectedtime + "&m=" + m,
+                        success: function (data) {
+                            //  if (data == 1) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '领取成功！',
+                                timeout: 1000,
+                                showType: 'slide'
+                            });
+                            $('#dlgrece').dialog('close');
+                            location.reload();
+                        }
+                    })
+                }
+                else {
+                    slidetime();
+                }
+            }
+            else {
+                slide();
+            }
+
+        }
+
+        //完成操作
+        function edit_finish(m, index) {
+            var rows = $("#dg").datagrid("getSelected");
+            var str = '@Session["login"].ToString()';
+            if (rows) {
+                if (rows.Receivingtime == null && rows.Auditstatus == "同意") {
+                    $.messager.alert("系统提示", "等待项目领取！");
+                }
+                else if (rows.Auditor == null || rows.Auditstatus == "拒绝") {
+                    $.messager.alert("系统提示", "等待项目审核！");
+                }
+                else if (rows.Finishtime == null && str == rows.Apllicant) {
+                    var designerid = rows.DesignerID;
+                    //选择要编辑的行
+                    $.ajax({
+                        type: "post",
+                        url: "/Designers/Edit_finish?&designerid=" + designerid + "&m=" + m,
+                        success: function (data) {
+                            //  if (data == 1) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '项目工作完成结束！',
+                                timeout: 3000,
+                                showType: 'slide'
+                            });
+                            location.reload();
+                        }
+                    })
+                }
+                else if (str != rows.Apllicant) {
+                    $.messager.alert("系统提示", "权限不足！");
+                }
+                else {
+                    $.messager.alert("系统提示", "项目已完成！");
+                }
+            }
+            else {
+                slide();
+            }
+
+        }
+
+        function openedit() {
+            var rows = $("#dg").datagrid("getSelected");
+            var str = '@Session["login"].ToString()';
+            if (rows && str == rows.Apllicant) {
+                if (rows.Auditor == null) {
+                    $("#contentitle2").textbox('setValue', rows.Contentitle);
+                    //    alert(formatDateBoxFull(rows.Lasttime));
+                    $("#lasttime2").datebox('setValue', formatDateBoxFull(rows.Lasttime));
+                    $('#dlgedit').dialog('open');
+                }
+                else {
+                    $.messager.alert("系统提示", "项目已审批，无法修改！");
+                }
+
+            }
+            else if (str != rows.Apllicant) {
+                $.messager.alert("系统提示", "权限不足！");
+            }
+
+            else {
+                slide();
+            }
+        }
+
+
+        //   搜索
+        function doSearch() {
+            // alert(ss);
+            var search = $('#ss').searchbox("getName") + "&" + $('#ss').searchbox("getValue") + "^";
+            var e = $('#IsApllicant').datebox("getValue");
+            if (e != "ALL" && e != "" && e != "0") {
+                search += "Apllicant_ds&" + e + "^";
+            }
+            if ($('#IsAuditstatus').combobox("getValue") != "ALL") {
+                if ($('#IsAuditstatus').combobox("getValue") == "1") {
+                    search += "Auditstatus&" + "同意^";
+                }
+                if ($('#IsAuditstatus').combobox("getValue") == "2") {
+                    search += "Auditstatus&" + "拒绝^";
+                }
+                if ($('#IsAuditstatus').combobox("getValue") == "3") {
+                    search += "Auditstatus_nnl&" + "否^";
+                }
+            }
+
+            if ($('#IsReceivingsate').combobox("getValue") != "ALL") {
+                if ($('#IsReceivingsate').combobox("getValue") == "1") {
+                    search += "Receivingsate&" + "已领取^";
+                }
+                if ($('#IsReceivingsate').combobox("getValue") == "2") {
+                    search += "Receivingsate_nnl&" + "否^";
+                }
+            }
+
+            if ($('#IsFinishtime').combobox("getValue") != "ALL") {
+                if ($('#IsFinishtime').combobox("getValue") == "1") {
+                    search += "Finishtime_st&" + "2000-01-01^";
+                }
+                if ($('#IsFinishtime').combobox("getValue") == "2") {
+                    search += "Finishtime_nnl&" + "否^";
+                }
+            }
+
+          
+            $('#dg').datagrid('load', {
+                search: search
+            });
+            //     $('#dg').datagrid('reload');
+
+        }
+
+
+
+        function _auditor(m, index) {
+            var row = $("#dg").datagrid("getSelected");
+            if (row) {
+                var designerid = row.DesignerID;
+                var auditstatus = row.Auditstatus;
+                var receivingstate = row.Receivingstate;
+                var str = '@Session["login"].ToString()';
+                var str_role = '@Session["RoleName"].ToString()';
+                if (str == '雷刚' || str == '邵纪银') {
+                    if (m == 2) {
+                        if ((auditstatus == null && row.Receivingtime == null)) {
+                            $('#dlgappli').dialog('open');
+                            $("#auditnotes_save").click(function () {
+                                edit_auditnotes(2, index);
+                            });
+                        }
+                        else {
+                            edit_auditnotes(3, index);
+                        }
+                        //else if (auditstatus == null) {
+                        //    $.messager.alert("系统提示", "该项目未审核!");
+                        //}
+                        //else if (row.Receivingtime != null){
+                        //    $.messager.alert("系统提示", "该项目已领取!");
+                        //}
+                    }
+                    else {
+                        if (auditstatus == null) {
+                            $('#dlgappli').dialog('open');
+                            $("#auditnotes_save").click(function () {
+                                edit_auditnotes(m, index);
+                            });
+                        }
+                        else {
+                            //   alert(auditstatus);
+                            $.messager.alert("系统提示", "该项目已审核!");
+                        }
+                    }
+                }
+                else if (str_role == '设计') {
+                    if (auditstatus == "同意") {
+                        if (m == 2) {
+                            $.messager.alert("系统提示", "权限不足！");
+                        }
+                        else {
+                            if (row.Receivingtime == null) {
+                                $('#dlgrece').dialog('open');
+                                $("#receiptor_save").click(function () {
+                                    edit_receiptor(m, index);
+                                });
+                            }
+                            else {
+                                $.messager.alert("系统提示", "项目无法重复领取！");
+                            }
+                        }
+                    }
+                    else {
+                        $.messager.alert("系统提示", "等待项目审核完成！");
+                    }
+                }
+
+                else {
+                    if (receivingstate != "") {
+                        if (m == 2) {
+                            $.messager.alert("系统提示", "权限不足！");
+                        }
+                        else {
+                            edit_finish(m, index);
+                        }
+                    }
+                    else {
+                        $.messager.alert("系统提示", "该项目未领取！");
+                    }
+                }
+            }
+            else {
+                slide();
+            }
+        }
+
+        function slide() {
+            $.messager.show({
+                title: '提示',
+                msg: '请选中行！',
+                timeout: 1000,
+                showType: 'slide'
+            });
+        }
+
+        function slidetime() {
+            $.messager.show({
+                title: '警告',
+                msg: '预计时间必填！',
+                timeout: 3000,
+                showType: 'slide'
+            });
+        }
+
+        function slideadd() {
+            $.messager.show({
+                title: '提示',
+                msg: '信息未填写完整！！',
+                timeout: 3000,
+                showType: 'slide'
+            });
+        }
+
+        $(function () {
+            $("#auditnotes_cancle").click(function () {
+                $('#dlgappli').dialog('close');
+            })
+            $("#receiptor_cancel").click(function () {
+                $('#dlgrece').dialog('close');
+            })
+            $("#canceladd").click(function () {
+                $('#dlgadd').dialog('close');
+            })
+            $("#canceledit").click(function () {
+                $('#dlgedit').dialog('close');
+            })
+
+            $('#dg').datagrid({
+                //   fixed: true,
+                pagination: true,//设置分页
+                pageSize: 60,//设定每页显示10条数据
+                pageList: [60, 80, 100, 150, 200],
+                //  fitColumns: true,
+                fit: true,
+                rownumbers: true,
+                pageNumber: 1,
+                // allowPaging:true,
+                //   pageNumber: 1,//默认显示第几页  
+                url: '/Designers/About',
+                singleSelect: true,
+                nowrap: false,
+                idField: 'DesignerID',
+                autoRowHeight: true,
+                iconCls: 'icon-grid',
+                loadMsg: '数据正在加载,请耐心的等待...',
+                method: 'get',
+                columns: [[
+                     {
+                         field: 'operate', title: '操作', align: 'center', width: 80,
+                         formatter: function (val, row, index) {
+                             var btn = '<div id="tb">'
+                   + '<a href="javascript:_auditor(1,' + index + ')"  style="height:20px;float: left;"  class="agreeauditor"  title="同意" />'
+                   + '<a href="javascript:_auditor(2,' + index + ')"  style="height:20px;float: right;" class="refuseauditor"  title="拒绝"/>'
+                   + '</div>';
+                             return btn;
+                         }
+                     },
+                     { field: 'DesignerID', title: 'ID', align: 'center', width: 55 },
+                     { field: 'Contentitle', title: '项目内容', align: 'center', width: 100, sortable: true },
+                     { field: 'Lasttime', title: '截止日期', align: 'center', width: 80, sortable: true, formatter: formatDateBoxFull },
+                     { field: 'Apllicant', title: '申请人', align: 'center', width: 50, sortable: true },
+                     { field: 'Apllicantime', title: '申请时间', align: 'center', width: 80, sortable: true, formatter: formatDateBoxFull },
+                     { field: 'Auditor', title: '审核人', align: 'center', width: 50, sortable: true },
+                     { field: 'Audittime', title: '审核时间', align: 'center', width: 80, sortable: true, order: 'asc', formatter: formatDateBoxFull },
+                     { field: 'Auditnotes', title: '审核备注', align: 'center', width: 450, sortable: true },
+                     { field: 'Auditstatus', title: '审核状态', align: 'center', width: 65, sortable: true },
+                     { field: 'Expectedtime', title: '预计完成时间', align: 'center', width: 80, sortable: true, formatter: formatDateBoxFull },
+                     { field: 'Receivenotes', title: '领取备注', align: 'center', width: 120, sortable: true },
+                     { field: 'Receiptor', title: '领取人', align: 'center', width: 60, sortable: true },
+                     { field: 'Receivingsate', title: '领取状态', align: 'center', width: 40, sortable: true },
+                     { field: 'Receivingtime', title: '领取时间', align: 'center', width: 80, sortable: true, formatter: formatDateBoxFull },
+                     { field: 'Finishtime', title: '完成时间', align: 'center', sortable: true, formatter: formatDateBoxFull },
+                     {
+                         field: 'Timespan', title: '搁置时间', align: 'center', sortable: true, formatter: function (val, row, index) {
+                             var date1 = new Date();
+                             var date2 = new Date(formatDatebox(row.Lasttime));
+                             if (row.Finishtime == null) {
+                                 var date3 = date2.getTime() - date1.getTime();
+                                 var d = Math.floor(date3 / (24 * 3600 * 1000));
+                                 return d;
+                             }
+                             else {
+                             }
+                         },
+                         styler: function (value, row, index) {
+                             var date1 = new Date();
+                             var date2 = new Date(formatDatebox(row.Lasttime));
+                             if ((date1 > date2) && (row.Finishtime == null)) {
+                                 return 'background-color:green;color:yellow';
+                             }
+                         }
+                     }
+                ]],
+                onRowContextMenu: function (e, index, row) {
+                    $('#mm').menu('show', {
+                        left: e.pageX,
+                        top: e.pageY
+                    });
+                    e.preventDefault();
+                },
+                onLoadSuccess: function (data) {
+                    $(".agreeauditor").linkbutton({ plain: true, iconCls: 'icon-ok' });
+                    $(".refuseauditor").linkbutton({ plain: true, iconCls: 'icon-no' });
+                    // $("#dg").datagrid("reload",data);
+                    //$("#dg").datagrid("loadData", data);
+                    //    var gridData = JSON.parse(data);
+                    ////    alert(data);
+                    //    $('#dg').datagrid("loadData", gridData);
+                },
+                rowStyler: function (index, row) {
+
+                    if (row.Audittime == null || row.Auditstatus == '拒绝') {
+                        return 'color:red;';
+                    }
+
+                    //alert(row.Timespan);
+                }
+            });
+
+            $('#IsApllicant').combobox({
+                url: '/Home/Userall/1',
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 100,
+                panelHeight: 'auto'
+            });
+
+            $('#IsAuditstatus').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: [["0", "===请选择==="], ["1", "同意"], ["2", "拒绝"], ["3", "未审批"]],
+                width: 100
+            });
+            $('#IsReceivingsate').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+            $('#IsFinishtime').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+            $('#IsAuditstatus').combobox("setValue", "ALL");
+            $('#IsReceivingsate').combobox("setValue", "ALL");
+            $('#IsFinishtime').combobox("setValue", "ALL");
+
+
+            //var p = $('#dg').datagrid('getPager');//分页 
+            //p.pagination({  pageSize: 10,//设置每一页显示的数据的条数 
+            //    pageNumber: 1,//默认显示第几页  
+            //    pageList: [10, 15, 20,25],//分页下拉选项的数值 
+            //    beforePageText: '第',//也属文本框前显示的汉字 
+            //    afterPageText: '页共{pages}页',                  
+            //    displayMsg:'当前显示{from}-{to}条记录共{total}条记录'             
+            //});         
+        })
+
+    </script>
+</head>
+<body>
+
+    <div id="mm" class="easyui-menu" style="width: 120px">
+        <div data-options="name:'new',iconCls:'icon-add'" onclick="$('#dlgadd').dialog('open')">新建</div>
+        <div class="menu-sep"></div>
+        <div data-options="name:'edit',iconCls:'icon-edit'" onclick="openedit();">编辑</div>
+        <div class="menu-sep"></div>
+        <div data-options="name:'cancel',iconCls:'icon-cancel'" onclick="confirmInfo()">删除</div>
+        <div class="menu-sep"></div>
+    </div>
+
+
+    <div id="win-row" class="easyui-window" title="提示" data-options="iconCls:'icon-tip',closed:true" style="width: 500px; height: 200px; padding: 10px;">
+        请选中行！
+    </div>
+
+
+    <div id="dlgadd" class="easyui-dialog" title="新建" data-options="iconCls:'icon-add',closed:true" style="width: 500px; height: 300px; padding: 10px">
+        <form id="fm" method="post" action="/Designers/Create" novalidate>
+            <div class="fitem">
+                <label>项目内容:</label>
+                <input name="contentitle1" id="contentitle1" class="easyui-textbox" data-options="multiline:true,required:true" style="width: 330px; height: 95px;" />
+            </div>
+            <div style="height: 25px"></div>
+            <div class="fitem">
+                <label>截止日期:</label>
+                <input name="lasttime1" id="lasttime1" class="easyui-datebox" data-options="required:true,formatter: formatDateBoxFull" />
+            </div>
+            <div style="height: 55px"></div>
+            <div class="fitem" style="float: right;">
+                <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="add()">保存</a>
+                <a href="javascript:void(0);" id="canceladd" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true,closed:true">取消</a>
+            </div>
+        </form>
+    </div>
+
+
+    <div id="dlgedit" class="easyui-dialog" title="编辑" data-options="iconCls:'icon-add',closed:true" style="width: 500px; height: 300px; padding: 10px">
+        <form id="fm2" method="post" action="/Designers/Edit" novalidate>
+            <div class="fitem">
+                <label>项目内容:</label>
+                <input name="contentitle2" id="contentitle2" class="easyui-textbox" data-options="multiline:true,required:true" style="width: 330px; height: 95px;" />
+            </div>
+            <div style="height: 25px"></div>
+            <div class="fitem">
+                <label>截止日期:</label>
+                <input name="lasttime2" id="lasttime2" class="easyui-datebox" data-options="required:true,formatter: formatDateBoxFull" />
+            </div>
+            <div style="height: 55px"></div>
+            <div class="fitem" style="float: right;">
+                <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="edit()">保存</a>
+                <a href="javascript:void(0);" id="canceledit" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true">取消</a>
+            </div>
+        </form>
+    </div>
+
+    <div id="dlgappli" class="easyui-dialog" title="审批" data-options="iconCls:'icon-add',closed:true" style="width: 500px; height: 300px; padding: 10px">
+        <form id="fm3" method="post" action="/Designers/Edit_auditnotes" novalidate>
+            <div class="fitem">
+                <label>审核备注:</label>
+                <input name="auditnotes" id="auditnotes" class="easyui-textbox" data-options="multiline:true,required:true" style="width: 330px; height: 95px;" />
+            </div>
+            <div style="height: 25px"></div>
+            <div style="height: 55px"></div>
+            <div class="fitem" style="float: right;">
+                <a href="javascript:void(0);" id="auditnotes_save" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true">保存</a>
+                <a href="javascript:void(0);" id="auditnotes_cancle" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true">取消</a>
+            </div>
+        </form>
+    </div>
+
+    <div id="dlgrece" class="easyui-dialog" title="同意领取" data-options="iconCls:'icon-add',closed:true" style="width: 500px; height: 300px; padding: 10px">
+        <form id="fm4" method="post" action="/Designers/Edit_auditnotes" novalidate>
+            <div class="fitem">
+                <label>预计完成时间:</label>
+                <input name="expectedtime" id="expectedtime" class="easyui-datebox" data-options="required:true ,formatter: formatDateBoxFull" />
+            </div>
+            <div style="height: 25px"></div>
+            <div class="fitem">
+                <label>领取备注:</label>
+                <input name="receivenotes" id="receivenotes" class="easyui-textbox" data-options="multiline:true,required:true" style="width: 330px; height: 95px;" />
+            </div>
+            <div style="height: 55px"></div>
+            <div class="fitem" style="float: right;">
+                <a href="javascript:void(0);" id="receiptor_save" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true">保存</a>
+                <a href="javascript:void(0);" id="receiptor_cancel" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true">取消</a>
+            </div>
+        </form>
+    </div>
+
+
+
+    <div class="easyui-layout" fit="true">
+        <div id="easyui_toolbar" region="north" border="false"
+            style="border-bottom: 1px solid #ddd; height: 32px; padding: 2px 5px; background: #fafafa;">
+            <div style="float: left;">
+                <a href="javascript:void(0);" class="easyui-linkbutton" plain="true" icon="icon-add" onclick="$('#dlgadd').dialog('open')">新建</a>
+            </div>
+            
+            <form id="search">
+                
+                <div id="tbl" style="float: right;">                 
+                    申请人<input type="text" id="IsApllicant" />
+                    审批状态<input type="text" id="IsAuditstatus" />
+                    是否已领取<input type="text" id="IsReceivingsate" />
+                    是否已完成<input type="text" id="IsFinishtime" />
+                    <input id="ss" name="ss" class="easyui-searchbox" data-options="prompt:'请输入关键字',searcher:doSearch,menu:'#mm'"
+                        style="width: 260px; vertical-align: middle" />
+                </div>
+            </form>
+        </div>
+        <div data-options="region:'center'" border="false">
+            <table class="easyui-datagrid" id="dg">
+            </table>
+        </div>
+
+    </div>
+    <div id="mm" style="width: 120px">
+            <div data-options="name:'Contentitle'">项目内容</div>
+            <div data-options="name:'DesignerID'">ID</div>
+       </div>
+
+
+</body>
+</html>
+

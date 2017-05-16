@@ -1,0 +1,714 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.DisputeRecordType>
+@{
+    ViewBag.Title = "Index";
+}
+<script src="~/Scripts/easyUI/jquery.easyui.min.js"></script>
+<script src="~/Scripts/uploadify/jquery.uploadify-3.1.min.js"></script>
+<link href="~/Scripts/uploadify/uploadify.css" rel="stylesheet" />
+<body class="easyui-layout">
+
+    <script language="javascript" type="text/javascript">
+        $(function () {
+
+
+            $("#cc").datetimebox({
+
+            });
+            $("#cc2").datetimebox({
+
+            });
+            //debugger;
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "Dispute")',
+                queryParams: { sort: "ExamineOn", order: "desc" },
+                pageNumber: 1,
+                nowrap: false,
+                showFooter: true,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+            });
+            $('#state').combobox({
+                url: '@Url.Action("GetSearchOptions", "DataDictionaryDetail")/DisputeStatus',
+                valueField: 'DicValue',
+                textField: 'FullName',
+                width: 120,
+                panelHeight: 'auto'
+            });
+      @*  $('#payType').combobox({
+            url: '@Url.Action("GetSearchOptions", "DataDictionaryDetail")/ExamineType',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            width: 120,
+            panelHeight: 'auto'
+        });*@
+
+            $('#area').combobox({
+                url: '@Url.Action("GetSearchOptions", "DataDictionaryDetail")/FromArea',
+                valueField: 'DicValue',
+                textField: 'FullName',
+                width: 120,
+                panelHeight: '400'
+            });
+            $('#aaa').combobox({
+                url: '@Url.Action("ListQ", "Account")',
+                valueField: 'AccountName',
+                textField: 'AccountName',
+                width: 120,
+                panelHeight: '400'
+            });
+@*        $('#txthandle').combobox({
+            url: '@Url.Action("GetSearchOptions", "DataDictionaryDetail")/HandleType',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            // width: 250,
+            panelHeight: '150',
+            onLoadSuccess: function (data) {
+                if (data == 0) {
+                    // $.messager.alert("系统提示", "数据库异常，请联系管理员！", "warning");
+                } else {
+                    var data1 = $('#txthandle').combobox('getData');  //赋默认值
+                    if (data1.length > 0) {
+                        $("#txthandle ").combobox('select', data1[0].DicValue);
+                    }
+                }
+            }
+        });*@
+            $('#txtstate').combobox({
+                url: '@Url.Action("GetSearchOptions", "DataDictionaryDetail")/DisputeState',
+                valueField: 'DicValue',
+                textField: 'FullName',
+                // width: 250,
+                panelHeight: '150',
+                onLoadSuccess: function (data) {
+                    if (data == 0) {
+                        // $.messager.alert("系统提示", "数据库异常，请联系管理员！", "warning");
+                    } else {
+                        var data1 = $('#txtstate').combobox('getData');  //赋默认值
+                        if (data1.length > 0) {
+                            $("#txtstate ").combobox('select', data1[0].DicValue);
+                        }
+                    }
+                }
+            });
+            $('#disType').combobox({
+                url: '@Url.Action("GetSearchOptions", "DataDictionaryDetail")/DisputeState',
+                valueField: 'DicValue',
+                textField: 'FullName',
+                // width: 250,
+                panelHeight: '150',
+                onLoadSuccess: function (data) {
+                    if (data == 0) {
+                        // $.messager.alert("系统提示", "数据库异常，请联系管理员！", "warning");
+                    } else {
+                        var data1 = $('#disType').combobox('getData');  //赋默认值
+                        if (data1.length > 0) {
+                            $("#disType ").combobox('select', data1[0].DicValue);
+                        }
+                    }
+                }
+            });
+
+            $('#c_ExamineClass').combobox({
+                url: '@Url.Action("GetOptions", "DataDictionaryDetail")/QuestionType',
+                valueField: 'DicValue',
+                textField: 'FullName',
+                panelHeight: 'auto'
+            });
+            $('#up_file').uploadify({
+                'auto': true,
+                'buttonText': '请选择图片',
+                'swf': '/Scripts/uploadify/uploadify.swf',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function (file, data, response) {
+                    eval("data=" + data);
+
+                    $.ajax({
+                        url: '@Url.Action("EditPic", "Dispute")/',
+                type: 'post',
+                data: 'pid=' + imgindex + "&pic=" + encodeURIComponent(data.SaveName),
+                success: function (result) {
+                    $.messager.show({
+                        title: '提示',
+                        msg: "成功！",
+                        timeout: 0,
+                        showType: 'slide'
+                    });
+                    $('#dg').datagrid("reload");
+
+                }
+            });
+            $('#dlgpicture').dialog('close');
+        }
+ });
+        });
+
+
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "Dispute")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            
+            if (getStatus())
+            {
+                if (id != undefined) {
+                    var url = '@Url.Action("Edit", "Dispute")/' + id;
+                    showdlg(url, 'e_dlg', ajaxEdit)
+
+                }
+            }
+            else {
+                var url = '@Url.Action("EditReason", "Dispute")/' + id;
+                showdlg(url, 'e_dlg', ajaxEditReason)
+                //$.messager.show({
+                //    title: '提示',
+                //    msg: '当前状态不能审批',
+                //    timeout: 3000,
+                //    showType: 'slide'
+                //});
+                //return (undefined);
+            }
+        }
+    
+
+    //异步新建提交
+    function ajaxAdd() {
+        formPost('c_form', '@Url.Action("Create", "Dispute")', 'c_dlg', 'dg');
+    }
+    //异步修改提交
+        function ajaxEdit() {
+            if (validate()) {
+                formPost('e_form', '@Url.Action("Edit", "Dispute")', 'e_dlg', 'dg');
+            }
+    }
+
+        function ajaxEditReason()
+        {
+            formPost('e_formreason', '@Url.Action("EditReason", "Dispute")', 'e_dlg', 'dg');
+
+        }
+        function validate() {
+            var paypal = $("#e_Paypal").val();
+            var status = $("#e_DisputeState").val();
+            //只有当纠纷状态为部分退款(财务)和全部退款(财务)时，paypal账号才为必填项
+            if (status == '部分退款(财务)' || status == '全部退款(财务)')
+            {
+                if (paypal == '') {
+                    alert("Paypal账号不能为空！");
+                    return false;
+                }
+                else 
+                    return true;
+                
+            }
+            else
+                return true;
+
+        }
+    //删除
+    function del() {
+        var id = getselectedRow();
+        if (id != undefined) {
+            var url = '@Url.Action("Delete", "Dispute")/' + id;
+
+            delData(url, 'dg');
+
+        }
+    }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+        //获取选中审批状态
+    function getStatus()
+    {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('ExamineStatus')) {
+                var ExamineStatus = row['ExamineStatus'];
+                if (ExamineStatus == 4 || ExamineStatus == 6)
+                {
+                    return false;
+                    
+
+                }
+                return true;
+            }
+        }
+    }
+    function doSearch() {
+
+        var search = getSearch();
+        $("#dg").datagrid("load", {
+            search: search
+        });
+
+    }
+
+    function getSearch() {
+
+        var search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        var a = $("#state").combobox("getValue");
+        if (a != "" && a != "0")
+            search += "ExamineStatus_ds&" + a + "^";
+        var z = $("#cc").combobox("getValue");
+        if (z != "" && z != "0")
+            search += "ExamineOn_st&" + z + "^";
+        var t = $("#cc2").combobox("getValue");
+        if (t != "" && t != "0")
+            search += "ExamineOn_et&" + t + "^";
+        var c = $("#area").combobox("getValue");
+        if (c != "" && c != "0")
+            search += "Area_ds&" + c + "^";
+        c = $("#aaa").combobox("getValue");
+        if (c != "" && c != "0")
+            search += "Account_ds&" + c + "^";
+        c = $("#disType").combobox("getValue");
+        if (c != "" && c != "0")
+            search += "DisputeState_ds&" + c + "^";
+        c = $("#c_ExamineClass").combobox("getValue");
+        if (c != "" && c != "0")
+            search += "ExamineClass_ds&" + c + "^";
+        return search;
+    }
+
+    function getAudit(v, r, i) {
+        var html = "";
+        if (r.Id == 0)
+            return "";
+        if (r.ExamineStatus == 0) {
+            // html = '<a href="javascript:void(0);" onclick="DoAudit(' + v + ',1)">审核</a>' + ' <a href="javascript:void(0);" onclick="DoAudit(' + v + ',9)">拒绝</a>';
+            html = '<a href="javascript:void(0);" onclick="DoAudit(' + v + ',1)">初审</a>' + ' <a href="javascript:void(0);" onclick="DoAudit(' + v + ',9)">拒绝</a>';
+        }
+        if (r.ExamineStatus == 1) {
+            html = '<a href="javascript:void(0);" onclick="DoAudit(' + v + ',2)">处理</a>' + ' <a href="javascript:void(0);" onclick="DoAudit(' + v + ',9)">拒绝</a>';
+        }
+        if (r.ExamineStatus == 2) {
+            html = '<a href="javascript:void(0);" onclick="DoAudit(' + v + ',3)">财审</a>' + ' <a href="javascript:void(0);" onclick="DoAudit(' + v + ',9)">拒绝</a>';
+        }
+        if (r.ExamineStatus == 3 || r.ExamineStatus == 4) {
+            html += " <a href='javascript:printPur(" + v + ")' >打印</a>";
+            if (r.ExamineStatus == 3) {
+                html += '&nbsp;&nbsp; <a href="javascript:void(0);" onclick="DoAudit(' + v + ',4)">付款确认</a>';
+            }
+        }
+        if (r.ExamineStatus == 5) {
+
+
+            html += '&nbsp;&nbsp; <a href="javascript:void(0);" onclick="DoAudit(' + v + ',6)">处理</a>';
+
+        }
+        if (r.DisputeState == "纠纷中") {
+            html += '&nbsp;&nbsp;<a href="javascript:void(0);" onclick="DoDisputeState(' + v + ')">变更纠纷状态</a> ';
+        }
+        // html += " <a href='/PurchasePlan/Details/" + v + "' target='_blank'>查看明细</a>";
+        //添加上传图片
+        html += ' &nbsp;<a href="javascript:openpic(' + r.Id + ');">上传图片</a>';
+        if (r.ImgPic) {
+            if (r.ImgPic.length > 10) {
+                html += ' &nbsp;<a href="'+r.ImgPic+'"; target="_blank" ">查看图片</a>';
+            }
+        }
+        return html;
+    }
+    function openpic(v) {
+        imgindex = v;
+        $('#dlgpicture').dialog('open');
+
+    }
+    function printPur(id) {
+        jQuery.ajax({
+            url: "/Dispute/PrintPur/" + id,
+            type: "post",
+            success: function (msg) {
+                $('#printdata').val(msg.Result);
+                window.open('/Home/PrintDetail/35');
+            }
+        });
+    }
+
+
+    function batchaudit() {
+        var ids = getselectedRows($("#dg"));
+
+        $('#m_dlg').dialog({
+            width: 350,
+            title: '审批',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+                    DoAudit2(ids, 0, '', $("#txtBy").val(), $("#txtAmount").val());
+                    $("#txtAmount").val('0');
+                    $("#txtBy").val('无');
+                    $('#m_dlg').dialog('close');
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#m_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+
+
+
+
+    function DoDisputeState(id) {
+
+        $('#s_dlg').dialog({
+            width: 350,
+            title: '审批',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '确定',
+                handler: function () {
+
+                    jQuery.ajax({
+                        url: "/Dispute/DoDisputeState/",
+                        type: "post",
+                        data: "k=" + id + "&s=" + $("#txtstate ").combobox('getValue') + "&a=" + $("#txtAmount2").val(),
+                        success: function (res) {
+                            if (!res.IsSuccess) {
+                                alert(res.ErrorMsg);
+                            }
+                            $("#txtAmount2").val('');
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                    $('#s_dlg').dialog('close');
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#s_dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+
+    }
+    function DoAudit(id, v) {
+        if (v == 2 || v == 9 || v == 6) {
+            $('#m_dlg').dialog({
+                width: 350,
+                title: '审批',
+                modal: true,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '确定',
+                    handler: function () {
+                        DoAudit2(id, v, '', $("#txtBy").val(), $("#txtAmount").val());
+                        $("#txtAmount").val('0');
+                        $("#txtBy").val('无');
+                        $('#m_dlg').dialog('close');
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#m_dlg').dialog('close');
+                    }
+                }]
+            }).dialog('open');
+        }
+        else {
+            DoAudit2(id, v, "");
+        }
+    }
+
+    //function DoAudit(id, v) {
+    //    if (v == 2 || v == 9) {
+    //        $('#m_dlg').dialog({
+    //            width: 350,
+    //            title: '审批',
+    //            modal: true,
+    //            loadingMessage: '正在加载...',
+    //            buttons: [{
+    //                text: '确定',
+    //                handler: function () {
+    //                    DoAudit2(id, v, $("#txtM").val());
+    //                    $("#txtM").val('');
+    //                    $('#m_dlg').dialog('close');
+    //                }
+    //            }, {
+    //                text: '取消',
+    //                handler: function () {
+    //                    $('#m_dlg').dialog('close');
+    //                }
+    //            }]
+    //        }).dialog('open');
+    //    }
+    //    else {
+    //        DoAudit2(id, v, "");
+    //    }
+    //}
+
+    function DoEasyAudit(id, v) {
+        var cccc = '是否通过这条数据';
+        var tttt = '审批';
+        if (v == 4) {
+            cccc = '将数据设置为付款状态';
+            tttt = '付款';
+        }
+        $.messager.prompt(tttt, cccc, function (r) {
+            if (r) {
+                DoAudit2(id, v);
+            }
+        });
+    }
+
+    function DoAudit2(id, v, m, h, c) {
+        if (!h)
+            h = "";
+        if (!c) {
+            c = 0;
+        }
+        jQuery.ajax({
+            url: "/Dispute/DoAudit/",
+            type: "post",
+            data: "k=" + id + "&a=" + v + "&m=" + m + "&zr=" + h + "&amount=" + c,
+            success: function (res) {
+                if (!res.IsSuccess) {
+                    alert(res.ErrorMsg);
+                }
+                $('#dg').datagrid("reload");
+            }
+        });
+    }
+
+    function getamount(v, r, i) {
+
+        var html = "";
+        if (r.OrderAmount)
+            if (r.OrderAmount > 0) {
+                html += "需赔金额:" + r.OrderAmount + " <br />";
+            }
+        html += "实赔金额:" + v;
+        return html;
+    }
+
+    function getAuditInfo(v, r, i) {
+
+        if (r.Id == 0)
+            return "";
+        var html = "";
+        if (v == 1) {
+            html = "未处理";
+        } else if (v == 2) {
+            html = "已处理";
+        } else if (v == 3) {
+            html = "已审核,未付款";
+        } else if (v == 4) {
+            html = "已审核,已付款";
+        } else if (v == 5) {
+            html = "未处理,平台付款";
+        }
+        else if (v == 6) {
+            html = "已处理,平台付款";
+        }
+        else if (v == 9) {
+            html = "审核失败";
+        } else {
+            html = "未审核";
+        }
+        //html += '<br />' + r.ExamineType;
+        html = "<b>" + html + "</b>";
+        return html;
+    }
+
+    function getDateinfo(v, r, i) {
+        if (v) {
+            //if (r.Id == 0)
+            //    return "";
+            //if (r.ExamineBy == "" || r.ExamineBy == null)
+            //    return "";
+            //else
+            //    return getDate(v);
+            return getDate(v);
+        }
+
+    }
+    function getCreateDate(v, r, i) {
+        if (r.Id == 0)
+            return "";
+        return getDate(v);
+    }
+    function getRate(v, r, i) {
+        var html = "";
+        if (v > 50) {
+            html = '<font color="#F00"><b>' + v + '%</b></font><br />';
+        } else {
+            html = v + "%";
+        }
+        var ttt = r.DisputeState + "";
+        if (ttt.indexOf("重发") != -1) {
+            html = '<font color="#F00"><b>100%</b></font><br />';
+        }
+        return html;
+    }
+    function toExcel() {
+        var search = "";
+
+        //search = "c=" + c + "&p=" + $('#pp').combobox("getValue") + "&aa=" + $('#aa').combobox("getText") + "&d=" + $("#data").val() + "&f=" + $('#state').combobox("getValue") + "&t=0&a=0&st=2013-01-01&et=2013-01-01";
+        var postUrl = "/Order/ExportDown/1";
+        jQuery.ajax({
+            url: "/Dispute/ToExcel/",
+            type: "post",
+            data: "search=" + encodeURIComponent(getSearch()),
+            success: function (sss) {
+                location.href = postUrl;
+            }
+        });
+    }
+   
+    </script>
+    <div region="center">
+        <input type="hidden" id="printdata" />
+        <table id="dg"
+            toolbar="#toolbar"
+            rownumbers="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="PayOn" width="80" checkbox="true">选择
+                    </th>
+                    <th field="Id" width="170" formatter="getAudit">操作
+                    </th>
+                    <th field="ExamineClass" width="150">原因
+                    </th>
+                    <th field="ExamineStatus" width="100" formatter="getAuditInfo">状态
+                    </th>
+                    <th field="DisputeState" width="100">纠纷状态
+                    </th>
+                    <th field="OrderNo" width="150">订单号
+                    </th>
+                    <th field="SKU" width="150">SKU
+                    </th>
+                    <th field="Account" width="100">店铺
+                    </th>
+                    <th field="ExamineCurrencyCode" width="60">货币
+                    </th>
+                    <th field="OrderAmount2" width="100" sortable="true">订单金额
+                    </th>
+                    <th field="OrderAmount" width="100" sortable="true">预赔金额
+                    </th>
+                    <th field="ExamineAmount" width="100" sortable="true">实赔金额
+                    </th>
+                    <th field="ExamineAmountRmb" width="100" sortable="true">实赔金额(RMB)
+                    </th>
+                    <th field="Rate" width="100" formatter="getRate" sortable="true">比例（实/需）
+                    </th>
+                    <th field="Remark" width="200">赔款理由
+                    </th>
+                    <th field="Paypal" width="150">Paypal账号
+                    </th>
+                    <th field="ExamineBy" width="100">后审人
+                    </th>
+                    <th field="ZeRenBy" width="150">责任人
+                    </th>
+                    <th field="ExamineHandle" width="150" sortable="true">承担金额
+                    </th>
+                    <th field="ExamineMemo" width="150">处理备注
+                    </th>
+                    <th field="ExamineOn" width="130" formatter="getDateinfo">处理时间
+                    </th>
+                    @* <th field="PayOn" width="130" formatter="getDateinfo" >
+                        付款时间
+                    </th>*@
+
+                    <th field="CreateBy" width="100">创建人
+                    </th>
+                    <th field="CreateOn" width="130" formatter="getCreateDate">创建时间
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            @*<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  *@
+
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="e_dlg();">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="batchaudit();">批量审批</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="toExcel();">导出</a>
+            <br />
+            地区:<input type="text" id="area" />
+            审批状态:<input type="text" id="state" />
+            纠纷状态 :<input type="text" id="disType" />
+            店铺:<input type="text" id="aaa" />
+            开始<input id="cc" type="text">
+            结束<input id="cc2" type="text"><br />
+            原因<input type="text" id="c_ExamineClass" name="ExamineClass" />
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'OrderNo'">订单号</div>
+            <div data-options="name:'ExamineTitle'">标题</div>
+            <div data-options="name:'CreateBy'">创建人</div>
+            <div data-options="name:'ExamineBy'">审核人</div>
+            <div data-options="name:'Account'">店铺</div>
+            <div data-options="name:'Remark'">赔款理由</div>
+            <div data-options="name:'SKU'">SKU</div>
+            @*<div data-options="name:'ExamineType'">类型</div>*@
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="m_dlg" class="easyui-dialog" closed="true">
+            <table>
+                <tr>
+                    <td valign="middle">责任人:</td>
+                    <td valign="middle">
+                        <input type="text" id="txtBy" style="width: 250px;" value="无" /></td>
+                </tr>
+                <tr>
+                    <td valign="middle">承担金额:</td>
+                    <td valign="middle">
+                        <input type="text" id="txtAmount" style="width: 250px;" value="0" /></td>
+                </tr>
+            </table>
+        </div>
+        <div id="s_dlg" class="easyui-dialog" closed="true">
+            <table>
+                <tr>
+                    <td valign="middle">纠纷状态:</td>
+                    <td valign="middle">
+                        <input type="text" id="txtstate" style="width: 150px;" /></td>
+                </tr>
+                <tr>
+                    <td valign="middle">实赔金额:</td>
+                    <td valign="middle">
+                        <input type="text" id="txtAmount2" style="width: 150px;" value="0" /></td>
+                </tr>
+            </table>
+        </div>
+          <div id="dlgpicture" class="easyui-dialog" title="上传图片" style="width: 250px; height: 250px; padding: 10px" closed="true">
+            <table>
+                <tr>
+                    <td>
+                        <input id="up_file" type="file" name="up_file" /></td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</body>

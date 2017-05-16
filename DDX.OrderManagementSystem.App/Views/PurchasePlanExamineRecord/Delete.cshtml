@@ -1,0 +1,96 @@
+﻿
+@model IEnumerable<DDX.OrderManagementSystem.Domain.PurchasePlanExamineRecordType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List", "PurchasePlanExamineRecord")',
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+
+    });
+
+
+</script>
+<div region="center">
+<table id="dg" 
+           toolbar="#toolbar"  
+           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+        <thead>  
+        <tr>
+            <th field="Id" width="100" formatter="getAudit">
+                操作
+            </th>
+
+            <th field="ExamineTitle" width="100">
+                审批名称
+            </th>
+
+            <th field="ExamineOn" width="100" formatter="getDate">
+                审批时间
+            </th>
+
+            <th field="ExamineBy" width="100">
+                审批人
+            </th>
+
+            <th field="ExamineContent" width="100">
+                审批评语
+            </th>
+
+            <th field="ExamineStatus" width="100" formatter="getAuditInfo" >
+                审批状态
+            </th>
+
+            <th field="ExamineAmount" width="100">
+                审批总金额
+            </th>
+
+            <th field="ExamineCount" width="100">
+                审批总计划数
+            </th>
+
+            <th field="CreateOn" width="100" formatter="getDate">
+                创建时间
+            </th>
+
+            <th field="CreateBy" width="100">
+                创建人
+            </th>
+
+
+    	</tr>
+		</thead>
+		</table>
+        <div id="toolbar">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+       @* <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>*@
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+       
+        </div> 
+		<div id="mm" style="width: 120px">
+                       
+            <div data-options="name:'ExamineTetle'">审批名称</div>
+           
+            <div data-options="name:'ExamineBy'">审批人</div>
+            <div data-options="name:'ExamineContent'">审批评语</div>
+            <div data-options="name:'ExamineStatus'">审批状态</div>
+            <div data-options="name:'ExamineAmount'">审批总金额</div>
+            <div data-options="name:'ExamineCount'">审批总计划数</div>
+           
+
+        </div>
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+     <div id="m_dlg" class="easyui-dialog" closed="true">
+            理由:<textarea id="txtM"></textarea>
+          
+        </div>
+</div>
+</body>

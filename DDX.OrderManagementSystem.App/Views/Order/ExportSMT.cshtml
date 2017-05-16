@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "OrderExport";
+}
+
+<script type="text/javascript">
+    $(function () {
+        comboboxInit('/Account/GetAccountListByPlatform/', "id=Aliexpress&t=1", 'aa', 'Id', 'AccountName');
+    });
+
+    function exportexcel() {
+        window.open("/Order/GetExcelByStore/" + $("#aa").combobox("getValue"));
+    }
+
+
+</script>
+<body class="easyui-layout">
+    <div data-options="region:'center'" style="height: 100%">
+        账户<input id="aa" type="text">
+
+
+        <input type="button" value="导出" onclick="exportexcel()" />
+
+    </div>
+</body>
+

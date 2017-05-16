@@ -1,0 +1,113 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.OrganizeType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').treegrid({
+                url: '@Url.Action("List", "Organize")',
+                idField: 'Id',
+                treeField: 'FullName'
+            });
+
+        });
+
+        //新建
+        function c_dlg() {
+            var url_str ='@Url.Action("Create", "Organize")';
+            showdlg(url_str,'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Organize")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+                formPost('c_form', '@Url.Action("Create", "Organize")','c_dlg','dg','t');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "Organize")', 'e_dlg', 'dg','t');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "Organize")/' + id;
+                delData(url, 'dg','t');
+            }
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+
+ </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="FullName" width="100">名称
+                    </th>
+                    <th field="ShortName" width="100">简称
+                    </th>
+                    <th field="Code" width="100">编号
+                    </th>
+
+
+
+
+
+                    <th field="DeletionStateCode" width="100">删除标记
+                    </th>
+
+                    <th field="SortCode" width="100">排序码
+                    </th>
+
+                    <th field="Description" width="100">备注
+                    </th>
+
+                    <th field="CreateOn" width="100" formatter="getDate">创建日期
+                    </th>
+
+                    <th field="CreateBy" width="100">创建用户
+                    </th>
+
+
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+        </div>
+
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+
+    </div>
+</body>

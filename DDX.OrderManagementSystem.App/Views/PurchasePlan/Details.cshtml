@@ -1,0 +1,152 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.PurchasePlanType>
+@{
+    ViewBag.Title = "Index";
+    
+}
+<script src="~/Scripts/easyUI/datagrid-groupview.js"></script>
+<script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        var hz = 0;
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("GetListByEId", "PurchasePlan")',
+                queryParams:{"Id":@ViewData["Id"]},
+                nowrap: false,
+                rownumbers: true,
+                singleSelect: true,
+                showFooter: true,
+                fit: true,
+                remoteSort:false,
+                view: groupview,
+                groupField: 'FromTo',
+                groupFormatter: function (value, rows) {
+                    var sum = 0;
+                    for (var i = 0; i < rows.length; i++) {
+                        sum++;
+                    }
+                    return value + '  有' + sum + " 条采购";
+                },
+                onLoadSuccess:function (data) {
+                    hz = 0;
+                },
+                onExpandRow: function (index, row) {
+                    $('#ddv-' + index).panel({
+                        border: false,
+                        cache: false,
+                        href: '@Url.Action("GetPlanInfo", "PurchasePlan")' + "/" + row.Id,
+                        onLoad: function () {
+                            $('#dg').datagrid('fixDetailRowHeight', index);
+                        }
+                    });
+                    $('#dg').datagrid('fixDetailRowHeight', index);
+                },
+                columns: [[
+                    
+                    { field: 'PlanNo', title: '计划编号', width: 100, sortable: true ,
+                        formatter: function (v, r, i) {
+                            if(r.Id!=0)
+                                return v;
+                        }},
+                    { field: 'SKU', title: 'SKU', width: 100, sortable: true,
+                        formatter: function (v, r, i) {
+                            if(r.Id!=0)
+                                return v;
+                        } 
+                    },
+                    {
+                        field: 'Price', title: '单价', width: 100, sortable: true,
+                        formatter: function (v, r, i) {
+                            if(r.Id!=0)
+                                return v;
+                        }
+                    },
+                    { field: 'Qty', title: '数量', width: 100, sortable: true,
+                        formatter: function (v, r, i) {
+                            if(r.Id!=0)
+                                return v;
+                        } 
+                    },
+                    
+                    
+                    { field: 'Freight', title: '运费', width: 100, sortable: true,
+                        formatter: function (v, r, i) {
+
+                            return v.toFixed(2);
+                        } 
+                    },
+                    {
+                        field: 'Totalmoney', title: '总货值', width: 100, sortable: true,
+                        formatter: function (v, r, i) {
+                            return v.toFixed(2);
+                            //var cc= (parseFloat(r.Price) * parseFloat(r.Qty) + parseFloat(r.Freight));
+                            //if(cc)
+                            //    if(r.Id!=0)
+                            //        hz += cc;
+                            //if(r.Id!=0)
+                            //    return cc.toFixed(2);
+                            //else
+                            //    return hz.toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'Profit', title: '利润', width: 80, sortable: true,formatter: function (v, r, i) {
+                            if(r.FromTo=="运费"||r.FromTo=="耗材"||r.FromTo=="广告费")
+                                
+                                return 0;
+                            else {
+                               
+                                return  v.toFixed(2);
+                            }
+                             
+                        }                   
+                    },
+                    {
+                        field: 'Rate', title: '利润比', width: 80, sortable: true, formatter: function (v, r, i) {
+                            if(r.FromTo=="运费"||r.FromTo=="耗材"||r.FromTo=="广告费")
+                               
+                               
+                                return 0;
+                            else {
+                                if(r.Id!=0) {
+                                    if(v<0)
+                                        return  '<font color="#F00"><b>'+v.toFixed(0)+"%</b></font>";
+                                    return  v.toFixed(0)+"%";
+                                }
+                                  
+                            }
+                             
+                        }                   
+                    },
+                    { field: 'Suppliers', title: '供应商', width: 120, sortable: true },
+                    { field: 'FromTo', title: '来源', width: 100, sortable: true },
+                    {
+                        field: 'Status', title: '状态', width: 100, sortable: true
+                    },
+                    { field: 'singleweight', title: '单个克重', width: 50, sortable: true },
+                    { field: 'totalweight', title: '总克重', width: 50, sortable: true },
+
+                    { field: 'LogisticsMode', title: '发货方式', width: 80, sortable: true },
+                  
+                    {
+                        field: 'CreateOn', title: '时间', width: 200, sortable: true,
+                        formatter: function (v, r, i) {
+                            if(r.Id!=0)
+                                return '创建时间:' + getDate(v) + "<br>" ;
+                        }
+                    }
+
+                ]]
+            });
+            
+           
+        });
+
+    </script>
+
+    <div region="center">
+        <table id="dg">
+        </table>
+
+    </div>
+</body>

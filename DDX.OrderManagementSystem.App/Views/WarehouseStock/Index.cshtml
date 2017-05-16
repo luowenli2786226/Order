@@ -1,0 +1,527 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.WarehouseStockType>
+@{
+    ViewBag.Title = "Index";
+}
+<script src="~/Scripts/easyUI/datagrid-detailview.js"></script>
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "WarehouseStock")',
+                showFooter: true,
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100],
+                view: detailview,
+                detailFormatter: function (index, row) {
+                    return '<div style="padding:2px"><table id="ddv-' + index + '" style="padding:5px 0"></table></div>';
+                },
+                rowStyler: function (index, row) {
+                    //if (row.Parc <row.AllQty) {
+                    if (row.Parc < row.Qty) {
+                        return 'background-color:#f77171;';
+                    }
+                },
+                onExpandRow: function (index, row) {
+
+                    $('#ddv-' + index).datagrid({
+                        url: '@Url.Action("GetStockData", "WarehouseStockData")',
+                        queryParams: { "id": row.PId, "wid": row.WId },
+                        nowrap: false,
+                        rownumbers: true,
+                        singleSelect: true,
+                        pagination: false,
+                        columns: [[
+                            { field: 'InNo', title: '到货批次', width: 100, },
+                             { field: 'SKU', title: 'SKU', width: 145 },
+                             { field: 'PName', title: '名称', width: 250 },
+                              { field: 'NowQty', title: '现存', width: 70 },
+                             { field: 'Qty', title: '到货', width: 70 },
+                               { field: 'Amount', title: '单价', width: 100, styler: ShowBackground },
+                               { field: 'Total', title: '小计', width: 100 },
+                            { field: 'CreateOn', title: '到货时间', width: 145, formatter: getDate }
+                        ]],
+                        onResize: function () {
+                            $('#dg').datagrid('fixDetailRowHeight', index);
+                        },
+                        onLoadSuccess: function () {
+                            setTimeout(function () {
+                                $('#dg').datagrid('fixDetailRowHeight', index);
+                            }, 0);
+                        },
+                        onClickRow: function (v,r,i) {
+                            var url_str = '@Url.Action("ShowDiscountRecord", "WarehouseStock")';
+                            $('#ShowDiscountRecord_dlg').load(url_str, { "PlanNo": r.Id }, function () {
+                                $(this).dialog({
+                                    title: '库损明细',
+                                    modal: true,
+                                    loadingMessage: '正在加载...',
+                                    buttons: [{
+                                        text: '关闭',
+                                        handler: function () {
+                                            $('#ShowDiscountRecord_dlg').dialog('close');
+                                        }
+                                    }]
+                                });
+                            }).dialog('open');
+                        }
+                    });
+                    $('#dg').datagrid('fixDetailRowHeight', index);
+
+                }
+
+            });
+            function ShowBackground(v,r,i)
+            {
+                return r.Style;
+            }
+           
+            $('#ww').combobox({
+                url: '/Warehouse/QListSearch',
+                valueField: 'Id',
+                textField: 'WName',
+                required: true
+            });
+
+            $('#aa').combobox({
+                valueField: 'value',
+                textField: 'label',
+                panelHeight: 'auto',
+                required: true,
+                data: [{ label: '==请选择==', value: '0', selected: true }, { label: '宁波', value: '宁波' }, { label: '义乌', value: '义乌' }, ]
+
+            });
+            $('#zu').combobox({
+                valueField: 'value',
+                textField: 'label',
+                panelHeight: 'auto',
+                required: true,
+                data: [{ label: '==请选择==', value: '0', selected: true }, { label: 'A组', value: 'A组' }, { label: 'B组', value: 'B组' }, { label: 'C组', value: 'C组' }, { label: 'D组', value: 'D组' }, { label: 'E组', value: 'E组' }, { label: 'F组', value: 'F组' },
+                ]
+
+            });
+
+            $('#ww2').combobox({
+                url: '/Warehouse/QListSearch',
+                valueField: 'Id',
+                textField: 'WName',
+                required: true
+            });
+
+            $('#ww3').combobox({
+                url: '/Warehouse/QListSearch',
+                valueField: 'Id',
+                textField: 'WName',
+                required: true
+            });
+
+            $('#TransferQty').numberbox({
+                required: true
+            });
+
+            $('#TransferCharge').numberbox({
+                precision: 4,
+                required: true
+            });
+
+            $('#TariffCharge').numberbox({
+                precision: 4,
+                required: true
+            });
+
+        });
+        $('#ww').combobox("setValue", "0");
+
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "WarehouseStock")';
+            showdlg(url_str, 'c_dlg', ajaxAdd);
+        }
+
+        //编辑框
+        function e_dlg() {
+            var url = '@Url.Action("Edit", "WarehouseStock")/' + id;
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "WarehouseStock")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit);
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "WarehouseStock")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "WarehouseStock")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "WarehouseStock")/' + id;
+
+                delData(url, 'dg');
+            }
+        }
+
+        function exportdt() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            if ($('#ww').combobox("getValue") != 0) {
+                search += "WId_ds&" + $('#ww').combobox("getValue") + "^";
+            }
+            if ($('#aa').combobox("getValue") != 0) {
+                search += "Area&" + $('#aa').combobox("getValue") + "^";
+            }
+            if ($('#zu').combobox("getValue") != 0) {
+                search += "HomeAddress_Users&" + $('#zu').combobox("getValue") + "^";
+            }
+            var postUrl = "/Order/ExportDown/1";
+            jQuery.ajax({
+                url: "/WarehouseStock/Export/",
+                type: "post",
+                data: 'search=' + encodeURIComponent(search),
+                success: function (sss) {
+                    location.href = postUrl;
+                }
+            });
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function GetImg(v, r, i) {
+            if (r.Id != 0)
+                return '<img  src=' + v + '  height="64px" width="64px" />';
+        }
+        function getPrice(v, r, i) {
+            if (r.Id != 0)
+                return v;
+
+        }
+
+        function getTotalPrice(v, r, i) {
+            if (r.Id != 0)
+                return (r.Price * r.Qty).toFixed(2) > 0 ? (r.Price * r.Qty).toFixed(2) : 0;
+            else {
+                return r.Price.toFixed(2) > 0 ? r.Price.toFixed(2) : 0;
+            }
+        }
+        function getQty(v, r, i) {
+            if (r.Id != 0)
+                return v;
+            else {
+                return "总计：";
+            }
+        }
+
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            if ($('#ww').combobox("getValue") != 0) {
+                search += "WId_ds&" + $('#ww').combobox("getValue") + "^";
+            }
+            if ($('#aa').combobox("getValue") != 0) {
+                search += "Area&" + $('#aa').combobox("getValue") + "^";
+            }
+            if ($('#zu').combobox("getValue") != 0) {
+                search += "HomeAddress_Users&" + $('#zu').combobox("getValue") + "^";
+            }
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+        // 商品移库
+        function Transfer(v, r, i) {
+            //debugger;
+            if (v != 0) {
+                var html = " <a href='#' onclick='OutInDetails(\"" + r.SKU + "\",\"" + r.Warehouse + "\");'>出入库明细</a> <a href='#' onclick='TransferConfirm(\"" + r.SKU + "\",\"" + r.Title + "\",\"" + r.Warehouse + "\"," + r.Qty + "," + r.WId + ");'>移库</a>";
+            }
+            return html;
+        }
+        //出入库明细
+        function OutInDetails(sku, Warehouse) {
+            var url_str = '@Url.Action("OutInDetails", "WarehouseStock")';
+            $('#OutInDetails_dlg').load(url_str, { "sku": sku, "Warehouse": Warehouse }, function () {
+                $(this).dialog({
+                    title: '出入库明细',
+                    modal: true,
+                    loadingMessage: '正在加载...',
+                    buttons: [{
+                        text: '关闭',
+                        handler: function () {
+                            $('#OutInDetails_dlg').dialog('close');
+                        }
+                    }]
+                });
+            }).dialog('open');
+        }
+        // 商品移库
+        function TransferConfirm(SKU, Title, WarehouseName, Qty, WId) {
+            //debugger;
+            $.messager.prompt('移库验证', '请输入移库密码', function (k) {
+                if (k) {
+                    jQuery.ajax({
+                        url: "/WarehouseStock/CheckPass",
+                        type: "post",
+                        data: "p=" + k,
+                        success: function (rrr) {
+                            if (rrr.IsSuccess) {
+                                $('#dlgTransfer').dialog('open');
+                                // 初始化操作框内容
+                                $('#title').text(Title);
+                                $('#sku').text(SKU);
+                                $('#lodww').text(WarehouseName);
+                                $('#lodww').attr("wid", WId);
+                                $('#qty').text(Qty);
+                            } else {
+                                alert(rrr.Msg);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        // 移库请求
+        function o_Transfer() {
+            //debugger;
+            if (Validate()) {
+                jQuery.ajax({
+                    url: "/WarehouseStock/TransferWarehouse",
+                    type: "post",
+                    data: "FromWId=" + $('#lodww').attr("wid") +
+                        "&ToWId=" + $("#ww3").combobox("getValue") +
+                        "&SKU=" + $("#sku").text() +
+                        "&Qty=" + $("#TransferQty").val() +
+                        "&TransferCharge=" + $("#TransferCharge").val() +
+                        "&TariffCharge=" + $("#TariffCharge").val(),
+                    success: function (rrr) {
+                        alert(rrr.Msg);
+                        $('#dg').datagrid("load");
+                        $('#dlgTransfer').dialog('close');
+                        //if (rrr.IsSuccess) {
+                        //    alert(rrr.Msg);
+                        //} else {
+                        //    alert(rrr.Msg);
+                        //}
+                    }
+                });
+            }
+        }
+
+        function Validate() {
+            //debugger;
+            var newWarehouse = $("#ww3").combobox("getText");
+            var transferQty = $('#TransferQty').val();
+            var transferCharge = $('#TransferCharge').val();
+            var qty = parseInt($('#qty').text());
+            if (!newWarehouse || newWarehouse == "==请选择==") {
+                alert("必须选择新仓库！");
+                return false;
+            }
+            if (transferQty <= 0) {
+                alert("移库数量必须大于零！");
+                return false;
+            }
+            //if (transferCharge <= 0 ) {
+            //    alert("移库费用必须大于零！");
+            //    return false;
+            //}
+            if (transferQty > qty) {
+                alert("移库数量必须小于等于仓库数量！");
+                return false;
+            }
+            return true;
+        }
+
+
+
+        function o_Error() {
+
+
+            $.messager.prompt('密码验证', '请输入负责人密码', function (k) {
+                if (k) {
+                    jQuery.ajax({
+                        url: "/WarehouseStock/CheckPass",
+                        type: "post",
+                        data: "p=" + k,
+                        success: function (rrr) {
+                            if (rrr.IsSuccess) {
+                                $.messager.confirm("提示", "确定要重置这些SKU吗？", function (r) {
+                                    if (r) {
+                                        jQuery.ajax({
+                                            url: "/WarehouseStock/EditReset",
+                                            type: "post",
+                                            data: "w=" + $('#ww2').combobox("getValue") + "&o=" + encodeURIComponent($("#ErrorDesc").val()),
+                                            success: function (res) {
+                                                alert(res.Msg);
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                alert(rrr.Msg);
+                            }
+                        }
+                    });
+                }
+            });
+
+
+        }
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="Id" width="100" formatter="Transfer">操作
+                    </th>
+                    <th field="Warehouse" width="100">仓库
+                    </th>
+                    <th field="Pic" width="100" formatter="GetImg">Pic
+                    </th>
+                    <th field="SKU" width="100" sortable="true">商品SKU
+                    </th>
+
+                    <th field="Title" width="100">商品名称
+                    </th>
+                    <th field="Location" width="50">库位
+                    </th>
+                    <th field="Formula" width="230">保有量计算公式
+                    </th>
+                    @*
+                    <th field="AllQty" width="50" sortable="true">总数量
+                    </th>*@
+                    <th field="Qty" width="50" sortable="true">数量
+                    </th>
+                    @*
+                    <th field="Qty" width="100" formatter="getQty" sortable="true">数量
+                    <th field="Price" width="100" formatter="getPrice">单价
+                    </th>
+                    <th field="TotalPrice" width="100" formatter="getTotalPrice" sortable="true">总金额
+                    </th>*@
+                    <th field="TotalPrice" width="50" sortable="true">总金额
+                    </th>
+                    @*<th field="UnPeiQty" width="100"  sortable="true">未配货数量
+                        
+                    </th>*@
+
+                    <th field="UpdateOn" width="100" formatter="getDate ">更新时间
+                    </th>
+                    <th field="UpdateBy" width="50">更新人
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            @*<a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>*@
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="exportdt();">导出</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#dlgError').dialog('open');$('#ErrorDesc').val('');">重置包裹</a>
+
+            仓库:<input type="text" id="ww" />
+            地区:<input type="text" id="aa" />
+            组别:<input type="text" id="zu" />
+
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'WS.SKU'">商品SKU</div>
+            <div data-options="name:'WS.Title'">商品名称</div>
+        </div>
+
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="OutInDetails_dlg"></div>
+        <div id="ShowDiscountRecord_dlg"></div>
+        <div id="dlgError" class="easyui-dialog" title="重置订单" style="width: 550px; height: 300px; padding: 10px" closed="true">
+            <table>
+
+                <tr>
+                    <td>仓库</td>
+                    <td>仓库:<input type="text" id="ww2" /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>SKU+库存数量(中间空格)</td>
+                </tr>
+
+                <tr>
+                    <td colspan="2">
+                        <textarea id="ErrorDesc" style="width: 400px; height: 150px"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" value="确定" onclick="o_Error()" /></td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="dlgTransfer" class="easyui-dialog" title="商品移库【移库时仓库必须停止对该商品出货】" style="width: 300px; height: 320px; padding: 10px" closed="true">
+            <table>
+                <tr>
+                    <td style="text-align: right; width: 100px; height: 70px; vertical-align: top;">商品名称：</td>
+                    <td style="word-wrap: break-word; word-break: break-all; vertical-align: top;">
+                        <span id="title"></span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right">商品SKU：</td>
+                    <td>
+                        <span id="sku"></span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right">原仓库：</td>
+                    <td><span id="lodww"></span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right">仓库数量：</td>
+                    <td><span id="qty"></span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right">新仓库：</td>
+                    <td>
+                        <input type="text" id="ww3" /></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right">移库数量：</td>
+                    <td>
+                        <input type="text" id="TransferQty" value="0" /></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right">单位运费(RMB)：</td>
+                    <td>
+                        <input type="text" id="TransferCharge" required="required" /></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right">单位关税(RMB)：</td>
+                    <td>
+                        <input type="text" id="TariffCharge"  required="required"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="text-align: right">
+                        <input type="button" value="确定" onclick="o_Transfer()" /></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>

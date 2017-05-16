@@ -1,0 +1,299 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5DD8900C-1DC5-496E-AD87-0D6B6501564F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DDX.OrderManagementSystem.Domain</RootNamespace>
+    <AssemblyName>DDX.OrderManagementSystem.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FluentNHibernate">
+      <HintPath>..\..\..\..\..\Lib\FluentNHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\..\..\..\..\Lib\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="OMS\Entities\AccountEmailType.cs" />
+    <Compile Include="OMS\Entities\AccountFeeType.cs" />
+    <Compile Include="OMS\Entities\AccountType.cs" />
+    <Compile Include="OMS\Entities\AliActivityRecordType.cs" />
+    <Compile Include="OMS\Entities\AliActivityType.cs" />
+    <Compile Include="OMS\Entities\AttendType.cs" />
+    <Compile Include="OMS\Entities\BeforePeiScanType.cs" />
+    <Compile Include="OMS\Entities\ConfigTempleType.cs" />
+    <Compile Include="OMS\Entities\CountryType.cs" />
+    <Compile Include="OMS\Entities\CurrencyType.cs" />
+    <Compile Include="OMS\Entities\DataDictionaryDetailType.cs" />
+    <Compile Include="OMS\Entities\DataDictionaryType.cs" />
+    <Compile Include="OMS\Entities\DesignerType.cs" />
+    <Compile Include="OMS\Entities\DictionaryClassType.cs" />
+    <Compile Include="OMS\Entities\DictionaryType.cs" />
+    <Compile Include="OMS\Entities\DisputeType.cs" />
+    <Compile Include="OMS\Entities\EbayMessageReType.cs" />
+    <Compile Include="OMS\Entities\EbayMessageType.cs" />
+    <Compile Include="OMS\Entities\EbayReplayType.cs" />
+    <Compile Include="OMS\Entities\EbayType.cs" />
+    <Compile Include="OMS\Entities\EmailMessageType.cs" />
+    <Compile Include="OMS\Entities\EmailReturnType.cs" />
+    <Compile Include="OMS\Entities\EmailTemplateType.cs" />
+    <Compile Include="OMS\Entities\EmailType.cs" />
+    <Compile Include="OMS\Entities\ExpressRecordType.cs" />
+    <Compile Include="OMS\Entities\FBAStockType.cs" />
+    <Compile Include="OMS\Entities\FixedRateType.cs" />
+    <Compile Include="OMS\Entities\GMarketType.cs" />
+    <Compile Include="OMS\Entities\GoodsDiscountRecordType.cs" />
+    <Compile Include="OMS\Entities\GoodsDiscountRulesType.cs" />
+    <Compile Include="OMS\Entities\HaiItemType.cs" />
+    <Compile Include="OMS\Entities\JiangChengType.cs" />
+    <Compile Include="OMS\Entities\OrderPackageType.cs" />
+    <Compile Include="OMS\Entities\OrdersRulersType.cs" />
+    <Compile Include="OMS\Entities\OutInDetailsType.cs" />
+    <Compile Include="OMS\Entities\PackagingScanLogType.cs" />
+    <Compile Include="OMS\Entities\ParentCountryType.cs" />
+    <Compile Include="OMS\Entities\PickingListType.cs" />
+    <Compile Include="OMS\Entities\PostTrackCodeType.cs" />
+    <Compile Include="OMS\Entities\ProjectStateType.cs" />
+    <Compile Include="OMS\Entities\PurchasePlanExamineRecordType.cs" />
+    <Compile Include="OMS\Entities\PurchasePlanProductType.cs" />
+    <Compile Include="OMS\Entities\ServiceExaminationType.cs" />
+    <Compile Include="OMS\Entities\ShipmentslistType.cs" />
+    <Compile Include="OMS\Entities\ShipmentsType.cs" />
+    <Compile Include="OMS\Entities\SKUItemType.cs" />
+    <Compile Include="OMS\Entities\WarehouseAreaType.cs" />
+    <Compile Include="OMS\Entities\WarehouseLineType.cs" />
+    <Compile Include="OMS\Entities\WarehouseProInfoType.cs" />
+    <Compile Include="OMS\Entities\WarehouseRackType.cs" />
+    <Compile Include="OMS\Entities\WarehouseSpaceImportType.cs" />
+    <Compile Include="OMS\Entities\WarehouseStockDataType.cs" />
+    <Compile Include="OMS\Entities\WarehouseTurnoverType.cs" />
+    <Compile Include="OMS\Entities\DeliveryListWishType.cs" />
+    <Compile Include="OMS\Entities\OtherExpensesType.cs" />
+    <Compile Include="OMS\Entities\WishDisputeRecordType.cs" />
+    <Compile Include="OMS\Entities\ＱuestionSKUType.cs" />
+    <Compile Include="OMS\Mappings\ConfigTempleTypeMap.cs" />
+    <Compile Include="OMS\Mappings\DeliveryListWishTypeMap.cs" />
+    <Compile Include="OMS\Mappings\DesignerTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ExpressRecordTypeMap.cs" />
+    <Compile Include="OMS\Mappings\FBAStockTypeMap.cs" />
+    <Compile Include="OMS\Mappings\FixedRateTypeMap.cs" />
+    <Compile Include="OMS\Mappings\GoodsDiscountRecordTypeMap.cs" />
+    <Compile Include="OMS\Mappings\GoodsDiscountRulesTypeMap.cs" />
+    <Compile Include="OMS\Mappings\HaiItemTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OrderPackageTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OrdersRulersTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OutInDetailsTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PackagingScanLogTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ParentCountryTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PickingListTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PostTrackCodeTypeMap.cs" />
+    <Compile Include="OMS\Mappings\JiangChengTypeMap.cs" />
+    <Compile Include="OMS\Entities\LanguageType.cs" />
+    <Compile Include="OMS\Entities\LogisticsAllocationType.cs" />
+    <Compile Include="OMS\Entities\LogisticsAreaCountryType.cs" />
+    <Compile Include="OMS\Entities\LogisticsAreaType.cs" />
+    <Compile Include="OMS\Entities\LogisticsFreightType.cs" />
+    <Compile Include="OMS\Entities\LogisticsModeType.cs" />
+    <Compile Include="OMS\Entities\logisticsSetupType.cs" />
+    <Compile Include="OMS\Entities\LogisticsType.cs" />
+    <Compile Include="OMS\Entities\MachineType.cs" />
+    <Compile Include="OMS\Entities\ModuleType.cs" />
+    <Compile Include="OMS\Entities\NewGuideType.cs" />
+    <Compile Include="OMS\Entities\NoStockLinkType.cs" />
+    <Compile Include="OMS\Entities\NoStockType.cs" />
+    <Compile Include="OMS\Entities\OrderAddressType.cs" />
+    <Compile Include="OMS\Entities\OrderAmountType.cs" />
+    <Compile Include="OMS\Entities\OrderBuyerType.cs" />
+    <Compile Include="OMS\Entities\OrderOutRecord.cs" />
+    <Compile Include="OMS\Entities\OrderPackRecordType.cs" />
+    <Compile Include="OMS\Entities\OrderPeiRecordType.cs" />
+    <Compile Include="OMS\Entities\OrderProductType.cs" />
+    <Compile Include="OMS\Entities\OrderRecordType.cs" />
+    <Compile Include="OMS\Entities\OrderReturnRecordType.cs" />
+    <Compile Include="OMS\Entities\OrderType.cs" />
+    <Compile Include="OMS\Entities\OrderWeightRecordType.cs" />
+    <Compile Include="OMS\Entities\OrganizeType.cs" />
+    <Compile Include="OMS\Entities\PaypalAccountType.cs" />
+    <Compile Include="OMS\Entities\PermissionItemType.cs" />
+    <Compile Include="OMS\Entities\PermissionScopeType.cs" />
+    <Compile Include="OMS\Entities\PermissionType.cs" />
+    <Compile Include="OMS\Entities\PlacardType.cs" />
+    <Compile Include="OMS\Entities\PlanDaoType.cs" />
+    <Compile Include="OMS\Entities\PrintDataType.cs" />
+    <Compile Include="OMS\Entities\PrintTemplateType.cs" />
+    <Compile Include="OMS\Entities\ProductCategoryType.cs" />
+    <Compile Include="OMS\Entities\ProductComposeType.cs" />
+    <Compile Include="OMS\Entities\ProductIsInfractionType.cs" />
+    <Compile Include="OMS\Entities\ProductRecordType.cs" />
+    <Compile Include="OMS\Entities\ProductSKUType.cs" />
+    <Compile Include="OMS\Entities\ProductType.cs" />
+    <Compile Include="OMS\Entities\ProjectType.cs" />
+    <Compile Include="OMS\Entities\PurchasePlanRecordType.cs" />
+    <Compile Include="OMS\Entities\PurchasePlanType.cs" />
+    <Compile Include="OMS\Entities\PurchaseTroubleType.cs" />
+    <Compile Include="OMS\Entities\QuestionOrderType.cs" />
+    <Compile Include="OMS\Entities\RefundAmountType.cs" />
+    <Compile Include="OMS\Entities\ReturnAddresType.cs" />
+    <Compile Include="OMS\Entities\RoleType.cs" />
+    <Compile Include="OMS\Entities\SerialNumberType.cs" />
+    <Compile Include="OMS\Entities\SettlementType.cs" />
+    <Compile Include="OMS\Entities\SKUCodeType.cs" />
+    <Compile Include="OMS\Entities\SoresAddType.cs" />
+    <Compile Include="OMS\Entities\StockInType.cs" />
+    <Compile Include="OMS\Entities\StockOutType.cs" />
+    <Compile Include="OMS\Entities\SuppliersProductType.cs" />
+    <Compile Include="OMS\Entities\SupplierType.cs" />
+    <Compile Include="OMS\Entities\UserLoginType.cs" />
+    <Compile Include="OMS\Entities\UserRoleType.cs" />
+    <Compile Include="OMS\Entities\UserSetupType.cs" />
+    <Compile Include="OMS\Entities\UserType.cs" />
+    <Compile Include="OMS\Entities\WarehouseLocationType.cs" />
+    <Compile Include="OMS\Entities\WarehouseStockType.cs" />
+    <Compile Include="OMS\Entities\WarehouseType.cs" />
+    <Compile Include="OMS\Mappings\AccountEmailTypeMap.cs" />
+    <Compile Include="OMS\Mappings\AccountFeeTypeMap.cs" />
+    <Compile Include="OMS\Mappings\AccountTypeMap.cs" />
+    <Compile Include="OMS\Mappings\AliActivityRecordTypeMap.cs" />
+    <Compile Include="OMS\Mappings\AliActivityTypeMap.cs" />
+    <Compile Include="OMS\Mappings\AttendTypeMap.cs" />
+    <Compile Include="OMS\Mappings\BeforePeiScanTypeMap.cs" />
+    <Compile Include="OMS\Mappings\CountryTypeMap.cs" />
+    <Compile Include="OMS\Mappings\CurrencyTypeMap.cs" />
+    <Compile Include="OMS\Mappings\DataDictionaryDetailTypeMap.cs" />
+    <Compile Include="OMS\Mappings\DataDictionaryTypeMap.cs" />
+    <Compile Include="OMS\Mappings\DictionaryClasTypeMap.cs" />
+    <Compile Include="OMS\Mappings\DictionaryTypeMap.cs" />
+    <Compile Include="OMS\Mappings\DisputeTypeMap.cs" />
+    <Compile Include="OMS\Mappings\EbayMessageReTypeMap.cs" />
+    <Compile Include="OMS\Mappings\EbayMessageTypeMap.cs" />
+    <Compile Include="OMS\Mappings\EbayReplayTypeMap.cs" />
+    <Compile Include="OMS\Mappings\EbayTypeMap.cs" />
+    <Compile Include="OMS\Mappings\EmailMessageTypeMap.cs" />
+    <Compile Include="OMS\Mappings\EmailReturnTypeMap.cs" />
+    <Compile Include="OMS\Mappings\EmailTemplateTypeMap.cs" />
+    <Compile Include="OMS\Mappings\EmailTypeMap.cs" />
+    <Compile Include="OMS\Mappings\GMarketTypeMap.cs" />
+    <Compile Include="OMS\Mappings\LanguageTypeMap.cs" />
+    <Compile Include="OMS\Mappings\LogisticsAllocationTypeMap.cs" />
+    <Compile Include="OMS\Mappings\LogisticsAreaCountryTypeMap.cs" />
+    <Compile Include="OMS\Mappings\LogisticsAreaTypeMap.cs" />
+    <Compile Include="OMS\Mappings\LogisticsFreightTypeMap.cs" />
+    <Compile Include="OMS\Mappings\LogisticsModeTypeMap.cs" />
+    <Compile Include="OMS\Mappings\logisticsSetupTypeMap.cs" />
+    <Compile Include="OMS\Mappings\LogisticTypeMap.cs" />
+    <Compile Include="OMS\Mappings\MachineTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ModuleTypeMap.cs" />
+    <Compile Include="OMS\Mappings\NewGuideTypeMap.cs" />
+    <Compile Include="OMS\Mappings\NoStockLinkTypeMap.cs" />
+    <Compile Include="OMS\Mappings\NoStockTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OrderAddressTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OrderAmountTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OrderBuyerTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OrderOutRecordTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OrderPackRecordTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OrderPeiRecordTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OrderProductTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OrderRecordTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OrderReturnRecordTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OrderTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OrderWeightRecordTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OrganizeTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PaypalAccountTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PermissionItemTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PermissionScopeTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PermissionTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PlacardTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PlanDaoTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PrintDataTypeMapMap.cs" />
+    <Compile Include="OMS\Mappings\PrintTemplateTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ProductCategoryTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ProductComposeTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ProductIsInfractionTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ProductRecordTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ProductSKUTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ProductTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ProjectStateTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ProjectTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PurchasePlanExamineRecordTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PurchasePlanProductTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PurchasePlanRecordTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PurchasePlanTypeMap.cs" />
+    <Compile Include="OMS\Mappings\PurchaseTroubleTypeMap.cs" />
+    <Compile Include="OMS\Mappings\QuestionOrderTypeMap.cs" />
+    <Compile Include="OMS\Mappings\QuestionSKUTypeMap.cs" />
+    <Compile Include="OMS\Mappings\RefundAmountTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ReturnAddresTypeMap.cs" />
+    <Compile Include="OMS\Mappings\RoleTypeMap.cs" />
+    <Compile Include="OMS\Mappings\SerialNumberTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ServiceExaminationTypeMap.cs" />
+    <Compile Include="OMS\Mappings\SettlementTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ShipmentslistTypeMap.cs" />
+    <Compile Include="OMS\Mappings\ShipmentsTypeMap.cs" />
+    <Compile Include="OMS\Mappings\SKUCodeTypeMap.cs" />
+    <Compile Include="OMS\Mappings\SKUItemTypeMap.cs" />
+    <Compile Include="OMS\Mappings\SoresAddTypeMap.cs" />
+    <Compile Include="OMS\Mappings\StockInTypeMap.cs" />
+    <Compile Include="OMS\Mappings\StockOutTypeMap.cs" />
+    <Compile Include="OMS\Mappings\SuppliersProductTypeMap.cs" />
+    <Compile Include="OMS\Mappings\SupplierTypeMap.cs" />
+    <Compile Include="OMS\Mappings\UserLoginTypeMap.cs" />
+    <Compile Include="OMS\Mappings\UserRoleTypeMap.cs" />
+    <Compile Include="OMS\Mappings\UserSetupTypeMap.cs" />
+    <Compile Include="OMS\Mappings\UserTypeMap.cs" />
+    <Compile Include="OMS\Mappings\WarehouseAreaTypeMap.cs" />
+    <Compile Include="OMS\Mappings\WarehouseLineTypeMap.cs" />
+    <Compile Include="OMS\Mappings\WarehouseLocationTypeMap.cs" />
+    <Compile Include="OMS\Mappings\WarehouseProInfoTypeMap.cs" />
+    <Compile Include="OMS\Mappings\WarehouseRackTypeMap.cs" />
+    <Compile Include="OMS\Mappings\WarehouseSpaceImportTypeMap.cs" />
+    <Compile Include="OMS\Mappings\WarehouseStockDataTypeMap.cs" />
+    <Compile Include="OMS\Mappings\WarehouseStockTypeMap.cs" />
+    <Compile Include="OMS\Mappings\WarehouseTurnoverMap.cs" />
+    <Compile Include="OMS\Mappings\WarehouseTypeMap.cs" />
+    <Compile Include="OMS\Mappings\WishDisputeRecordTypeMap.cs" />
+    <Compile Include="OMS\Mappings\OtherExpensesTypeMap.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Lrp\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

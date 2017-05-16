@@ -1,0 +1,566 @@
+﻿@{
+    ViewBag.Title = "Upload";
+}
+<link href="~/Scripts/Uploadify/uploadify.css" rel="stylesheet" />
+<script src="~/Scripts/Uploadify/jquery.uploadify-3.1.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+
+        //初始化
+        $('#ww').combobox({
+            url: '/Warehouse/QList',
+            valueField: 'Id',
+            textField: 'WName',
+            required: true
+        });
+        setTimeout(function () {
+            $('#batchImport').uploadify({
+                'auto': false,
+                'buttonText': '请选择文件',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function (file, data, response) {
+                    eval("data=" + data);
+
+                    $.ajax({
+                        url: '/Order/ChangeFreight',
+                        type: 'post',
+                        data: 'filename=' + data.FilePath,
+                        success: function (res) {
+                            window.open('/Home/Result');
+                        }
+                    });
+                }
+            });
+            //初始化
+            $('#batchImport2').uploadify({
+                'auto': false,
+                'buttonText': '请选择文件',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function (file, data, response) {
+                    eval("data=" + data);
+                    $.ajax({
+                        url: '/Order/ChangeTrackCode',
+                        type: 'post',
+                        data: 'filename=' + data.FilePath,
+                        success: function (res) {
+                            window.open('/Home/Result');
+                        }
+                    });
+                }
+            });
+
+            //海外仓发货清单导入
+            $('#batchImport3').uploadify({
+                'auto': false,
+                'buttonText': '请选择文件',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function (file, data, response) {
+                    eval("data=" + data);
+                    $.ajax({
+                        url: '/Order/ImportFBAData',
+                        type: 'post',
+                        data: 'filename=' + data.FilePath + "&wid=" + $("#ww").combobox("getValue"),
+                        success: function (res) {
+                            window.open('/Home/Result');
+                        }
+                    });
+                }
+            });
+
+
+            //产品费用导入
+            $('#batchImport4').uploadify({
+                'auto': false,
+                'buttonText': '请选择文件',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function (file, data, response) {
+                    eval("data=" + data);
+                    $.ajax({
+                        url: '/Order/ImportOrderProductFees',
+                        type: 'post',
+                        data: 'filename=' + data.FilePath + "&wid=" + $("#ww").combobox("getValue"),
+                        success: function (res) {
+                            window.open('/Home/Result');
+                        }
+                    });
+                }
+            });
+
+
+            // 收汇导入
+            $('#batchImport5').uploadify({
+                'auto': false,
+                'buttonText': '请选择文件',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function (file, data, response) {
+                    eval("data=" + data);
+                    $.ajax({
+                        url: '/Order/ImportFanAmount',
+                        type: 'post',
+                        data: 'filename=' + data.FilePath,
+                        success: function (res) {
+                            window.open('/Home/Result');
+                        }
+                    });
+                }
+            });
+
+            $('#batchImport6').uploadify({
+                'auto': false,
+                'buttonText': '请选择文件',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function (file, data, response) {
+                    eval("data=" + data);
+
+                    $.ajax({
+                        url: '/Order/Replacetradecode',
+                        type: 'post',
+                        data: 'filename=' + data.FilePath,
+                        success: function (res) {
+                            window.open('/Home/Result');
+                        }
+                    });
+                }
+            });
+            $('#batchImport7').uploadify({
+                'auto': false,
+                'buttonText': '请选择文件',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function (file, data, response) {
+                    eval("data=" + data);
+
+                    $.ajax({
+                        url: '/Order/ImportDispute',
+                        type: 'post',
+                        data: 'filename=' + data.FilePath,
+                        success: function (res) {
+                            window.open('/Home/Result');
+                        }
+                    });
+                }
+            })
+            $('#batchImport8').uploadify({
+                'auto': false,
+                'buttonText': '请选择文件',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function (file, data, response) {
+                    eval("data=" + data);
+
+                    $.ajax({
+                        url: '/Order/ImportDisputeebay',
+                        type: 'post',
+                        data: 'filename=' + data.FilePath,
+                        success: function (res) {
+                            window.open('/Home/Result');
+                        }
+                    });
+                }
+            })
+            //通途wish订单导入
+            $('#batchImport9').uploadify({
+                'auto': false,
+                'buttonText': '请选择文件',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'sizeLimit': '40MB' ,
+                'onUploadSuccess': function (file, data, response) {
+                    eval("data=" + data);
+
+                    $.ajax({
+
+                        url: '/Order/ImportWishOrder',
+                        type: 'post',
+                        data: 'filename=' + data.FilePath,
+                        success: function (res) {
+                            window.open('/Home/Result');
+                        }
+                    });
+                }
+            })
+            //通途wish运费导入
+            $('#batchImport10').uploadify({
+                'auto': false,
+                'buttonText': '请选择文件',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function (file, data, response) {
+                    eval("data=" + data);
+
+                    $.ajax({
+
+                        url: '/Order/ImportWishFreight',
+                        type: 'post',
+                        data: 'filename=' + data.FilePath,
+                        success: function (res) {
+                            window.open('/Home/Result');
+                        }
+                    });
+                }
+            })
+            //通途wish收汇导入
+            $('#batchImport11').uploadify({
+                'auto': false,
+                'buttonText': '请选择文件',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function (file, data, response) {
+                    eval("data=" + data);
+
+                    $.ajax({
+
+                        url: '/Order/ImportWishFanAmount',
+                        type: 'post',
+                        data: 'filename=' + data.FilePath,
+                        success: function (res) {
+                            window.open('/Home/Result');
+                        }
+                    });
+                }
+            })
+            //通途wish纠纷导入
+            $('#batchImport12').uploadify({
+                'auto': false,
+                'buttonText': '请选择文件',
+                'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+                'uploader': '/Home/SaveFile/',
+                'multi': false,
+                'onUploadSuccess': function (file, data, response) {
+                    eval("data=" + data);
+
+                    $.ajax({
+
+                        url: '/Order/ImportWishDispute',
+                        type: 'post',
+                        data: 'filename=' + data.FilePath,
+                        success: function (res) {
+                            window.open('/Home/Result');
+                        }
+                    });
+                }
+            })
+
+        }, 10);
+
+
+        //订单重量导入
+        $('#batchImport13').uploadify({
+            'auto': false,
+            'buttonText': '请选择文件',
+            'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+            'uploader': '/Home/SaveFile/',
+            'multi': false,
+            'onUploadSuccess': function (file, data, response) {
+                eval("data=" + data);
+                $.ajax({
+                    url: '/Order/ImportWeight',
+                    type: 'post',
+                    data: 'filename=' + data.FilePath,
+                    success: function (res) {
+                        window.open('/Home/Result');
+                    }
+                });
+            }
+        });
+        //其它费用导入
+        $('#batchImport14').uploadify({
+            'auto': false,
+            'buttonText': '请选择文件',
+            'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+            'uploader': '/Home/SaveFile/',
+            'multi': false,
+            'onUploadSuccess': function (file, data, response) {
+                eval("data=" + data);
+                $.ajax({
+                    url: '/Order/ImportOtherExpenses',
+                    type: 'post',
+                    data: 'filename=' + data.FilePath,
+                    success: function (res) {
+                        window.open('/Home/Result');
+                    }
+                });
+            }
+        });
+
+        //义乌邮局挂号交运
+        $('#batchImport15').uploadify({
+            'auto': false,
+            'buttonText': '请选择文件',
+            'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+            'uploader': '/Home/SaveFile/',
+            'multi': false,
+            'onUploadSuccess': function (file, data, response) {
+                eval("data=" + data);
+                $.ajax({
+                    url: '/Order/ImportNBGHUtil',
+                    type: 'post',
+                    data: 'filename=' + data.FilePath,
+                    success: function (res) {
+                        window.open('/Home/Result');
+                    }
+                });
+            }
+        });
+    })
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:false" title="">
+        <fieldset>
+            <legend>转单导入</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport2" /></td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport2').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+           两列：A列 原单号|||B列 转单号
+          
+        </fieldset>
+        <fieldset>
+            <legend>结算运费导入</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport" /></td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+            两列：A列 运单号|||B列 运费
+          
+        </fieldset>
+        <fieldset>
+            <legend>海外仓发货清单上传</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport3" />
+                    </td>
+                    <td>仓库
+                        <input type="text" id="ww" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport3').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+            两列：A列 订单号||| B列 产品运单号
+          
+        </fieldset>
+
+        <fieldset>
+            <legend>产品费用导入</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport4" />
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport4').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+            两列：A列 订单号||| B列 产品价格
+          
+        </fieldset>
+
+        <fieldset>
+            <legend>收汇导入</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport5" />
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport5').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+            两列：A列 订单号||| B列 收汇金额
+          
+        </fieldset>
+
+        <fieldset>
+            <legend>非海外仓发货清单上传</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport6" /></td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport6').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+            两列：A列 外部编号||| B列 产品运单号
+          
+        </fieldset>
+
+        <fieldset>
+            <legend>smt/wish/amazon/lazada纠纷文件上传</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport7" /></td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport7').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+            八列：A列 平台名称(必须小写)||| B列 平台单号||| C列 商品SKU||| D列 实赔金额(必须正数！)||| E列 退款币种 ||| F列 赔款备注 |||G列 退款时间 ||| H地区
+
+        </fieldset>
+        <fieldset>
+            <legend>ebay纠纷文件上传</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport8" /></td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport8').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+            八列：A列 平台名称（必须小写）||| B列 平台单号||| C列 商品SKU||| D列 实赔金额(必须正数！)||| E列 退款币种 ||| F列 赔款备注 |||G列 退款时间 ||| H地区
+
+        </fieldset>
+        <fieldset>
+            <legend>通途wish发货清单上传[订单详情统计]</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport9" /></td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport9').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+
+        </fieldset>
+        <fieldset>
+            <legend>通途wish运费导入</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport10" /></td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport10').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+            两列：A列 运单号|||B列 运费
+        </fieldset>
+        <fieldset>
+            <legend>通途wish收汇导入</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport11" /></td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport11').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+            两列：A列 订单号||| B列 收汇金额
+        </fieldset>
+        <fieldset>
+            <legend>通途wish纠纷导入</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport12" /></td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport12').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+            四列：A列 订单号||| B列 实赔金额||| C列 地区||| D列 账户 |||纠纷时间
+        </fieldset>
+        <fieldset>
+            <legend>订单重量导入</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport13" /></td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport13').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+            两列：A列 追踪号||| B列 重量
+        </fieldset>
+        <fieldset>
+            <legend>其它费用导入</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport14" /></td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport14').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+            6列：A列 平台||| B列 帐号||| C列 货币||| C列 金额||| D列 备注||| E列 处理日期
+        </fieldset>
+        <fieldset>
+            <legend>义乌邮局挂号交运</legend>
+            <table>
+                <tr>
+                    <td>选择文件：</td>
+                    <td>
+                        <input type="file" id="batchImport15" /></td>
+                    <td>
+                        <input type="button" value="导入" onclick="$('#batchImport15').uploadify('upload', '*');" /></td>
+                </tr>
+            </table>
+            Ps:订单文件导入格式为excel 2003格式，工作薄名称需要为：sheet1
+            两列：A列 运单号
+        </fieldset>
+    </div>
+</div>

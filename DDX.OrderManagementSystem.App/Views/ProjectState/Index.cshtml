@@ -1,0 +1,44 @@
+﻿@{
+    Layout = null;
+}
+
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg2').datagrid({
+            url: '@Url.Action("List", "ProjectState")/'+@ViewData["Id"],
+            showFooter: true,
+            width: 700,
+            height:150
+        });
+    });
+
+</script>
+
+<table id="dg2">  
+        <thead>  
+        <tr>
+          @*  <th field="Id" width="100">
+                Id
+            </th>
+
+            <th field="PId" width="100">
+                项目Id
+            </th>*@
+
+            <th field="CreateOn" width="150" formatter="getDate">
+                添加时间
+            </th>
+
+            <th field="Content" width="400">
+                内容
+            </th>
+
+            <th field="CreateBy" width="130">
+                添加人
+            </th>
+
+
+    	</tr>
+		</thead>
+		</table>
+        

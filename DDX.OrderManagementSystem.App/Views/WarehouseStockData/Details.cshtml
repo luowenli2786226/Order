@@ -1,0 +1,118 @@
+﻿@model HanRuiOMS.Domain.StockInDataType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>HanRuiOMS.Domain.StockInDataType</title>
+</head>
+<body>
+<fieldset>
+    <legend>HanRuiOMS.Domain.StockInDataType</legend>
+    <div class="display-label">标识</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">入库ID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.InId)
+    </div>
+
+    <div class="display-label">入库序列号</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.InNo)
+    </div>
+
+    <div class="display-label">入库状态</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.State)
+    </div>
+
+    <div class="display-label">产品ID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PId)
+    </div>
+
+    <div class="display-label">产品SKU</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SKU)
+    </div>
+
+    <div class="display-label">产品名称</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MainSKU)
+    </div>
+
+    <div class="display-label">仓库ID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WId)
+    </div>
+
+    <div class="display-label">仓库</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WName)
+    </div>
+
+    <div class="display-label">入库数量</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Qty)
+    </div>
+
+    <div class="display-label">现有数量</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NowQty)
+    </div>
+
+    <div class="display-label">备注</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Remark)
+    </div>
+
+    <div class="display-label">运费</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Freight)
+    </div>
+
+    <div class="display-label">金额</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Amount)
+    </div>
+
+    <div class="display-label">生产日期</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProductionOn)
+    </div>
+
+    <div class="display-label">到期时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExpirationOn)
+    </div>
+
+    <div class="display-label">入库类型</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.InType)
+    </div>
+
+    <div class="display-label">创建人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateBy)
+    </div>
+
+    <div class="display-label">创建时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

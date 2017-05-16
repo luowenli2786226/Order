@@ -1,0 +1,68 @@
+﻿@model DDX.OrderManagementSystem.Domain.RoleType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>DDX.OrderManagementSystem.Domain.RoleType</title>
+</head>
+<body>
+<fieldset>
+    <legend>DDX.OrderManagementSystem.Domain.RoleType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">组织机构主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OrganizeId)
+    </div>
+
+    <div class="display-label">角色编号</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Code)
+    </div>
+
+    <div class="display-label">角色名称</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Realname)
+    </div>
+
+    <div class="display-label">排序码</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SortCode)
+    </div>
+
+    <div class="display-label">删除标记</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DeletionStateCode)
+    </div>
+
+    <div class="display-label">描述</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Description)
+    </div>
+
+    <div class="display-label">创建日期</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+    <div class="display-label">创建用户</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateBy)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

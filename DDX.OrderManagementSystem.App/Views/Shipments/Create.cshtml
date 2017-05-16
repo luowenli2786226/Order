@@ -1,0 +1,316 @@
+@model DDX.OrderManagementSystem.Domain.ShipmentsType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		        $('#c_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+        $('#c_CreatePlanBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+        $('#c_CreatetTrackBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+        });
+
+        $('#c_Sku').combogrid({
+            panelWidth: 410,
+            idField: 'SKU',
+            textField: 'SKU',
+            required: true,
+            onSelect: function (r) {
+                $("#c_DescribeCn").attr("value", $('#c_Sku').combogrid('grid').datagrid("getRows")[r].DescribeCn);
+                $("#c_DescribeEn").attr("value", $('#c_Sku').combogrid('grid').datagrid("getRows")[r].DescribeEn);
+                $("#c_Warehouse").attr("value", $('#c_Sku').combogrid('grid').datagrid("getRows")[r].stockqty);
+                $("#c_Warehouse1").attr("value", $('#c_Sku').combogrid('grid').datagrid("getRows")[r].stockqty - $('#c_Sku').combogrid('grid').datagrid("getRows")[r].ShipmentsCount);
+                $("#c_Warehouse2").attr("value", $('#c_Sku').combogrid('grid').datagrid("getRows")[r].ShipmentsCount); 
+                $("#c_Price1").attr("value", $('#c_Sku').combogrid('grid').datagrid("getRows")[r].Price.toFixed(2));
+            },
+            url: '/Product/ListQQ',
+            mode: 'remote',
+            fit: true,
+            columns: [[
+                { field: 'SKU', title: 'SKU', width: 100 },
+                { field: 'ProductName', title: 'Title', width: 180 },
+                { field: 'Standard', title: '规格', width: 80 },
+                
+                { field: 'DescribeCn', title: '中文描述', width: 80 },
+                 { field: 'stockqty1', title: '可用库存', width: 80 ,formatter:function(v,r){           
+                         return (r.stockqty-r.ShipmentsCount); 
+                 }
+                 }, 
+                 { field: 'stockqty', title: '总库存', width: 80},
+                 { field: 'ShipmentsCount', title: '代发货库存', width: 80 },
+            { field: 'DescribeEn', title: '英文描述', width: 80 }
+
+            ]]
+        });
+
+        $('#c_IsCustoms').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["True", "是"],
+                   ["False", "否"]],
+            width: 100,
+            required:true,
+            onChange:changecustomers
+        });
+        $('#c_CreatePlanBy').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["许东旭", "许东旭"]],
+            width: 100
+        });
+        $('#c_CreatetTrackBy').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["许东旭", "许东旭"]],
+            width: 100
+        });
+        $('#c_IsCustoms').combobox("setValue", "否");
+        $('#c_CreatePlanBy').combobox("setValue", "许东旭");
+        $('#c_CreatetTrackBy').combobox("setValue", "许东旭");
+        $("#c_TaxRate").validatebox({ required: true });
+        $("#c_PackageNo").validatebox({ required: true });
+        $("#c_Ctn").validatebox({ required: true });
+
+
+    });
+    function changecustomers(n,o)
+    {
+        if (n == "是" || n=="True") {
+            $("#c_TaxRate").val("");
+        }
+        else
+        {
+            $("#c_TaxRate").val("0");
+        }
+    }
+</script>
+
+@using (Html.BeginForm("Create", "Shipments", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td colspan="4">
+            @Html.LabelFor(model => model.Id,"明细编号:")
+            @Html.HiddenFor(model => model.Id,new{@id="c_Id"})
+   总库存: <input id="c_Warehouse"  style="font-size: 40px;width: 105px" />
+            可用库存: <input id="c_Warehouse1"  style="font-size: 40px;width: 105px" />
+            待发货库存: <input id="c_Warehouse2"  style="font-size: 40px;width: 105px" />
+            商品参考价: <input id="c_Price1"  style="font-size: 15px;width: 60px" />
+        </td>
+	</tr>
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.Sku,"我司货号（SKU）:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Sku,new{@id="c_Sku",@class="easyui-validatebox",@required="required"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.PurchaseNo,"采购合同编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PurchaseNo,new{@id="c_PurchaseNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExportNo,"外销合同号码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExportNo,new{@id="c_ExportNo"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.PriceUMax,"UMAX价格($):")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PriceUMax,new{@id="c_PriceUMax"})
+		</td>
+	</tr>
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DescribeEn,"英文描述:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DescribeEn,new{@id="c_DescribeEn"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.DescribeCn,"中文描述:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DescribeCn,new{@id="c_DescribeCn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PriceFactory,"工厂价格(￥):")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PriceFactory,new{@id="c_PriceFactory"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.Unit,"单位:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Unit,new{@id="c_Unit"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PackageNo,"包装:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PackageNo,new{@id="c_PackageNo",@class="easyui-validatebox",@required="required"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.Ctn,"箱数:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Ctn,new{@id="c_Ctn",@class="easyui-validatebox",@required="required"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsCustoms,"是否已报关:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsCustoms,new{@id="c_IsCustoms"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.WeightGross,"毛重（KG）:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WeightGross,new{@id="c_WeightGross"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WeightNet,"净重（KG）:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WeightNet,new{@id="c_WeightNet"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.TotalVolume,"总体积:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TotalVolume,new{@id="c_TotalVolume"})
+		</td>
+	</tr>
+
+	<tr>
+		@*<td>
+            @Html.LabelFor(model => model.Qty,"实际数量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
+		</td>*@
+        <td>
+            @Html.LabelFor(model=>model.Price,"单价（总）")
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.Price, new {@id="c_Price" })
+        </td>
+		<td>
+            @Html.LabelFor(model => model.TotalPrice,"客人含佣金总价($):")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TotalPrice,new{@id="c_TotalPrice"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TaxRate,"增值税率:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TaxRate,new{@id="c_TaxRate",@class="easyui-validatebox",@required="required"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.Ratio,"比值:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Ratio,new{@id="c_Ratio"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"业务人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy", @readonly = "true"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.CreatePlanBy,"采购员:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreatePlanBy,new{@id="c_CreatePlanBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreatetTrackBy,"跟单员:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreatetTrackBy,new{@id="c_CreatetTrackBy"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.Paymethod,"付款方式:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Paymethod,new{@id="c_Paymethod"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.HeadloadCharges,"头程(元/公斤):")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.HeadloadCharges,new{@id="c_HeadloadCharges"})
+		</td>
+
+		<td>
+            @Html.LabelFor(model => model.YouShengPrice,"优胜价格($):")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.YouShengPrice,new{@id="c_YouShengPrice"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

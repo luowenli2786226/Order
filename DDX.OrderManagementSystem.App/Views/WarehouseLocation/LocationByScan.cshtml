@@ -1,0 +1,154 @@
+﻿@{
+    ViewBag.Title = "SKUScan";
+}
+<body class="easyui-layout">
+    <script type="text/javascript">
+
+        $(function () {
+            //$('#cc').combogrid({
+            //    required: true,
+            //    mode: 'remote',
+            //    panelWidth: 250,
+            //    idField: 'Code',
+            //    textField: 'Code',
+            //    url: '/WarehouseLocation/ListQ',
+            //    fit: true,
+            //    columns: [[
+
+            //        { field: 'Code', title: '仓库代码', width: 100 },
+            //        { field: 'WName', title: '仓库名称', width: 100 }
+
+            //    ]]
+            //});
+        })
+        document.write(' <OBJECT id="Player1"');
+        document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+        document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ring.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+        //document.write(' <OBJECT id="Player2"');
+        //document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+        //document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/security.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+        document.write(' <OBJECT id="Player2"');
+        document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+        document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ok.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+        document.write(' <OBJECT id="Player3"');
+        document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+        document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/fk.mp3" /> <param name="AutoStart" value="false" /> </OBJECT>');
+        document.write(' <OBJECT id="Player4"');
+        document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+        document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/cd.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+        document.write(' <OBJECT id="Player5"');
+        document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+        document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ymd.mp3" /> <param name="AutoStart" value="false" /> </OBJECT>');
+
+</script>
+     <div data-options="region:'center'" style="height: 100%">
+     <table>
+        
+         <tr>
+             <td height="25" width="22%"align="right">
+                 <h2>
+                     <b>库位</b></h2>
+             </td>
+             <td>
+                 <input id="cc" type="text" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                 <input type="checkbox" id="jj" checked="checked"/> 覆盖商品库位
+
+             </td>
+         </tr>
+         <tr>
+             <td height="25" width="22%" align="right">
+                 <h1>
+                     <b>条码</b></h1>
+             </td>
+             <td width="">
+                 <input id="txt" onkeydown="return SetSKUCode(event);" style="font-size: 50px; background-image: none; width: 511px" />
+             </td>
+         </tr>
+         
+         <tr>
+              <td height="25" width="22%" align="right">
+                
+             </td>
+             <td>
+                 <font style="color: Red; font-size: 30px"><span id="spanStatus">等待扫描</span></font>
+             </td>
+         </tr>
+         <tr>
+              <td height="25" width="22%" align="right">
+               
+             </td>
+             <td>
+                 <span id="spanInfo"></span>
+             </td>
+         </tr>
+     </table>
+         </div>
+<script>
+    var spanStatus = document.getElementById("spanStatus");
+    var spanInfo = document.getElementById("spanInfo");
+    var process = 0;
+    function SetSKUCode(e) {
+        var keynum;
+        var jj = 0;
+        if (window.event) //IE
+        {
+            keynum = e.keyCode;
+        }
+        else if (e.which) //Netscape/Firefox/Opera
+        {
+            keynum = e.which;
+        }
+        if ($("#jj").prop("checked")) {
+            jj = 1;
+        }
+        if (keynum == 13) {
+            if ($("#txt").val() == "") {
+                $("#txt").val('');
+                ShowMessage("", "扫描正确，请继续扫描", true);
+                return;
+            }
+            if (process == 0) {
+                $("#cc").val($("#txt").val());
+                process = 1;
+                $("#txt").val('');
+            } else {
+                jQuery.ajax({
+                    url: "/WarehouseLocation/SetLocation/",
+                    type: "post",
+                    data: "c=" + $("#txt").val() + "&l=" + $("#cc").val() + "&j=" + jj,
+                    success: function (msg) {
+                        if (msg.IsSuccess) {
+                            process = 0;
+                            ShowMessage(msg.Msg, "扫描正确，请继续扫描", true);
+                            $("#txt").val('');
+                            $("#cc").val('');
+                            Player2.controls.play();
+                        } else {
+                            ShowMessage(null, "错误：" + msg.Result, false);
+                            $("#txt").val('');
+
+                            Player1.controls.play();
+                        }
+                    }
+                });
+            }
+
+        }
+    }
+    function ShowMessage(msgInfo, msgStatus, isOk) {
+        if (msgInfo != null) {
+            spanInfo.innerHTML = msgInfo;
+        }
+        if (msgStatus != null) {
+            spanStatus.innerHTML = msgStatus;
+        }
+        if (isOk) {
+            spanInfo.style.color = "Blue";
+        }
+        else {
+            spanInfo.style.color = "Red";
+        }
+    }
+
+</script>
+ </body>

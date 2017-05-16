@@ -1,0 +1,51 @@
+﻿@model DDX.OrderManagementSystem.Domain.PostTrackCodeType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#LogisticMode').combogrid({
+            panelWidth: 360,
+            idField: 'LogisticsName',
+            textField: 'LogisticsName',
+            url: '/LogisticsMode/ALLList',
+
+            columns: [[
+                { field: 'LogisticsName', title: '名称', width: 250 },
+                { field: 'LogisticsCode', title: '代码', width: 100 }
+            ]]
+
+        });
+    });
+
+</script>
+
+@using (Html.BeginForm("Create", "PostTrackCode", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+    <table class="editForm">
+        <tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticMode,"挂号:")
+		</td>
+        <td>
+            <input name="LogisticMode" id="LogisticMode">
+        </td>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.Id,"主键:")
+            </td>
+            <td>
+                <textarea name="Code" cols="50" rows="20"></textarea>
+            </td>
+        </tr>
+
+	
+
+
+    </table>
+</fieldset>
+}

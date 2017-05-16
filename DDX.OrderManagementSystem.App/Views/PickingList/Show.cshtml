@@ -1,0 +1,68 @@
+﻿@model DDX.OrderManagementSystem.Domain.PickingListType
+
+@{
+    Layout = null;
+}
+<style type="text/css">
+    .onecenter{text-align:center;width:200px;}
+</style>
+<script type="text/javascript">
+    $(function () {
+        $('#logicstics').val('@ViewData["logicstics"]');
+    });
+    function print(id)
+    {
+        jQuery.ajax({
+            // url: "/PickingList/PrintPickList/" + id,
+            url: "/PickingList/PrintPickList/" + id,
+            type: "post",
+            data: 'strtype=show',
+            success: function (msg) {
+                $('#printdata').val(msg.Result);
+                window.open('/Home/PrintDetail/111');
+
+            }
+        });
+    }
+    function TagState(id)
+    {
+        jQuery.ajax({
+            url: "/PickingList/TagState/" + id,
+            type: "post",
+            success: function (msg) {
+                if (msg.IsSuccess) {
+                    alert("已成功标记");
+                    $("#lbState").text("已打印");
+                    $('#dg').datagrid('reload');
+                }
+                else {
+                    alert("标记失败");
+                }
+            }
+        });
+    }
+</script>
+    <table border="0" width="400" height="30">
+        <tr style="background:#99BBFF">
+            <td ><font color="white"><b>拣货单单号：@Html.DisplayFor(model => model.PickingNo) </b> &nbsp; <a onclick="print('@Model.PickingNo')" style="cursor:pointer">查看拣货单</a>&nbsp; <a onclick="TagState('@Model.Id')" style="cursor:pointer">标记为已打印</a></font></td>
+            <td style="background:orange"><b><span id="lbState" >  @Html.DisplayFor(model => model.State)</span></b> </td>
+        </tr>
+    </table>
+    <table border="1"  width="400 " cellspacing="0" cellpadding="0">
+        <tr> 
+            <td class='onecenter'>
+                <b>拣货单类型:</b>@Html.DisplayFor(model => model.PickingType)
+            </td>
+            <td class='onecenter'>
+                <b>创建时间:</b>@Html.DisplayFor(model => model.CreateTime)
+            </td>
+        </tr>
+        <tr> 
+            <td class='onecenter'>
+                <b>物流:</b>@Html.DisplayFor(model => model.LogisticMode)
+            </td>
+            <td class='onecenter'>
+                <b>创建人:</b>@Html.DisplayFor(model => model.CreateBy)
+            </td>
+        </tr>
+    </table>

@@ -1,0 +1,376 @@
+﻿@{
+    ViewBag.Title = "DeliveryScan";
+}
+<script type="text/javascript">
+    document.write(' <OBJECT id="Player1"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ring.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+  /*  document.write(' <OBJECT id="Player2"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/security.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+  */  document.write(' <OBJECT id="Player2"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ok.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+    document.write(' <OBJECT id="Player3"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/fk.mp3" /> <param name="AutoStart" value="falses" /> </OBJECT>');
+    document.write(' <OBJECT id="Player4"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/cd.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+    document.write(' <OBJECT id="Player5"');
+    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ymd.mp3" /> <param name="AutoStart" value="false" /> </OBJECT>');
+</script>
+<script src="/Scripts/CreateControl.js" type="text/javascript"></script>
+<script type="text/javascript">
+    //CreateReport("Report");
+    //Report.LoadFromURL("/Home/PrintGrf/8");
+    function print(id) {
+        //if ($('#ckBGD').attr("checked")) {
+        //    Report.LoadDataFromURL("/Home/PrintOrder/" + id);
+        //    Report.Print(true);
+        //}
+    }
+</script>
+<script type="text/javascript">
+    $(function () {
+        $('#ll').combogrid({
+            panelWidth: 360,
+            idField: 'LogisticsCode',
+            textField: 'LogisticsName',
+            url: '/LogisticsMode/ALLList',
+            fit: true,
+            columns: [[
+                { field: 'LogisticsName', title: '名称', width: 250 },
+                { field: 'LogisticsCode', title: '代码', width: 100 },
+                { field: 'ParentID', title: '代码', width: 100 }
+            ]]
+        });
+        $('#ww').combobox({
+            url: '/Warehouse/QList',
+            valueField: 'Id',
+            textField: 'WName',
+            required: true
+        });
+        $('#ll').combogrid("setValue", "NB");
+        $('#ww').combobox("setValue", "1");
+    });
+
+    function getDataa(v, l, m) {
+        $.ajax({
+            url: "/Logistics/GetData/",
+            type: "post",
+            data: "Id=" + v,
+            success: function (res) {
+                TrackCodeLength = res.CodeLength;
+
+            }
+        });
+    }
+</script>
+<body class="easyui-layout">
+    <div region="center">
+        <table width="100%" cellspacing="6" cellpadding="0" border="0" style="border-collapse: separate; border-spacing: 6px;">
+            <tbody>
+                <tr valign="top">
+                    <td>
+                        <table width="100%" cellspacing="0" cellpadding="6" border="0" class="blockTable">
+                            <tbody>
+                                <tr>
+                                    <td style="padding-top: 0px; padding-left: 6px; padding-right: 6px; padding-bottom: 8px;">
+                                        <div>
+                                            <table cellspacing="0" cellpadding="5" bordercolor="#eeeeee" border="1" width="100%">
+                                                <tbody>
+                                                    <tr id="tr2">
+                                                        <td style="text-align: right;">
+                                                            <h2>状态</h2>
+                                                        </td>
+                                                        <td>
+                                                            <span id="spanStatus" style="width: 100%; color: Red; font-size: 20px">等待扫描跟踪码...
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td height="25" width="100" style="text-align: right;">
+                                                            <h2>
+                                                                <b>选项</b>
+                                                            </h2>
+                                                        </td>
+                                                        <td>仓库:<input type="text" id="ww" />&nbsp;&nbsp;
+                                                         <input type="checkbox" id="ckQ" />强制变更为当前选择物流&nbsp;&nbsp;
+                                                        选择物流<input type="text" id="ll" />&nbsp;&nbsp;
+                                                         <input type="checkbox" id="ckQ2" />限制(只能扫描当前选择物流)&nbsp;&nbsp;
+                                                        打印报关单<input type="checkbox" id="ckBGD" />&nbsp;&nbsp;
+                                                        电子称<input type="checkbox" id="ckCheng" checked="checked" />
+                                                            @*<a href="javascript:setWeight('BLKSSS',740)">点此修改重量</a>*@
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="tr_ID">
+                                                        <td height="25" style="text-align: right;">
+                                                            <h2>
+                                                                <b>扫描包裹</b></h2>
+                                                        </td>
+                                                        <td>
+                                                            <input id="txt" onkeydown="return txt_keydown(event)" style="font-size: 50px; background-image: none; width: 511px" />
+
+                                                            <input type="button" onclick="Scan();" value="扫描(Enter)" style="width: 200px; height: 40px;" />
+                                                            <input type="button" onclick="Reset();" value="取消(Esc)" style="width: 200px; height: 40px;" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td height="25" style="text-align: right;">
+                                                            <h2>订单信息</h2>
+                                                        </td>
+                                                        <td>
+                                                            <h2>
+                                                                <table width="100%" border="0" cellpadding="5" id="tOrder">
+                                                                    <tr>
+                                                                        <td width="100" align="right"><font size='2'>系统单号：</font></td>
+                                                                        <td width="200"><font size='2'><span id="OrderNo">----</span></font></td>
+                                                                        <td width="100" align="right"><font size='2'>平台单号：</font></td>
+                                                                        <td width="200"><font size='2'><span id="OrderExNo">----</span></font></td>
+                                                                        <td width="100" align="right"><font size='2'>发货方式：</font></td>
+                                                                        <td width="200"><font size='2'><span id="LogisticMode">----</span></font></td>
+                                                                        <td>&nbsp;</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="100" align="right"><font size='2'>收件国家：</font></td>
+                                                                        <td width="200"><font size='2'><span id="Country">----</span></font></td>
+                                                                        <td width="100" align="right"><font size='2'>跟踪码：</font></td>
+                                                                        <td width="200"><font size='2'><span id="TrackCode">----</span></font></td>
+                                                                        <td width="100" align="right"><font size='2'>包裹类型：</font></td>
+                                                                        <td width="200"><font size='2'><span id="OrderType">----</span></font></td>
+                                                                        <td>&nbsp;</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </h2>
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="tr1">
+                                                        <td height="25" style="text-align: right;">
+                                                            <h2>重量</h2>
+                                                        </td>
+                                                        <td>
+                                                            <object id='tc' width="200" height="25" classid="clsid:5FE3EF45-DBFE-3C80-BD1B-D60C9502039C">
+                                                            </object>
+                                                            &nbsp;&nbsp;<input type="hidden" id="txtweight" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="tr4">
+                                                        <td height="25" style="text-align: right;">
+                                                            <h2>商品信息</h2>
+                                                        </td>
+                                                        <td style="vertical-align: top;">
+                                                            <table id="tProducts" width="100%" border="0" cellpadding="5" style="color: Blue; font-size: 20px">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th width="80" align="center">#</th>
+                                                                        <th width="200" align="center">SKU</th>
+                                                                        @*<th width="200" align="center">品名/规格</th>*@
+                                                                        <th width="80" align="center">Qty</th>
+                                                                        @*<th width="100" align="center">扫描次数</th>*@
+                                                                        <th align="center"></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <script type="text/javascript">
+            var zl = 0; //重量
+            var o = ""; //包裹编号
+            var progress = 0;  // 处理状态0：等待扫描跟踪码，1：等待扫描商品SKU code，2：订单状态转变为待发货
+            var txt = document.getElementById("txt");
+            var TrackCodeLength = -1;
+            var TrackCodeLength2 = -1;
+            var oldstr = "";
+            //var spanInfo = document.getElementById("spanInfo");
+            var spanStatus = document.getElementById("spanStatus");
+            var skuCode = [];
+
+            // 回车操作
+            function txt_keydown(e) {
+                var keynum;
+                if (window.event) //IE
+                {
+                    keynum = e.keyCode;
+                }
+                else if (e.which) //Netscape/Firefox/Opera
+                {
+                    keynum = e.which;
+                }
+                if (keynum == 13) {
+                    Scan();
+                    return false;
+                }
+                if (keynum == 27) {
+                    Reset();
+                }
+                return true;
+            }
+
+            function Scan() {
+                if (txt.value == "") { Reset(); return; }
+                if (progress == 0) {
+                    // 
+                    TrackCodeLength = -1;
+                    TrackCodeLength2 = -1;
+                    getOrder(txt.value);
+                }
+                else if (progress == 1) {
+                    DeliveryScan(txt.value);
+                }
+                txt.value = "";
+                $("#txt").focus();
+            }
+
+            function inputWeight(w) {
+                if (isNaN(w)) {
+                    ShowMessage(null, "请重新输入重量，重量为数字", false);
+                } else {
+                    progress = 3;
+                    zl = w;
+                    ShowMessage(null, "请输入跟踪号", true);
+                }
+
+            }
+
+            // 获取订单信息
+            function getOrder(TrackCode) {
+                jQuery.ajax({
+                    url: "/DeliveryScan/GetOrderInfo/",
+                    type: "post",
+                    data: "TrackCode=" + TrackCode,
+                    success: function (msg) {
+                        if (msg.IsSuccess) {
+                            //debugger;
+                            ShowMessage("", "扫描跟踪码:" + TrackCode, false);
+                            TrackCodeLength = msg.Code;
+                            $("#OrderNo").text(msg.Result.OrderNo);
+                            $("#OrderExNo").text(msg.Result.OrderExNo);
+                            $("#LogisticMode").text(msg.Result.LogisticMode);
+                            $("#Country").text(msg.Result.Country);
+                            $("#TrackCode").text(msg.Result.TrackCode);
+                            $("#OrderType").text(msg.ResultType);
+
+                            for (var nI = 0; nI < msg.Result.Products.length; nI++) {
+                                var tr = $("<tr name=\"tr_" + msg.Result.Products[nI].SKU.toUpperCase() + "\"></tr>")
+                                tr.append($("<td align=\"center\">" + (nI + 1) + "</td>"));
+                                tr.append($("<td>" + msg.Result.Products[nI].SKU + "</td>"));
+                                //tr.append($("<td>" + msg.Result.Products[nI].Title + "</td>"));
+                                tr.append($("<td name=\"qty\" align=\"center\">" + msg.Result.Products[nI].Qty + "</td>"));
+                                //tr.append($("<td name=\"cqty\" align=\"center\">" + 0 + "</td>"));
+                                //debugger;
+                                $("#tProducts tbody").append(tr)
+                            }
+                            progress = 1;
+                            ShowMessage("", "等待再次扫描跟踪码...", false);
+                        } else {
+                            progress = 0;
+                            ShowMessage("", msg.Result, false);
+                            Player1.controls.play();
+                        }
+                    }
+                });
+            }
+
+            // 发货扫描
+            function DeliveryScan(TrackCode) {
+                if (TrackCodeLength == 0) {
+                    if (o != TrackCode) {
+                        ShowMessage("前后输入不一致，请重新输入", "等待扫描", false);
+                        return;
+                    } else {
+                        TrackCode = "";
+                    }
+                }
+                var LogisticMode = $("#ll").combogrid("getValue");
+                var WarehouseId = $("#ww").combobox("getValue");
+                if (!$("#ckQ").prop("checked")) {
+                    LogisticMode = "";
+                }
+               // var Weight = $("#tc").val();
+                var Weight = "22";
+                alert(TrackCode + Weight + WarehouseId + LogisticMode);
+                jQuery.ajax({
+                    url: "/DeliveryScan/Scan/",
+                    type: "post",
+                    data: "TrackCode=" + TrackCode + "&Weight=" + Weight + "&WarehouseId=" + WarehouseId + "&LogisticMode=" + LogisticMode,
+                    success: function (msg) {
+                        if (msg.IsSuccess) {
+                            progress = 0;
+                            $("#tOrder")[0].style.textDecorationLineThrough = true;
+                            $("#tProducts")[0].style.textDecorationLineThrough = true;
+                            ShowMessage("", msg.Result, true);
+                            Player2.controls.play();
+                            Reset();                            
+                        } else {
+                            ShowMessage("", msg.Result, false);
+                            Player5.controls.play();
+                        }
+                    }
+                });
+            }
+
+            // 初始化操作界面
+            function Reset() {
+                progress = 0;
+                txt.value = "";
+                skuCode = [];
+                $("#OrderNo").text("----");
+                $("#OrderExNo").text("----");
+                $("#LogisticMode").text("----");
+                $("#Country").text("----");
+                $("#TrackCode").text("----");
+                $("#OrderType").text("----");
+
+                $("#tProducts tbody tr").remove();
+                $("#tOrder")[0].style.textDecorationLineThrough = false;
+                $("#tProducts")[0].style.textDecorationLineThrough = false;
+                ShowMessage("", "等待扫描跟踪码...", true);
+                $("#txt").focus();
+            }
+
+            function ShowMessage(msgInfo, msgStatus, isOk) {
+                if (msgInfo != null) {
+                    //spanInfo.innerHTML = msgInfo;
+                }
+                if (msgStatus != null) {
+                    spanStatus.innerHTML = msgStatus;
+                }
+                if (isOk) {
+                    spanStatus.style.color = "Blue";
+                }
+                else {
+                    spanStatus.style.color = "Red";
+                }
+            }
+            
+            //function setWeight(o, w) {
+            //    jQuery.ajax({
+            //        url: "/Order/GetOrderWeight/",
+            //        type: "post",
+            //        data: "o=" + o + "&w=" + w,
+            //        success: function (msg) {
+            //            if (msg.IsSuccess) {
+            //                ShowMessage(msg.Result, "所有产品扫描完成！请输入追踪码", true);
+            //            }
+            //        }
+            //    });
+            //}
+
+        </script>
+    </div>
+</body>

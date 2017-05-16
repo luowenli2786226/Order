@@ -1,0 +1,137 @@
+﻿@{
+    ViewBag.Title = "每月销售增长率分析";
+}
+
+
+
+<script src="~/Scripts/easyUI/jquery.pivotgrid.js"></script>
+<script>
+
+    $(function () {
+        $('#year').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["2014", "2014"], ["2015", "2015"], ["2016", "2016"], ["2017", "2017"]],
+            width: 100,
+            onSelect: onSelect1
+        });
+        $('#year').combobox("setValue", "2017");
+        $('#dg').datagrid({
+            url: '/Reports/GetMonthlySalesGrowth',
+            queryParams: { "year": "2017", "yw": 1 },
+            method: 'post',
+            //fit: true,
+            width: 1200,
+            height:600,
+            frozenColumn: "Account",
+            pagination: false,
+            rownumbers: true,
+            singleSelect: true,
+            nowrap: false,
+            showFooter:true,
+            frozenColumns: [[
+                { field: 'Account', title: '店铺', width: 100, align: 'center' }
+            ]],
+            columns: [[
+                { field: 'A', title: '1月', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'B', title: '2月', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'C', title: '3月', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'D', title: '4月', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'E', title: '5月', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'F', title: '6月', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'G', title: '7月', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'H', title: '8月', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'I', title: '9月', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'J', title: '10月', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'K', title: '11月', width: 100, align: 'center', formatter: setcol, styler: cellStyler },
+                { field: 'L', title: '12月', width: 100, align: 'center', formatter: setcol, styler: cellStyler }
+            ]],
+            onLoadSuccess: function () {
+                var rows = $('#dg').datagrid("getRows");//获取行的数据
+                for (var i = 0; i < rows.length; i++) {
+                    //根据情况判断相同的数据，我这里是根据ID
+                    var id = rows[i].Account;
+                    var rowspan = 0;
+                    for (var j = 0; j < rows.length; j++) {
+                        if (id == rows[j].Account) {
+                            //计算合并多少行
+                            rowspan++;
+                        }
+                    }
+                    if (rowspan != 0) {
+                        //mergeCells这个方法是合并单元格，index表示标示号就是第几行开始，field表示要合并的字段，rowspan合并行数，colspan:合并列
+                        $('#dg').datagrid('mergeCells', { index: i, field: 'Account', rowspan: rowspan });
+                        i = i + rowspan - 1;
+                    }
+                }
+
+            }
+        });
+
+
+    });
+
+    function setcol(v, r, i) {
+        if (v == 0 || v == "0%" || v=="null")
+            return "";
+        return v;
+    }
+    function cellStyler(value, row, index) {
+        if (value == 0 || value == "0%" || value == "null" || value==null)
+            return "";
+        if (value.indexOf('%') != -1) {
+            if (value.indexOf('-') != -1) {
+                return 'background-color:green;color:#C7BDFE';
+            } else
+                return 'background-color:red;color:#FFFFFF';
+        }
+    }
+
+    function onSelect1() {
+        $('#dg').datagrid("load", {
+            year: $('#year').combobox("getValue"),
+            yw:1
+        });
+
+    }
+
+    function getUrlByName(v, r, i) {
+
+        if (v == null) {
+            return "";
+
+        }
+
+        return '<a href="' + r.AccountUrl + '" target="_blank">' + v + '</a>';
+        //jQuery.ajax({
+        //    url: '/Account/GetUrlByName',
+        //    type: "post",
+        //    data: "name=" + n,
+        //    success: function (sss) {
+        //            return '<a href="' + sss + '" target="_blank">'+n+'</a>';
+        //    }
+        //});
+    }
+
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+</script>
+<body class="easyui-layout">
+    <div region="center">
+        年份：<input type="text" id="year">
+        <table id="dg">
+        </table>
+    </div>
+</body>
+

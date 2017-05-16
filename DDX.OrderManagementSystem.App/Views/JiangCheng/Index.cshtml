@@ -1,0 +1,149 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.JiangChengType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "JiangCheng")',
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+
+    });
+
+
+    //新建
+    function c_dlg() {
+        var url_str = '@Url.Action("Create", "JiangCheng")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "JiangCheng")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit);
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "JiangCheng")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "JiangCheng")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "JiangCheng")/' + id;
+                alert(1);
+                delData(url, 'dg');
+
+            }
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+        function ShowAdvanced() {
+            showSrarch('@Url.Action("Search", "JiangCheng")', 's_dlg', 'dg');
+    }
+
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="UserName" width="100">人员
+                    </th>
+
+                    <th field="Pic" width="100">照片
+                    </th>
+
+                    <th field="NickName" width="100">名称
+                    </th>
+
+                    <th field="Content" width="100">内容
+                    </th>
+
+                    <th field="JCBy" width="100">奖赏人
+                    </th>
+
+                    <th field="JCType" width="100">奖惩类型
+                    </th>
+
+                    <th field="JCMemo" width="100">奖励理由
+                    </th>
+
+                    <th field="JCContent" width="100">奖励内容
+                    </th>
+
+                    <th field="JCOn" width="100" formatter="getDate">奖励时间
+                    </th>
+
+                    <th field="CreateOn" width="100" formatter="getDate">添加时间
+                    </th>
+
+                    <th field="CreateBy" width="100">添加人
+                    </th>
+
+
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'Id'">主键</div>
+            <div data-options="name:'UserName'">人员</div>
+            <div data-options="name:'Pic'">照片</div>
+            <div data-options="name:'NickName'">名称</div>
+            <div data-options="name:'Content'">内容</div>
+            <div data-options="name:'JCBy'">奖赏人</div>
+            <div data-options="name:'JCType'">奖惩类型</div>
+            <div data-options="name:'JCMemo'">奖励理由</div>
+            <div data-options="name:'JCContent'">奖励内容</div>
+            <div data-options="name:'JCOn'">奖励时间</div>
+            <div data-options="name:'CreateOn'">添加时间</div>
+            <div data-options="name:'CreateBy'">添加人</div>
+
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+
+    </div>
+</body>

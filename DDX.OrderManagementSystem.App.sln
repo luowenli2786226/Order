@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0.Application", "0.Application", "{9862AA92-0E65-4E59-8291-689EC77C3DBA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.Domain", "1.Domain", "{7602086D-AB58-4830-97BA-2EE2D2CA751A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Infrastucture", "2.Infrastucture", "{841A563F-CAAC-4914-A7C2-227CF2C5899D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "9.Test", "9.Test", "{0865689D-59E7-49F8-B283-5D829D16E21F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDX.OrderManagementSystem.Domain", "DDX.OrderManagementSystem.Domain\DDX.OrderManagementSystem.Domain.csproj", "{5DD8900C-1DC5-496E-AD87-0D6B6501564F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDX.NHibernateHelper", "DDX.NHibernateHelper\DDX.NHibernateHelper.csproj", "{042D6420-09B5-4DC7-BF05-3FC2D3450F0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDX.OrderManagementSystem.App", "DDX.OrderManagementSystem.App\DDX.OrderManagementSystem.App.csproj", "{FE57DC15-B6F5-401C-B527-E6F911BB30A9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5DD8900C-1DC5-496E-AD87-0D6B6501564F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DD8900C-1DC5-496E-AD87-0D6B6501564F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DD8900C-1DC5-496E-AD87-0D6B6501564F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DD8900C-1DC5-496E-AD87-0D6B6501564F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{042D6420-09B5-4DC7-BF05-3FC2D3450F0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{042D6420-09B5-4DC7-BF05-3FC2D3450F0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{042D6420-09B5-4DC7-BF05-3FC2D3450F0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{042D6420-09B5-4DC7-BF05-3FC2D3450F0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE57DC15-B6F5-401C-B527-E6F911BB30A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE57DC15-B6F5-401C-B527-E6F911BB30A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE57DC15-B6F5-401C-B527-E6F911BB30A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE57DC15-B6F5-401C-B527-E6F911BB30A9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FE57DC15-B6F5-401C-B527-E6F911BB30A9} = {9862AA92-0E65-4E59-8291-689EC77C3DBA}
+		{5DD8900C-1DC5-496E-AD87-0D6B6501564F} = {7602086D-AB58-4830-97BA-2EE2D2CA751A}
+		{042D6420-09B5-4DC7-BF05-3FC2D3450F0B} = {841A563F-CAAC-4914-A7C2-227CF2C5899D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		VisualSVNWorkingCopyRoot = .
+	EndGlobalSection
+EndGlobal

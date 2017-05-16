@@ -1,0 +1,72 @@
+﻿@{
+    ViewBag.Title = "QueScan";
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List", "Order")',
+
+            nowrap: false,
+
+            height: 500,
+            queryParams: { "search": "IsStop_ds&0^" },
+            toolbar: '#toolbar',
+            rownumbers: true,
+            columns: [[
+               {
+                   field: 'OrderNo', width: 50, title: "订单号", formatter: function (v, r, i) {
+                       if (r.Status != '已收到')
+                           return '<a href="javascript:void(0);" onclick="shooDao(' + v + ')">到货</a>';
+                       return '';
+                   }
+               },
+                {
+                    field: 'Id', width: 50, title: "物流渠道", formatter: function (v, r, i) {
+                        if (r.Status != '已收到')
+                            return '<a href="javascript:void(0);" onclick="shooDao(' + v + ')">到货</a>';
+                        return '';
+                    }
+                },
+                {
+                    field: 'Id', width: 50, title: "运单号码", formatter: function (v, r, i) {
+                        if (r.Status != '已收到')
+                            return '<a href="javascript:void(0);" onclick="shooDao(' + v + ')">到货</a>';
+                        return '';
+                    }
+                },
+                {
+                    field: 'Id', width: 50, title: "申报价值", formatter: function (v, r, i) {
+                        if (r.Status != '已收到')
+                            return '<a href="javascript:void(0);" onclick="shooDao(' + v + ')">到货</a>';
+                        return '';
+                    }
+                },
+                {
+                    field: 'Id', width: 50, title: "申报重量", formatter: function (v, r, i) {
+                        if (r.Status != '已收到')
+                            return '<a href="javascript:void(0);" onclick="shooDao(' + v + ')">到货</a>';
+                        return '';
+                    }
+                }
+            ,
+                {
+                    field: 'Id', width: 50, title: "申报重量", formatter: function (v, r, i) {
+                        if (r.Status != '已收到')
+                            return '<a href="javascript:void(0);" onclick="shooDao(' + v + ')">到货</a>';
+                        return '';
+                    }
+                }
+            ]]
+
+        });
+    })
+
+</script>
+
+<body class="easyui-layout">
+    <div region="center">
+        <table id="dg"></table>
+
+    </div>
+</body>

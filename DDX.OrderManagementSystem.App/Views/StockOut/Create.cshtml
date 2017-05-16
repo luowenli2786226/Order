@@ -1,0 +1,114 @@
+﻿@model DDX.OrderManagementSystem.Domain.StockOutType
+@{
+            //Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function() {
+        // $('#c_OrderNo').validatebox({required:true});
+
+    });
+</script>
+<body class="easyui-layout">
+    <div region="center">
+        @using (Html.BeginForm("Create", "StockOut", FormMethod.Post, new { id = "c_form" }))
+        {
+            <fieldset>
+                <table class="editForm">
+
+                    <tr>
+                        <td style="height: 100px;"></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h1>@Html.LabelFor(model => model.SKU, "扫描文本:")</h1>
+                        </td>
+                        <td colspan="3">
+                            <input id="c_SKU" name="SKU" onkeydown="return txt_keydown(event);" style="font-size: 50px; background-image: none; width: 511px" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="" colspan="4">
+                            <font style="color: Red; font-size: 30px"><span id="spanStatus">等待扫描</span></font>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <span id="spanInfo"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                </table>
+            </fieldset>
+        }
+        <script>
+            var txt = document.getElementById("c_SKU");
+            var spanStatus = document.getElementById("spanStatus");
+            var spanInfo = document.getElementById("spanInfo");
+            var progress = 0;
+            var oldstr = "";
+            function txt_keydown(e) {
+                var keynum;
+                if (window.event) //IE
+                {
+                    keynum = e.keyCode;
+                }
+                else if (e.which) //Netscape/Firefox/Opera
+                {
+                    keynum = e.which;
+                }
+                if (keynum == 13) {
+
+                    if (txt.value == "") { Reset(); }
+                    getOrder(txt.value);
+                    txt.value = "";
+                    return false;
+                }
+                return true;
+            }
+
+            function getOrder(str) {
+             
+                jQuery.ajax({
+                    url: "/StockOut/GetStockOutByCode/",
+                    type: "post",
+                    data: "o=" + str ,
+                    success: function (msg) {
+                        if (msg.IsSuccess) {
+                            ShowMessage(msg.Result, "扫描成功！", true);
+                        } else {
+                            progress = 0;
+                            ShowMessage(msg.Result, "扫描错误！", false);
+                        }
+                    }
+                });
+            }
+
+
+            //重置
+            function Reset() {
+
+                progress = 0;
+                txt.value = "";
+            }
+
+            function ShowMessage(msgInfo, msgStatus, isOk) {
+                if (msgInfo != null) {
+                    spanInfo.innerHTML = msgInfo;
+                }
+                if (msgStatus != null) {
+                    spanStatus.innerHTML = msgStatus;
+                }
+                if (isOk) {
+                    spanInfo.style.color = "Blue";
+                }
+                else {
+                    spanInfo.style.color = "Red";
+                }
+            }
+
+        </script>
+    </div>
+</body>

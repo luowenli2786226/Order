@@ -1,0 +1,55 @@
+﻿@model DDX.OrderManagementSystem.Domain.SKUItemType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+        $('#e_Account').combobox({
+            url: '/Account/ListQ',
+            valueField: 'AccountName',
+            textField: 'AccountName',
+            required: true,
+            width: 150
+        });
+    });
+</script>
+@using (Html.BeginForm("Edit", "SKUItem", FormMethod.Post, new { id = "e_form" }))
+{
+     @Html.HiddenFor(model => model.Id, new { @id = "e_Id" })
+<fieldset>
+    <table class="editForm">
+        
+        	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKUEx, "平台SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKUEx, new { @id = "e_SKUEx" })
+		</td>
+	</tr>
+        <tr>
+		<td>
+            @Html.LabelFor(model => model.SKU, "系统SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU, new { @id = "e_SKU" })
+		</td>
+	</tr>
+
+
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Account, "账户:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Account, new { @id = "e_Account" })
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

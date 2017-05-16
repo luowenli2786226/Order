@@ -1,0 +1,221 @@
+﻿@model DDX.OrderManagementSystem.Domain.DisputeRecordType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    $(function () {
+       @* $('#c_ExamineType').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/ExamineType',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            onLoadSuccess: function (data) {
+                if (data == 0) {
+                    // $.messager.alert("系统提示", "数据库异常，请联系管理员！", "warning");
+                } else {
+                    var data1 = $('#c_ExamineType').combobox('getData');  //赋默认值
+                    if (data1.length > 0) {
+                        $("#c_ExamineType ").combobox('select', data1[0].DicValue);
+                    }
+                }
+            }
+        });*@
+
+        $('#c_ExamineCurrencyCode').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/CurrencyCode',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            onLoadSuccess: function (data) {
+                if (data == 0) {
+                    // $.messager.alert("系统提示", "数据库异常，请联系管理员！", "warning");
+                } else {
+                    var data1 = $('#c_ExamineCurrencyCode').combobox('getData');  //赋默认值
+                    if (data1.length > 0) {
+                        $("#c_ExamineCurrencyCode ").combobox('select', data1[0].DicValue);
+                    }
+                }
+            }
+        });
+        $('#c_DisputeState').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["全部退款(财务)", "全部退款(财务)"], ["部分退款(财务)", "部分退款(财务)"]],
+            editable: false,
+            onLoadSuccess: function (data) {
+          /*  if (data == 0) {
+                // $.messager.alert("系统提示", "数据库异常，请联系管理员！", "warning");
+            } else {
+                var data1 = $('#c_ExamineCurrencyCode').combobox('getData');  //赋默认值
+                if (data1.length > 0) {
+                    $("#c_ExamineCurrencyCode ").combobox('select', data1[0].0);
+                }
+            }*/
+        }
+        });
+        $('#c_DisputeState').combobox("setValue", "全部退款(财务)");
+      @*  $('#c_DisputeState').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/DisputeState',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: '150',
+            editable: false,
+            onLoadSuccess: function (data) {
+                if (data == 0) {
+                    // $.messager.alert("系统提示", "数据库异常，请联系管理员！", "warning");
+                } else {
+                    var data1 = $('#c_ExamineCurrencyCode').combobox('getData');  //赋默认值
+                    if (data1.length > 0) {
+                        $("#c_ExamineCurrencyCode ").combobox('select', data1[0].DicValue);
+                    }
+                }
+            }
+    });*@
+    
+
+        $('#c_ExamineClass').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/QuestionType',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            onLoadSuccess: function (data) {
+                if (data == 0) {
+                    // $.messager.alert("系统提示", "数据库异常，请联系管理员！", "warning");
+                } else {
+                    var data1 = $('#c_ExamineClass').combobox('getData');  //赋默认值
+                    if (data1.length > 0) {
+                        $("#c_ExamineClass ").combobox('select', data1[0].DicValue);
+                    }
+                }
+            }
+        });
+
+        $('#c_Account').combobox({
+            url: '@Url.Action("ListQ", "Account")',
+            valueField: 'AccountName',
+            textField: 'AccountName',
+            panelHeight: '250',
+            mode: 'remote'
+        });
+    })
+
+</script>
+
+@using (Html.BeginForm("Create", "ServiceExamination", FormMethod.Post, new { id = "c1_form" }))
+
+{
+    @Html.HiddenFor(model => model.Platform)
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineTitle, "标题:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ExamineTitle, new { @id = "c_ExamineTitle" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineType, "订单号:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.OrderNo, new { @id = "c_OrderNo" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineType, "SKU:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SKU, new { @id = "c_SKU" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineType, "店铺:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Account, new { @id = "c_Account" })
+                </td>
+            </tr>
+            @*  <tr>
+        <td>
+            @Html.LabelFor(model => model.ExamineType, "类型:")
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.ExamineType, new { @id = "c_ExamineType" })
+        </td>
+    </tr>*@
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineClass, "纠纷状态:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.DisputeState, new { @id = "c_DisputeState" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineClass, "原因:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ExamineClass, new { @id = "c_ExamineClass" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineCurrencyCode, "货币:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ExamineCurrencyCode, new { @id = "c_ExamineCurrencyCode" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineAmount, "订单金额:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.OrderAmount2, new { @id = "c_OrderAmount2" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineAmount, "预赔金额:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.OrderAmount, new { @id = "c_OrderAmount" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineAmount, "实赔金额:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ExamineAmount, new { @id = "c_ExamineAmount" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Remark, "备注:")
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Remark, new { @id = "c_Remark" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Paypal, "Paypal账号:")
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Paypal, new { @id = "c_Paypal" })
+                    @Html.ValidationMessageFor(model => model.Paypal)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}

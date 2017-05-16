@@ -1,0 +1,335 @@
+@model IEnumerable<DDX.OrderManagementSystem.Domain.ShipmentsType>
+@{
+    ViewBag.Title = "Index";
+}
+<script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
+<link href="~/Scripts/Uploadify/uploadify.css" rel="stylesheet" />
+<script src="~/Scripts/Uploadify/jquery.uploadify-3.1.min.js"></script>
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "Shipments", new { search = "IsList=&否^" })',
+            pageNumber: 1,
+            toolbar: '#toolbar',
+            rownumbers: true,
+            pagination: true,
+            fit: true,
+            showFooter: true,
+            pageSize: 60,
+            rowStyler: function (index, row) {
+                //未生成出货明细的变色
+                if (row.ShipmentslistId ==0) {
+                    return 'background-color:pink;color:blue;font-weight:bold;';
+                }
+            },
+            onDblClickRow: function (i, r) {
+                window.open('@Url.Action("Details", "Shipments")/' + r.Id);
+            },
+            pageList: [60,100,200,300,400]
+        });
+        $('#IsList').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: checksall,
+            width: 100
+        });
+        $('#IsList').combobox("setValue", "0");
+    });
+
+
+
+        //新建
+        function c_dlg() {
+            debugger;
+            var url_str = '@Url.Action("Create", "Shipments")';
+        showdlg(url_str, 'c_dlg', ajaxAdd)
+    }
+
+    //编辑框
+    function e_dlg() {
+        var id = getselectedRow();
+        if (id != undefined) {
+            var url = '@Url.Action("Edit", "Shipments")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost2('c_form', '@Url.Action("Create", "Shipments")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost2('e_form', '@Url.Action("Edit", "Shipments", new { type = 0 })', 'e_dlg', 'dg');
+        }
+
+        function ajaxCopy() {
+            formPost2('e_form', '@Url.Action("Edit", "Shipments", new { type = 1 })', 'e_dlg', 'dg');
+
+        }
+        function formPost2(form, url, dlg, dg, t, r) {
+        $('#' + form).form('submit', {
+            url: url,
+            onSubmit: function () {
+                if (form == "e_form") {
+                    if ($("#e_IsCustoms").combobox("getValue") == "True" && $("#e_TaxRate").val() == 0) {
+                        alert("增值税不能为0");
+                        return false;
+                    }
+                }
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                result = eval('(' + result + ')');
+                if (result.IsSuccess) {
+                    alert("操作成功");
+                    if (dlg) {
+                        $('#' + dlg).dialog('close');
+                    }
+                    if (dg) {
+                        if (t) {
+                            $('#' + dg).treegrid('reload');   
+                        }
+                        else {
+                            $('#' + dg).datagrid('reload');
+                        }
+                    }
+                } else {
+                    if (result.ErrorMsg)
+                        alert("保存失败!" + result.ErrorMsg);
+                    else {
+                        // alert("保存失败,请检查包装*箱数是否大于（实际库存-占用库存-已经创建的数量）");
+                        alert(result.Message);
+                    }
+                }
+                if (result.Info) {
+                    window.open(r);
+                }
+            }
+        });
+    }
+
+    //删除
+    function del() {
+        var id = getselectedRows();
+        if (id != undefined) {
+            $.messager.confirm('确认', '确定删除?', function (r) {
+                if (r) {
+                    var url = '@Url.Action("Delete", "Shipments")/' + id;
+                    jQuery.ajax({
+                        url: "/Shipments/Delete",
+                        type: "post",
+                        data: "ids=" + id,
+                        success: function (rrr) {
+                            if (rrr.IsSuccess) {
+                                var msgstr = "删除成功";
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: msgstr,
+                                    timeout: 3000,
+                                    showType: 'slide'
+                                });
+                                $('#dg').datagrid('reload');
+                            }
+                            else {
+                                var msgstr = "当前状态不能删除";
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: msgstr,
+                                    timeout: 3000,
+                                    showType: 'slide'
+                                });
+                            }
+                        }
+
+                    });
+                }
+            });
+            }
+
+        }
+
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function doSearch() {
+            var search = "IsList&" + $('#IsList').combobox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+        function ShowAdvanced() {
+            showSrarch('@Url.Action("Search", "Shipments")', 's_dlg', 'dg');
+        }
+        function CreateList() {
+            var s_ids = getselectedRows(0);
+            jQuery.ajax({
+                url: "/Shipments/CreateShipmentsList",
+                type: "post",
+                data: "ShipmentsIds=" + s_ids.join(','),
+                success: function (rrr) {
+                    if (rrr.IsSuccess) {
+                        $('#dg').datagrid("load");
+                    }
+                    else { alert("当前数量大于库存数量或者已经生成过清单，请重新选择"); }
+                }
+            });
+
+        }
+        function getselectedRows(i) {
+            var s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+
+                alert("请选择一条数据");
+                return false;
+
+            }
+            return s_ids;
+        }
+        function CopyList() {
+            var id = getselectedRow();
+            var url = '@Url.Action("Edit", "Shipments")/' + id;
+        if (id != undefined) {
+            var url = '@Url.Action("Edit", "Shipments")/' + id;
+           showdlg(url, 'e_dlg', ajaxCopy)
+       }
+   }
+
+    </script>
+    <div region="center">
+        <table id="dg">
+            <thead data-options="frozen:true">
+			<tr>
+                 <th field="Id1" width="80" checkbox="true"></th>
+			     <th field="Id" width="62" >明细编号</th>
+                 <th field="ShipmentslistId" width="62" >清单编号</th>
+                 <th field="Sku" width="100">我司货号（SKU）</th>
+                 <th field="DescribeCn" width="50">中文描述</th>
+                 <th field="PurchaseNo" width="80">采购合同号</th>
+                 <th field="ExportNo" width="80">外销合同号</th>
+                  <th field="TotalPrice" width="110">客人含佣金总价$</th>
+                 <th field="YouShengtotal" width="80">总优胜价格$</th>
+                 <th field="PriceFactorytotal" width="65">工厂总价$</th>
+                 <th field="Qty" width="65">实际数量 </th>
+                  <th field="WeightGrosstotal" width="60">总毛重</th>
+                 <th field="WeightNettotal" width="60">总净重</th>
+                <th field="TotalVolume" width="60">总体积</th>
+                <th field="HeadloadCharges1" width="62">单个头程$</th>
+			</tr>
+		</thead>
+            <thead>
+                <tr>
+                    <th field="PriceUMax" width="80">UMAX价格$
+                    </th>
+                   
+                     <th field="HeadloadCharges" width="80">头程(元/公斤)
+                    </th>
+            @*        <th field="Freight" width="75">单个运费($)
+                    </th>*@
+
+                    <th field="YouShengPrice" width="80">优胜价格$</th>
+                   
+  
+                    
+                    <th field="PackageNo" width="50">包装</th>
+
+                    <th field="Ctn" width="50">箱数
+                    </th>
+                    <th field="WeightGross" width="60">毛重（KG）
+                    </th>
+
+                    <th field="WeightNet" width="60">净重（KG）
+                    </th>
+
+                    <th field="IsCustoms" width="75">是否已报关</th>
+                    <th field="TaxRate" width="50">增值税率</th>
+                    <th field="PriceFactory" width="60">工厂价格￥
+                    </th>
+
+                    <th field="Unit" width="30">单位
+                    </th>
+                    <th field="Ratio" width="45">比值
+                    </th>
+                     <th field="DescribeEn" width="50">英文描述
+                    </th>
+                    <th field="Paymethod" width="80">付款方式
+                    </th>
+                    <th field="CreateOn" width="125" formatter="getDate">创建时间
+                    </th>
+                    <th field="CreateBy" width="60">业务人
+                    </th>
+
+                    <th field="CreatePlanBy" width="60">采购员
+                    </th>
+
+                    <th field="CreatetTrackBy" width="60">跟单员
+                    </th>
+                 
+
+
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            是否生成出货清单 
+            <input type="text" id="IsList" />
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+@*            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>*@
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="CreateList();">生成出货清单</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="CopyList();">复制明细</a>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'Sku'">我司货号（SKU）</div>
+            <div data-options="name:'PurchaseNo'">采购合同编号</div>
+            <div data-options="name:'ExportNo'">外销合同号码</div>
+            <div data-options="name:'PriceUMax'">UMAX价格($)</div>
+            <div data-options="name:'DescribeEn'">英文描述</div>
+            <div data-options="name:'DescribeCn'">中文描述</div>
+            <div data-options="name:'PriceFactory'">工厂价格(￥)</div>
+            <div data-options="name:'Unit'">单位</div>
+            <div data-options="name:'PackageNo'">包装</div>
+            <div data-options="name:'Ctn'">箱数</div>
+            <div data-options="name:'IsCustoms'">是否已报关</div>
+            <div data-options="name:'WeightGross'">毛重（KG）</div>
+            <div data-options="name:'WeightNet'">净重（KG）</div>
+            <div data-options="name:'TotalVolume'">总体积</div>
+            <div data-options="name:'Qty'">实际数量</div>
+            <div data-options="name:'TotalPrice'">客人含佣金总价($)</div>
+            <div data-options="name:'TaxRate'">增值税率</div>
+            <div data-options="name:'Ratio'">比值</div>
+            <div data-options="name:'CreateBy'">业务人</div>
+            <div data-options="name:'CreatePlanBy'">采购员</div>
+            <div data-options="name:'CreatetTrackBy'">跟单员</div>
+            <div data-options="name:'Paymethod'">付款方式</div>
+            <div data-options="name:'HeadloadCharges'">头程费用($)</div>
+            <div data-options="name:'YouShengPrice'">优胜价格($)</div>
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+
+    </div>
+</body>

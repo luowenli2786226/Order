@@ -1,0 +1,267 @@
+﻿@model DDX.OrderManagementSystem.Domain.AccountType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    $(function () {
+
+        $('#c_Platform').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/SalePlatform',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            required: true,
+            width: 150,
+            panelHeight: 'auto',
+            onChange: pChange
+        });
+        $('#c_Platform').combobox("setValue", "Ebay");
+        pChange('Ebay', "");
+
+
+        $('#c_FromArea').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/FromArea',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 'auto'
+        });
+
+    });
+
+    function pChange(n, o) {
+        $('#tr1').hide();
+        $('#tr2').hide();
+        $('#tr3').hide();
+        $('#btnEbayLogin').hide();
+        $('#btnEbayToken').hide();
+        $('#btnAliLogin').hide();
+        if (n == "Ebay") {
+            $('#tr3').show();
+            $('#btnEbayLogin').show();
+            $('#btnEbayToken').show();
+        }
+        if (n == "Aliexpress") {
+            $('#tr1').show();
+            $('#tr2').show();
+            $('#tr3').show();
+            $('#btnAliLogin').show();
+        }
+    }
+    var code = "";
+    function aliLogin() {
+
+        var k = $("#c_ApiKey").val();
+        var s = $("#c_ApiSecret").val();
+        jQuery.ajax({
+            url: "/Account/GetAliLoginUrl",
+            type: "post",
+            data: "k=" + k + "&s=" + s,
+            success: function (res) {
+                if (res.IsSuccess) {
+
+                    window.open(res.Result);
+                } else {
+                    alert(res.ErrorMsg);
+                }
+            }
+        });
+    }
+    var code = "";
+    function ebayLogin() {
+        jQuery.ajax({
+            url: "/Account/GetEbayLoginUrl",
+            type: "post",
+            success: function (res) {
+                if (res.IsSuccess) {
+                    code = res.Code;
+
+                    window.open(res.Result);
+                } else {
+                    alert(res.ErrorMsg);
+                }
+            }
+        });
+    }
+
+    function getEbaySession() {
+        jQuery.ajax({
+            url: "/Account/GetEbaySession",
+            type: "post",
+            data: 'o=' + code,
+            success: function (res) {
+                if (res.IsError) {
+                    alert(res.Message);
+                } else {
+                    $('#c_ApiToken').val(res.Result);
+                }
+            }
+        });
+    }
+</script>
+
+@using (Html.BeginForm("Create", "Account", FormMethod.Post, new { id = "c_form" }))
+{
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AccountName, "账户名称:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AccountName, new { @id = "c_AccountName" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Manager, "登录用户名:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.UserName, new { @id = "c_UserName" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AccountUrl, "平台网址:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AccountUrl, new { @id = "c_AccountUrl" })
+                </td>
+            </tr>
+
+            <tr id="tr1">
+                <td>
+                    @Html.LabelFor(model => model.ApiKey, "APIKey:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ApiKey, new { @id = "c_ApiKey" })
+                </td>
+            </tr>
+
+            <tr id="tr2">
+                <td>
+                    @Html.LabelFor(model => model.ApiSecret, "API密钥:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ApiSecret, new { @id = "c_ApiSecret" })
+                </td>
+            </tr>
+
+            <tr id="tr3">
+                <td>
+                    @Html.LabelFor(model => model.ApiToken, "APIToken:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ApiToken, new { @id = "c_ApiToken" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Phone, "其他配置1:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Phone, new { @id = "c_Phone" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Email, "其他配置2:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Email, new { @id = "c_Email" })
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="button" id="btnEbayLogin" onclick="ebayLogin()" value="ebay登录" />
+                    <input type="button" id="btnEbayToken" onclick="getEbaySession()" value="获得Token" />
+                    <input type="button" id="btnAliLogin" onclick="aliLogin()" value="获得Token" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Platform, "平台:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Platform, new { @id = "c_Platform" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.FromArea, "地区:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.FromArea, new { @id = "c_FromArea" })
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Description, "开户人:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Description, new { @id = "c_Description" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Manager, "负责人:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Manager, new { @id = "c_Manager" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Manager, "提现账户(USD):")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.USDAccount, new { @id = "c_USDAccount" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Manager, "提现账户(RMB):")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.RMBAccount, new { @id = "c_RMBAccount" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Manager, "支付宝账户:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AlipayAccount, new { @id = "c_AlipayAccount" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Manager, "扣款账户:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.DebitAccount, new { @id = "c_DebitAccount" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.Tax, "平台费率:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Tax, new { @id = "c_Tax" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Remark, "备注:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Remark, new { @id = "e_Remark" })
+                </td>
+            </tr>
+
+        </table>
+    </fieldset>
+}

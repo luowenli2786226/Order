@@ -1,0 +1,132 @@
+﻿@model DDX.OrderManagementSystem.Domain.ServiceExaminationType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+
+        $('#e_CreateOn').datebox();
+
+        $('#e_CreateBy').combobox({
+            url: 'User/UserSrc',
+            editable: true
+        });
+
+        $('#e_ExamineBy').combobox({
+            url: 'User/UserSrc',
+            editable: true
+        });
+
+
+        $('#e_ExamineOn').datebox();
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "ServiceExamination", FormMethod.Post, new { id = "e_form" }))
+{
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Id, "Id:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Id, new { @id = "e_Id" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.CreateOn, "CreateOn:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.CreateOn, new { @id = "e_CreateOn" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.CreateBy, "CreateBy:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.CreateBy, new { @id = "e_CreateBy" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineBy, "ExamineBy:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ExamineBy, new { @id = "e_ExamineBy" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineOn, "ExamineOn:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ExamineOn, new { @id = "e_ExamineOn" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineTitle, "ExamineTitle:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ExamineTitle, new { @id = "e_ExamineTitle" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineMemo, "ExamineMemo:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ExamineMemo, new { @id = "e_ExamineMemo" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineType, "ExamineType:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ExamineType, new { @id = "e_ExamineType" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineAmount, "ExamineAmount:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ExamineAmount, new { @id = "e_ExamineAmount" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExamineCurrencyCode, "ExamineCurrencyCode:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ExamineCurrencyCode, new { @id = "e_ExamineCurrencyCode" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Remark, "Remark:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Remark, new { @id = "e_Remark" })
+                </td>
+            </tr>
+
+        </table>
+    </fieldset>
+}

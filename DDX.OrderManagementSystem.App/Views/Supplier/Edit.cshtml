@@ -1,0 +1,183 @@
+﻿@model DDX.OrderManagementSystem.Domain.SupplierType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        $("#c_SuppliersName").validatebox({
+            required: true,
+        });
+        $('#dg_zu1').datagrid({
+            url: '@Url.Action("GetProductE", "Supplier")/@ViewData["SuppliewsId"]',
+            width: 600,
+            toolbar: [{
+                id: 'btnadd',
+                text: '添加',
+                iconCls: 'icon-add',
+                handler: function () {
+                    addp1();
+                }
+            }, {
+                id: 'btndel',
+                text: '删除',
+                iconCls: 'icon-add',
+                handler: function () {
+                    if (editIndex1 == undefined) {
+                        return;
+                    }
+                    $('#dg_zu1').datagrid('cancelEdit', editIndex1)
+                            .datagrid('deleteRow', editIndex1);
+                    editIndex1 = undefined;
+                }
+            }, {
+                id: 'btnsave',
+                text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
+                    accept1();
+                }
+            }],
+            onClickRow: onClickRow1
+        });
+    });
+    var editIndex1 = undefined;
+    function endEditing1() {
+        if (editIndex1 == undefined) {
+            return true;
+        }
+        if ($('#dg_zu1').datagrid('validateRow', editIndex1)) {
+            $('#dg_zu1').datagrid('endEdit', editIndex1);
+
+            editIndex1 = undefined;
+
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+    function onClickRow1(index) {
+        if (editIndex1 != index) {
+            if (endEditing1()) {
+                $('#dg_zu1').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                editIndex1 = index;
+            } else {
+                $('#dg_zu1').datagrid('selectRow', editIndex1);
+            }
+        }
+    }
+    function addp1() {
+        if (endEditing1()) {
+            $('#dg_zu1').datagrid('appendRow', { Qty: 1, Price: 0 });
+            editIndex1 = $('#dg_zu1').datagrid('getRows').length - 1;
+            $('#dg_zu1').datagrid('selectRow', editIndex1)
+                    .datagrid('beginEdit', editIndex1);
+        }
+    }
+    function accept1() {
+        if (endEditing1()) {
+            $('#dg_zu1').datagrid('acceptChanges');
+        }
+    }
+</script>
+@using (Html.BeginForm("Edit", "Supplier", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+    <legend>供应商信息</legend>
+<table class="editForm">
+	<tr>
+		@*<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>*@
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            <input type="hidden" id="rows" name="rows" />
+            @Html.LabelFor(model => model.SuppliersName,"供应商:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SuppliersName,new{@id="e_SuppliersName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.QQ,"QQ:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.QQ,new{@id="e_QQ"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WW,"旺旺:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WW,new{@id="e_WW"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Phone,"电话:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Phone,new{@id="e_Phone"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Tel,"手机:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Tel,new{@id="e_Tel"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Web,"网址:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Web,new{@id="e_Web"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Memo,"备注:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Memo,new{@id="e_Memo"})
+		</td>
+	</tr>
+</table>
+</fieldset>
+<fieldset>
+        <legend>产品信息</legend>
+        <table id="dg_zu1" class="easyui-datagrid" rownumbers="true" singleselect="true">
+            <thead>
+                <tr>
+                    <th field="SKU" width="80" data-options="editor:'text'">
+                        SKU
+                    </th>
+
+                    <th field="Price" width="100" data-options="editor:'text'">
+                        价格
+                    </th>
+
+                    <th field="Web"  width="300" data-options="editor:'text'">
+                        Web
+                    </th>
+                </tr>
+            </thead>
+        </table>
+</fieldset>
+}

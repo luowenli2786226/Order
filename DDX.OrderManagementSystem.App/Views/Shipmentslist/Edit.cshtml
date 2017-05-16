@@ -1,0 +1,137 @@
+﻿@model DDX.OrderManagementSystem.Domain.ShipmentslistType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+        $('#e_AppliBy').combobox({
+            url: 'User/UserSrc',
+            editable: true
+        });
+
+        $('#e_AgreeBy').combobox({
+            url: 'User/UserSrc',
+            editable: true
+        });
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "Shipmentslist", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"出货清单Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ContractPNo,"采购合同号码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ContractPNo,new{@id="e_ContractPNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ContractWNo,"外销合同号码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ContractWNo,new{@id="e_ContractWNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsExa,"审批进程:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsExa,new{@id="e_IsExa"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExaTime,"审批时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExaTime,new{@id="e_ExaTime"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OverTime1,"第一次确认时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OverTime1,new{@id="e_OverTime1"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AppliBy,"申请人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AppliBy,new{@id="e_AppliBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AgreeBy,"审批人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AgreeBy,new{@id="e_AgreeBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OkBy1,"第一确认人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OkBy1,new{@id="e_OkBy1"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OverTime2,"第二次确认时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OverTime2,new{@id="e_OverTime2"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OkBy2,"第二次确认人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OkBy2,new{@id="e_OkBy2"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AppliTime,"申请时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AppliTime,new{@id="e_AppliTime"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

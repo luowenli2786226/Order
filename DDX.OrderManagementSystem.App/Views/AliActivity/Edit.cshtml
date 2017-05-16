@@ -1,0 +1,259 @@
+﻿@model DDX.OrderManagementSystem.Domain.AliActivityType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+
+        $('#e_BeginDate').datebox();
+
+
+        $('#e_EndDate').datebox();
+
+        $('#e_Status').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/ActivityStatus',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 'auto'
+        });
+
+        $('#e_ActivityType').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/AliActivityType',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 'auto'
+        });
+        $('#e_SKU').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'SKU',
+            textField: 'OldSKU',
+            onChange: function(sku) {
+                SeachSKU(sku);
+            },
+            url: '/Product/ListQ',
+            fit: true,
+            columns: [[
+                { field: 'OldSKU', title: 'OldSKU', width: 80 },
+                { field: 'SKU', title: 'SKU', width: 80 },
+                { field: 'ProductName', title: 'Title', width: 100 },
+                { field: 'Weight', title: '重量', width: 80 },
+                { field: 'Price', title: '价格', width: 80 }
+            ]]
+        });
+        comboboxInit('/Account/GetAccountListByPlatform/', "id=Aliexpress", 'e_Account', 'AccountName', 'AccountName');
+       
+         @Html.Raw("$('#e_Wight,#e_Freight,#e_ProfitAndLoss,#e_CostPrice').attr('readonly','readonly');")
+        @if(Model.IsAudit>0)
+        {
+             @Html.Raw("$('#e_SKU,#e_BasePrice,#e_ZK,#e_Wight,#e_Freight,#e_ActivityPrice,#e_LimitedNumber,#e_ProfitAndLoss,#e_CostPrice,#e_ExpectedSales').attr('readonly','readonly');")
+
+        }
+
+    });
+
+    function SeachSKU(sku) {
+        var row = $('#e_SKU').combogrid("grid").datagrid('getSelected');
+        if (row) {
+            $("#e_Wight").attr("value", row["Weight"]);
+            var v = row["Weight"] * 0.0963 + 8;
+            $("#e_Freight").attr("value", v.toFixed(2));
+            var v2 = (v + row["Price"]) / 0.95 / 6.2;
+            $("#e_CostPrice").attr("value", v2.toFixed(2));
+            changeResult();
+        }
+    }
+
+    function changePrice(t) {
+        if (t == 1) {
+            var a = $("#e_ZK").val();
+            var b = $("#e_BasePrice").val();
+            $("#e_ActivityPrice").val((a * b).toFixed(2));
+        } else {
+            var a = $("#e_ActivityPrice").val();
+            var b = $("#e_BasePrice").val();
+            $("#e_ZK").val((a / b).toFixed(2));
+        }
+        changeResult();
+    }
+
+    function changeResult() {
+        var a = $("#e_ActivityPrice").val();
+        var b = $("#e_CostPrice").val();
+        $("#e_ProfitAndLoss").val(((a - b) * 6.2).toFixed(2));
+    }
+
+</script>
+
+@using (Html.BeginForm("Edit", "AliActivity", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+        <tr>
+		<td align="right">
+            @Html.LabelFor(model => model.Status, "活动状态")
+            <input type="hidden"  name="Id" value="@Model.Id"/>
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.IsAudit)
+            @Html.HiddenFor(model => model.CreateBy)
+            @Html.HiddenFor(model => model.CreateBy)
+            @Html.HiddenFor(model => model.CreateOn)
+            @Html.HiddenFor(model => model.AuditMemo)
+             @Html.HiddenFor(model => model.ErrorMsg)
+		</td>
+            <td >
+                @Html.TextBoxFor(model => model.Status, new { @id = "e_Status" })
+            </td>
+            <td>
+            @Html.LabelFor(model => model.Status, "账户：")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Account, new { @id = "e_Account" })
+		</td>
+	</tr>
+	<tr>
+		<td align="right">
+            @Html.LabelFor(model => model.Title, "活动名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Title, new { @id = "e_Title" })
+		</td>
+        <td  align="right">
+            @Html.LabelFor(model => model.ActivityType, "活动类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ActivityType, new { @id = "e_ActivityType" })
+		</td>
+	</tr>
+
+	<tr>
+		<td align="right">
+            @Html.LabelFor(model => model.PID, "产品ID:")
+		</td>
+        <td>
+            @Html.TextBoxFor(model => model.PID, new { @id = "e_PID" })
+        </td>
+        <td align="right">
+            @Html.LabelFor(model => model.SKU, "SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU, new { @id = "e_SKU" })
+		</td>
+	</tr>
+
+	<tr>
+		<td align="right">
+            @Html.LabelFor(model => model.BasePrice, "原价:")
+		</td>
+        <td>
+            @Html.TextBoxFor(model => model.BasePrice, new { @id = "e_BasePrice" })
+        </td>
+       <td align="right">
+            @Html.LabelFor(model => model.ZK, "折扣:")
+		</td>
+        <td>
+            
+            <input type="text" id="e_ZK" name="ZK" value="@Model.ZK" onblur="changePrice(1);"/>
+        </td>
+	</tr>
+    	<tr>
+		<td align="right">
+            @Html.LabelFor(model => model.BeginDate, "开始时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BeginDate, new { @id = "e_BeginDate" })
+		</td>
+        	<td align="right">
+            @Html.LabelFor(model => model.EndDate, "结束时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EndDate, new { @id = "e_EndDate" })
+		</td>
+	</tr>
+	<tr>
+		<td align="right">
+            @Html.LabelFor(model => model.Wight, "重量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Wight, new { @id = "e_Wight" })
+		</td>
+        <td align="right">
+            @Html.LabelFor(model => model.Freight, "运费:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Freight, new { @id = "e_Freight" })
+		</td>
+	</tr>
+    <tr>
+        <td align="right">
+            @Html.LabelFor(model => model.ActivityPrice, "活动价格:")
+        </td>
+        <td>
+        
+            <input type="text" id="e_ActivityPrice" name="ActivityPrice" value="@Model.ActivityPrice" onblur="changePrice(0)" />
+        </td>
+        <td align="right">
+            @Html.LabelFor(model => model.CostPrice, "成本价:")
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.CostPrice, new { @id = "e_CostPrice" })
+        </td>
+    </tr>
+
+	<tr>
+		<td align="right">
+            @Html.LabelFor(model => model.ExpectedSales, "预计销量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExpectedSales, new { @id = "e_ExpectedSales" })
+		</td>
+        	<td align="right">
+            @Html.LabelFor(model => model.ActualSales, "实际销量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ActualSales, new { @id = "e_ActualSales" })
+		</td>
+	</tr>
+
+    <tr>
+        <td align="right">
+            @Html.LabelFor(model => model.LimitedNumber, "买家限购数:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LimitedNumber, new { @id = "e_LimitedNumber" })
+		</td>
+		<td align="right">
+            @Html.LabelFor(model => model.ProfitAndLoss, "盈亏情况:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProfitAndLoss, new { @id = "e_ProfitAndLoss" })
+		</td>
+	</tr>
+
+
+	<tr>
+		<td align="right">
+            @Html.LabelFor(model => model.Reason, "报名理由:")
+		</td>
+		<td colspan="3">
+            @Html.TextAreaFor(model => model.Reason, new { @id = "e_Reason" })
+		</td>
+	</tr>
+
+	<tr>
+		<td align="right">
+            @Html.LabelFor(model => model.Result, "活动效果分析:")
+		</td>
+		<td colspan="3">
+            @Html.TextAreaFor(model => model.Result, new { @id = "e_Result" })
+		</td>
+	</tr>
+
+</table>
+</fieldset>
+}

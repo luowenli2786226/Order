@@ -1,0 +1,186 @@
+﻿@{
+    ViewBag.Title = "Log";
+}
+
+<script src="~/Scripts/easyUI/datagrid-groupview.js"></script>
+<script>
+
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("GetLogII", "PackagingScanLog")',
+            showFooter: true,
+
+            pagination: true,//显示分页  
+            pageSize: 500,//分页大小  
+            pageList: [500],//每页的个数 
+            showPageList: false,
+            showRefresh: false,
+        });
+
+
+        $('#sYear').combobox({
+            valueField: 0,//0为value
+            textField: 1,//1为字段
+            panelHeight: 'auto',
+            data: [["2014", "2014年"],
+                   ["2015", "2015年"],
+                   ["2016", "2016年"],
+                   ["2017", "2017年"],
+                   ["2018", "2018年"],
+                   ["2019", "2019年"],
+                   ["2020", "2020年"]],
+            width: 100
+        });
+
+        $('#sMonth').combobox({
+            valueField: 'value',
+            textField: 'label',
+            panelHeight: 'auto',
+            data: [{
+                label: '1月',
+                value: '1'
+            }, {
+                label: '2月',
+                value: '2'
+            }, {
+                label: '3月',
+                value: '3'
+            }, {
+                label: '4月',
+                value: '4'
+            }, {
+                label: '5月',
+                value: '5'
+            }, {
+                label: '6月',
+                value: '6'
+            }, {
+                label: '7月',
+                value: '7'
+            }, {
+                label: '8月',
+                value: '8'
+            }, {
+                label: '9月',
+                value: '9'
+            }, {
+                label: '10月',
+                value: '10'
+            }, {
+                label: '11月',
+                value: '11'
+            }, {
+                label: '12月',
+                value: '12'
+            }],
+            width: 100
+        });
+        $('#sYear').combobox("setValue", "2016");
+        $('#sMonth').combobox("setValue", "1");
+    });
+
+        function Search() {
+            search = $('#sYear').combobox("getValue") + "&"+ $('#sMonth').combobox("getValue");
+
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+        function ExportOut() {
+            $('#dg').datagrid("loading");
+            var postUrl = "/Order/ExportDown/1";
+            jQuery.ajax({
+                url: "/Statistics/ExportPackagingScanLogII",
+                type: "post",
+                data: "year=" + $('#sYear').combobox("getValue") + "&month=" + $('#sMonth').combobox("getValue"),
+                success: function (sss) {
+                    location.href = postUrl;
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+</script>
+<body class="easyui-layout">
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="operator" width="30">姓名
+                    </th>
+                    <th field="1" width="10">1
+                    </th>
+                    <th field="2" width="10">2
+                    </th>
+                    <th field="3" width="10">3
+                    </th>
+                    <th field="4" width="10">4
+                    </th>
+                    <th field="5" width="10">5
+                    </th>
+                    <th field="6" width="10">6
+                    </th>
+                    <th field="7" width="10">7
+                    </th>
+                    <th field="8" width="10">8
+                    </th>
+                    <th field="9" width="10">9
+                    </th>
+                    <th field="10" width="10">10
+                    </th>
+                    <th field="11" width="10">11
+                    </th>
+                    <th field="12" width="10">12
+                    </th>
+                    <th field="13" width="10">13
+                    </th>
+                    <th field="14" width="10">14
+                    </th>
+                    <th field="15" width="10">15
+                    </th>
+                    <th field="16" width="10">16
+                    </th>
+                    <th field="17" width="10">17
+                    </th>
+                    <th field="18" width="10">18
+                    </th>
+                    <th field="19" width="10">19
+                    </th>
+                    <th field="20" width="10">20
+                    </th>
+                    <th field="21" width="10">21
+                    </th>
+                    <th field="22" width="10">22
+                    </th>
+                    <th field="23" width="10">23
+                    </th>
+                    <th field="24" width="10">24
+                    </th>
+                    <th field="25" width="10">25
+                    </th>
+                    <th field="26" width="10">26
+                    </th>
+                    <th field="27" width="10">27
+                    </th>
+                    <th field="28" width="10">28
+                    </th>
+                    <th field="29" width="10">29
+                    </th>
+                    <th field="30" width="10">30
+                    </th>
+                    <th field="31" width="10">31
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            年份<input type="text" id="sYear" />&nbsp;&nbsp;
+            月份<input type="text" id="sMonth" />&nbsp;&nbsp;
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="Search();">查询</a>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ExportOut();">导出</a>
+        </div>
+    </div>
+</body>
+
+

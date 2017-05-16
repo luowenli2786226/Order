@@ -1,0 +1,227 @@
+﻿@model DDX.OrderManagementSystem.Domain.ShipmentslistType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $('#c_AppliBy').combobox({
+            url: 'User/UserSrc',
+            editable: true
+        });
+
+        $('#c_AgreeBy').combobox({
+            url: 'User/UserSrc',
+            editable: true
+        });
+        $('#shipTo').datagrid({
+            title: '已选择的出货明细',
+            width: 400,
+            singleSelect: true,
+            height: 300,
+            columns: [[
+                { field: 'Id', title: '明细编号', width: 100, sortable: "true" },
+                { field: 'Sku', title: '我司货号（SKU）', width: 120, sortable: "true" },
+                { field: 'PurchaseNo', title: '采购合同编号', width: 100, sortable: "true" },
+                { field: 'ExportNo', title: '外销合同号码', width: 100, sortable: "true" }
+            ]],
+            onSelect: function (rowindex, rowData) {
+                if (rowindex == undefined) {
+                    return;
+                }
+                $('#shipForm').datagrid('appendRow', rowData);
+                $('#shipTo').datagrid('deleteRow', rowindex);
+                $('#shipTo').datagrid('deleteRow', unselectRow);
+            }
+        });
+        $('#txtSearch2').searchbox({
+            searcher: doSearch2,
+            menu: '#ww',
+            prompt: '查询关键字'
+        });
+        doSearch2();
+
+
+    });
+
+    function doSearch2() {
+        $('#shipForm').datagrid({
+            url: '/Shipmentslist/Getship',
+            title: '出货明细',
+            queryParams: { "search": $('#txtSearch2').searchbox("getName") + "&" + $('#txtSearch2').searchbox("getValue") + "^ShipmentslistId_ds&0" },
+            width: 450,
+            singleSelect: true,
+            height: 300,
+            columns: [[
+               { field: 'Id', title: '明细编号', width: 100, sortable: "true" },
+                { field: 'Sku', title: '我司货号（SKU）', width: 120, sortable: "true" },
+                { field: 'PurchaseNo', title: '采购合同编号', width: 100, sortable: "true" },
+                { field: 'ExportNo', title: '外销合同号码', width: 100, sortable: "true" }
+            ]],
+            onSelect: function (rowindex, rowData) {
+                if (rowindex == undefined) {
+                    return;
+                }
+                $('#shipTo').datagrid('appendRow', rowData);
+                $('#shipForm').datagrid('deleteRow', rowindex);
+                $('#shipForm').datagrid('deleteRow', unselectRow);
+            }
+        });
+    }
+
+    function toALL() {
+
+        var rows = $('#shipForm').datagrid('getRows');
+        for (var i = 0; i < rows.length; i++) {
+            $('#shipTo').datagrid('appendRow', rows[i]);
+        }
+        $('#shipForm').datagrid('loadData', { total: 0, rows: [] });
+    }
+    function toClear() {
+        $('#shipTo').datagrid('loadData', { total: 0, rows: [] });
+    }
+
+</script>
+
+@using (Html.BeginForm("Create", "Shipmentslist", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	@*<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"出货清单Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>*@
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ContractPNo,"采购合同号码:")   
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ContractPNo,new{@id="c_ContractPNo"})
+             <input type="hidden" id="ec" name="c"/>
+		</td>
+            <td>
+            @Html.LabelFor(model => model.ContractWNo,"外销合同号码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ContractWNo,new{@id="c_ContractWNo"})
+		</td>
+	</tr>
+
+	@*<tr>
+		<td>
+            @Html.LabelFor(model => model.IsExa,"审批进程:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsExa,new{@id="c_IsExa"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExaTime,"审批时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExaTime,new{@id="c_ExaTime"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OverTime1,"第一次确认时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OverTime1,new{@id="c_OverTime1"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AppliBy,"申请人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AppliBy,new{@id="c_AppliBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AgreeBy,"审批人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AgreeBy,new{@id="c_AgreeBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OkBy1,"第一确认人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OkBy1,new{@id="c_OkBy1"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OverTime2,"第二次确认时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OverTime2,new{@id="c_OverTime2"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OkBy2,"第二次确认人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OkBy2,new{@id="c_OkBy2"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AppliTime,"申请时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AppliTime,new{@id="c_AppliTime"})
+		</td>
+	</tr>*@
+ 
+    <tr colspan="2">   
+        <table><tr><input id="txtSearch2" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#ww'">
+                        <div id="ww" style="width: 120px">
+                            <div data-options="name:'Id'">明细编号</div>
+                            <div data-options="name:'Sku'">我司货号（SKU）</div>
+                            <div data-options="name:'PurchaseNo'">采购合同编号</div>
+                            <div data-options="name:'ExportNo'">外销合同号码</div>
+                        </div>
+
+               </tr>
+    
+             <tr>
+                    <td>
+                           <table id='shipForm'>
+                           </table>
+                    </td>
+                    <td>
+                        <input type="button" value="全选" onclick="toALL()"/><br />
+                        <input type="button" value="全删" onclick="toClear()"/>
+                    </td>
+                    <td>
+                        <table id='shipTo'>
+                        </table>
+                    </td>
+               </tr>
+        </table>
+</table>
+</fieldset>
+}

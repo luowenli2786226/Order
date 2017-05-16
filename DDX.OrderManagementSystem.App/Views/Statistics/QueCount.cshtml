@@ -1,0 +1,402 @@
+﻿@model DDX.OrderManagementSystem.App.QueCount
+@{
+    ViewBag.Title = "QueCount";
+}
+<style type="text/css">
+    .Purchase {
+        _width: 600px;
+        max-height:300px;
+        _height: 300px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 3px;
+        outline: 0;
+        border: 0;
+        font-size: 12px;
+        word-wrap: break-word;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-user-modify:read-only;
+    }
+
+</style>
+<body class="easyui-layout">
+    <script type="text/javascript">
+        var no = 0;
+        var s = "";
+        var qlist = new Array();
+        $(function () {           
+            $('#dg').datagrid({
+                pagination: true,//设置分页
+                pageSize: 200,
+                pageList: [200, 400, 600, 800],
+                url: '@Url.Action("QueData", "Statistics")',
+                queryParams: { "area": 0, "s": "", "c": "", "p": "ALL", "a": "ALL", "isneed": 1 },
+                nowrap: false,
+                singleSelect: false
+            });
+            $('#pp').combobox({
+                url: '/Home/Platform/1',
+                valueField: 'id',
+                textField: 'text',
+                width: 100,
+                panelHeight: 'auto',
+                onChange: changePlatform
+            });
+            $('#pp').combobox("setValue", "ALL");
+
+            $('#SearchCategory').combotree({
+                url: '/ProductCategory/ParentList',
+                width: 200
+            });
+
+            $('#tt1').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+            $('#tt2').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+
+            $('#ss').combobox({
+                url: '/Supplier/ListQ',
+                valueField: "Id",
+                textField: "SuppliersName",
+                mode: 'remote',
+                panelHeight: '400',
+                width: 200
+            });
+
+            $('#area').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: [["0", "全部"], ["1", "宁波"], ["2", "义乌"]],
+                width: 100
+            });
+        });
+        function changePlatform(n, o) {
+            $('#aa').combotree({
+                url: '/Home/AccountList/' + n,
+                valueField: 'id',
+                textField: 'text',
+                width: 150
+            });
+            $('#aa').combotree("setValue", "ALL");
+        }
+
+        function doSearch() {
+            var isneed = $("#tt1").combobox("getValue");
+            var iscon = $("#tt2").combobox("getValue");
+            if (isneed == "ALL")
+                isneed = 2;
+            if (iscon == "ALL")
+                iscon = 2;
+            $('#dg').datagrid("load", {
+                area: $('#area').combobox("getValue"),
+                s: $('#cc').val(),
+                p: $('#pp').combobox("getText"),
+                a: $('#aa').combobox("getText"),
+                ss: $("#ss").combobox("getText"),
+                c: $("#SearchCategory").combobox("getValue"),
+                iscon: iscon,
+                isneed: isneed
+            });
+        }
+
+        function work(v, r) {          
+            return '<a href="javascript:void(0);" onclick="showPlan(\'' + r.SKU + '\',\'' + r.NeedQty + '\')">采购</a>' + '| <a href="javascript:void(0);" onclick="opensku(\'' + r.SKU + '\')">标记SKU</a>';
+        }
+
+        function showPlan(v, q) {
+            c_dlg(v.replace(/\s+/g, ""), q);
+        }
+        
+        //异步新建提交
+        function ajaxAdd() {
+            $('#c_form').form('submit', {
+                url: '@Url.Action("Create", "PurchasePlan")',
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (msg) {
+                    var result = $.parseJSON(msg);
+                    if (!result.IsSuccess) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.ErrorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
+                    } else {
+                        $('#c_dlg').dialog('close');
+                        $('#dg').datagrid('reload');
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存成功',
+                            timeout: 2000,
+                            showType: 'slide'
+                        });
+                    }
+                }
+            });
+            }
+            function c_dlg(v, q) {
+
+                var url_str = '@Url.Action("CreateByW", "PurchasePlan")?Id=' + v;
+                $('#c_dlg').load(url_str, function () {
+                    $(this).dialog({
+                        title: '新建',
+                        modal: true,
+                        loadingMessage: '正在加载...',
+                        buttons: [{
+                            text: '提交',
+                            iconCls: 'icon-ok',
+                            handler: function () {
+                                ajaxAdd();
+                            }
+                        }, {
+                            text: '取消',
+                            handler: function () {
+                                $('#c_dlg').dialog('close');
+                            }
+                        }]
+                    });
+                    $("#c_Qty").val(q);
+                }).dialog('open');
+            }
+        function c1_dlg(v, q,length) {
+            var url_str = '@Url.Action("CreateByWBulk", "PurchasePlan")?Id=' + v;
+            $('#c_dlg').load(url_str, function () {
+                s = s + "<br/>" + $('#c_dlg').html();
+                $('#PurchaseList').html(s.replace(/c_form/g, "form" + no).replace(/c_PlanNo/g, "PlanNo" + no).replace(/c_PicUrl/g, "PicUrl" + no).replace(/c_SKU/g, "SKU" + no).replace(/c_ProductUrl/g, "ProductUrl" + no).replace(/c_Price/g, "Price" + no).replace(/c_Status/g, "Status" + no).replace(/c_Qty/g, "Qty" + no).replace(/c_SettlementType/g, "SettlementType" + no).replace(/c_Freight/g, "Freight" + no).replace(/c_Standard/g, "Standard" + no).replace(/c_ProductName/g, "ProductName" + no).replace(/c_ExpectReceiveOn/g, "ExpectReceiveOn" + no).replace(/c_Suppliers/g, "Suppliers" + no).replace(/c_Memo/g, "Memo" + no).replace(/c_SId/g, "SId" + no).replace(/c_LogisticsMode/g, "LogisticsMode" + no).replace(/c_TrackCode/g, "TrackCode" + no).replace(/c_PostStatus/g, "PostStatus" + no).replace(/c_FromTo/g, "FromTo" + no).replace(/c_OrderNo/g, "OrderNo" + no).replace(/c_IsFrist/g, "IsFrist" + no).replace(/qtyVali/g, "qtyV" + no).replace(/SeachSKU/g, "Seach" + no).replace(/geturl/g, "gturl" + no).replace(/c_div/g, "cdiv" + no).replace(/c_a/g, "ca" + no).replace(/c_img/g, "Img" + no).replace(/c_imgdiv/g, "imgdiv" + no).replace(/c_pop/g, "pop" + no));
+                s = $('#PurchaseList').html();
+                //debugger;
+                qlist[no] = q;
+                no++;
+                if (no == length) {
+                    $('#PurchaseList').html("<div class='Purchase' id='Purchase'>" + $('#PurchaseList').html() +  "</div>");
+                    var ssss = $('#PurchaseList').html();
+                    $('#PurchaseList').dialog({
+                        width: 600,
+                        hight: 600,
+                        title: '新建',
+                        modal: true,
+                        loadingMessage: '正在加载...',
+                        onOpen: function () {
+                            for (var i = 0; i < no; i++) {
+                                $('#LogisticsMode' + i).combobox({
+                                    url: '@Url.Action("GetOptions", "DataDictionaryDetail")/PPLogisticsMode',
+                                    valueField: 'DicValue',
+                                    textField: 'FullName',
+                                    panelHeight: 'auto'
+                                });
+                                $('#IsFrist' + i).combobox({
+                                    url: '@Url.Action("GetOptions", "DataDictionaryDetail")/YesNo',
+                                    valueField: 'DicValue',
+                                    textField: 'FullName',
+                                    panelHeight: 'auto'
+                                });
+                                $('#SettlementType'+i).combobox({
+                                    url: '@Url.Action("GetOptions", "DataDictionaryDetail")/JieType',
+                                    valueField: 'DicValue',
+                                    textField: 'FullName',
+                                    panelHeight: 'auto'
+                                });
+                                $('#SettlementType'+i).combobox("setValue", "日结");
+                                $('#ExpectReceiveOn' + i).datebox();
+                                $('#ExpectReceiveOn'+i).datebox("setValue", getStartDate(-2) + " 10:00:00");
+                                $('#Status'+i).combobox({
+                                    valueField: 'id',
+                                    textField: 'text',
+                                    panelHeight: 'auto',
+                                    editable: false,
+                                    data: [{ id: "已采购", text: "已采购" }, { id: "部分收到", text: "部分收到" }, { id: "已收到", text: "已收到" }, { id: "异常", text: "异常" }]
+                                });
+                                $('#Status'+i).combobox("setValue", "已采购");
+                                $('#FromTo'+i).combobox({
+                                    url: '@Url.Action("GetOptions", "DataDictionaryDetail")/FromTo',
+                                    valueField: 'DicValue',
+                                    textField: 'FullName',
+                                    panelHeight: 'auto'
+                                });
+                                $("#Qty"+i).val(qlist[i]);
+                            }
+                        },
+                        buttons: [{
+                            text: '确定',
+                            handler: function () {
+                                //debugger;
+                                for (var i = 0; i < no; i++) {
+                                    $('#form'+i).form('submit', {
+                                        url: '@Url.Action("Create", "PurchasePlan")',
+                                                    onSubmit: function () {
+                                                        return $(this).form('validate');
+                                                    },
+                                                    success: function (msg) {
+                                                        var result = $.parseJSON(msg);
+                                                        if (!result.IsSuccess) {
+                                                            $.messager.show({
+                                                                title: '提示',
+                                                                msg: '保存失败:' + result.ErrorMsg,
+                                                                timeout: 0,
+                                                                showType: 'slide'
+                                                            });
+                                                        } else {
+                                                            $('#PurchaseList').dialog('close');
+                                                            $('#dg').datagrid('reload');
+                                                            $.messager.show({
+                                                                title: '提示',
+                                                                msg: '保存成功',
+                                                                timeout: 2000,
+                                                                showType: 'slide'
+                                                            });
+                                                        }
+                                                    }
+                                    });
+                                }
+                            }
+                        }, {
+                            text: '取消',
+                            handler: function () {
+                                $('#PurchaseList').dialog('close');
+                            }
+                        }]
+                    }).dialog('open');
+                }
+            });                   
+        }
+
+            function opensku(v) {
+                sku = v;
+                $('#dlgQuestion').dialog('open');
+            }
+            var sku = "";
+            function setsku() {
+                jQuery.ajax({
+                    url: "/Statistics/SetSKU",
+                    type: "post",
+                    data: "memo=" + encodeURIComponent($('#txtMemo').val()) + "&sku=" + sku,
+                    success: function (sss) {
+                        alert("添加成功");
+                        $('#txtMemo').val('');
+                        $('#dlgQuestion').dialog('close');
+                        $('#dg').datagrid('reload');
+                    }
+                });
+            }
+            function GetImg(v, r, i) {
+                return '<a href="javascript:openpic(' + r.Id + ');"><img id="img_' + r.Id + '"  src=' + v + '  height="64px" width="64px" />';
+            }
+
+            function getlink(v, r, i) {
+                return '<a href="' + v + '" target="_blank">' + v + '</a>';
+            }
+
+            function ExportOrder() {
+
+                var isneed = $("#tt1").combobox("getValue");
+                var iscon = $("#tt2").combobox("getValue");
+                if (isneed == "ALL")
+                    isneed = 2;
+                if (iscon == "ALL")
+                    iscon = 2;
+
+                var postUrl = "/Order/ExportDown/1";
+                jQuery.ajax({
+                    url: "/Statistics/ExportQue",
+                    type: "post",
+                    data: "s=" + $('#cc').val() + "&p=" + $('#pp').combobox("getText") + "&a=" + $('#aa').combobox("getText") + "&iscon=" + iscon + "&isneed=" + isneed + "&area=" + $('#area').combobox("getValue"),
+                    success: function (sss) {
+                        location.href = postUrl;
+                    }
+                });
+            }
+            function BulkPurchase() {
+                $('#PurchaseList').html("");
+                no = 0;
+                s = "";
+                var rows = getselectedRow();
+                if (rows == undefined) {
+                    return;
+                }
+                for (var i = 0; i < rows.length; i++) {
+                    c1_dlg(rows[i].SKU.replace(/\s+/g, ""), rows[i].NeedQty, rows.length);
+                }
+            }
+        //获取选中行
+            function getselectedRow() {
+                //debugger;
+            var rows = $('#dg').datagrid('getSelections');
+            if (rows.length == 0) {
+                alert("请选择数据");
+                return undefined;
+            }
+            return rows;
+
+        }
+    </script>
+
+    <table id="dg" title="缺货统计" style="width: 1100px; height: 600px" toolbar="#toolbar"
+        singleselect="true" rownumbers="true" fit="true">
+        <thead>
+            <tr>
+                <th field='Id' width="80" checkbox="true"></th>
+                <th field='SNeedQty' formatter="work" width="150">操作 </th>
+                <th field='SKU' sortable="true">SKU</th>
+                @*            <th  field='Pic' sortable="true"  formatter='GetImg' >图</th>*@
+                @* <th field='Standard' sortable="true" width="100"><b>规格</b></th>*@
+                <th field='Qty' sortable="true" width="50"><b>缺货(预)</b></th>
+
+                @*<th field='SQty' sortable="true" width="100px">缺货(扫)</th>*@
+                <th field='UnPeiQty' sortable="true" width="50">库存</th>
+                <th field='BuyQty' sortable="true" width="100">已经购买数</th>
+                <th field='NeedQty' sortable="true" width="50">采购(预)</th>
+                @*         <th field='SNeedQty' sortable="true" width="100px">采购(扫)</th>*@
+                <th field='MinDate' sortable="true" width="150" formatter="getDate">最早时间</th>
+                <th field='LastDate' sortable="true" width="150" formatter="getDate">最晚缺货时间</th>
+                <th field='Memo' sortable="true" width="450">
+                标记<th>
+                @*<th field='Caigou' width="200" formatter="getlink">采购链接</th>*@
+            </tr>
+        </thead>
+    </table>
+    <div id="toolbar">
+        地区：<input type="text" id="area" name="area" style="width: 100px" />
+        平台：<input id="pp" type="text" />
+        账户：<input id="aa" type="text" />
+        分类：
+        <input id="SearchCategory" type="text" />
+        需要购买：<input type="text" id="tt1" />
+        留言：<input type="text" id="tt2" />
+        ><br />
+        SKU：<input type="text" id="cc" />
+        供应商：<input type="text" id="ss"><a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="doSearch();">查询</a> <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="ExportOrder();">导出</a>
+ <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="BulkPurchase();">批量采购</a><br />
+
+    </div>
+    <div id="c_dlg"></div>
+    <div id="dlgQuestion" class="easyui-dialog" title="设置标记" style="width: 400px; height: 250px; padding: 10px" closed="true">
+        <table>
+
+            <tr>
+                <td>描述</td>
+                <td>
+                    <textarea id="txtMemo" style="width: 300px;"></textarea></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="button" value="确定" onclick="setsku()" /></td>
+            </tr>
+        </table>
+    </div>
+    <div id="PurchaseList" class="PurchaseList"></div>
+</body>

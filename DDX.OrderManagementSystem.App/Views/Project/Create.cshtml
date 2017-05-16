@@ -1,0 +1,48 @@
+﻿@model DDX.OrderManagementSystem.Domain.ProjectType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    //var editor;
+    //KindEditor.ready(function (K) {
+    //    editor = K.create('#c_Content', {
+    //        resizeType: 1,
+    //        allowPreviewEmoticons: false,
+    //        allowImageUpload: false,
+    //        items: [
+    //            'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+    //            'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+    //            'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+    //        afterBlur: function () { this.sync(); }
+    //    });
+    //});
+</script>
+
+@using (Html.BeginForm("Create", "Project", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Title, "项目标题:")
+		</td>
+		<td style="width: 600px;">
+            @Html.TextBoxFor(model => model.Title, new { @id = "c_Title", @style = "width: 350px;" })
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Content, "项目内容:")
+		</td>
+		<td>
+            @Html.TextAreaFor(model => model.Content, new { @id = "c_Content", @style = "width: 580px; height: 250px; resize: none;" })
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

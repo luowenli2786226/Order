@@ -1,0 +1,288 @@
+﻿@model IEnumerable<DDX.OrderManagementSystem.Domain.PlanDaoType>
+@{
+    ViewBag.Title = "Index";
+}
+
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+
+
+
+
+
+        $(function () {
+
+
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "PlanDao")',
+                nowrap: false,
+                toolbar: '#toolbar',
+                rownumbers: true,
+
+
+                pagination: true,
+                fit: true,
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+            });
+            $('#StartDate').datebox();
+            $('#EndDate').datebox();
+            $('#StartDate').datebox("setValue", getStartDate(1));
+            $('#EndDate').datebox("setValue", getStartDate(-1));
+            $('#FromArea').combobox({
+                url: '@Url.Action("GetSearchOptions", "DataDictionaryDetail")/FromArea',
+                valueField: 'DicValue',
+                textField: 'FullName',
+                panelHeight: 'auto'
+            });
+            $('#FromArea').combobox("setValue", "0");
+        });
+
+
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "PlanDao")';
+            showdlg(url_str, 'c_dlg', ajaxAdd);
+        }
+
+        //编辑框
+        function e_dlg() {
+            var url = '@Url.Action("Edit", "PlanDao")/' + id;
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Module")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit);
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "PlanDao")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "PlanDao")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del(v) {
+            var id = v;
+            $.messager.confirm("提示", "确定要删除吗？删除后数据无法恢复！", function (r) {
+                if (r) {
+                    var url = '@Url.Action("Delete", "PlanDao")/' + id;
+                    delData(url, 'dg');
+                }
+            });
+
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            var c = $('#FromArea').combobox("getText");
+            if (c != "") {
+                if (c != "===请选择===")
+                    search += "WName&" + c + "^";
+            }
+            search += "DaoOn_st&" + $('#StartDate').datebox("getValue") + "^DaoOn_et&" + $('#EndDate').datebox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+
+
+        function printSKU(id) {
+
+
+
+            jQuery.ajax({
+                url: "/PlanDao/PrintSKU/" + id,
+                type: "post",
+                success: function (msg) {
+
+                    $('#printdata').val(msg.Result);
+                    window.open('/Home/PrintDetail/16');
+                }
+            });
+        }
+        function printSingleSKU(id)
+        {
+            jQuery.ajax({
+                url: "/PlanDao/PrintSKU/" + id,
+                type: "post",
+                success: function (msg) {
+
+                    $('#printdata').val(msg.Result);
+                   
+                    window.open('/Home/PrintDetail/70');
+                }
+            });
+        }
+
+        function AuditDao(id) {
+            $.messager.confirm("提示", "确定要审核吗？", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/PlanDao/AuditDao/" + id,
+                        type: "post",
+                        success: function (msg) {
+                            if (msg.IsSuccess) {
+                                alert("审核成功!");
+                            } else {
+                                alert(msg.ErrorMsg);
+                            }
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+            });
+
+        }
+
+        function allprint() {
+            var ids = getselectedRows($("#dg"));
+            if (ids.length == 0) {
+                return;
+            }
+            jQuery.ajax({
+                url: "/PlanDao/PrintSKU/",
+                data: "id=" + ids.join(','),
+                type: "post",
+                success: function (msg) {
+                    $('#printdata').val(msg.Result);
+                    window.open('/Home/PrintDetail/16');
+                }
+            });
+        }
+        function allprintsingle() {
+            var ids = getselectedRows($("#dg"));
+            if (ids.length == 0) {
+                return;
+            }
+            jQuery.ajax({
+                url: "/PlanDao/PrintSKU/",
+                data: "id=" + ids.join(','),
+                type: "post",
+                success: function (msg) {
+                    $('#printdata').val(msg.Result);
+                    window.open('/Home/PrintDetail/70');
+                }
+            });
+        }
+        function showPrint(v, r) {
+            if (r.IsAudit == 1)
+                return '<a href="javascript:void(0)" onclick="printSKU(' + v + ')">打印SKU</a> <br/><a href="javascript:void(0)" onclick="printSingleSKU(' + v + ')">打印单排SKU</a> <br/> <a href="javascript:void(0)" onclick="del(' + v + ')">删除</a>';
+            else {
+                return '<a href="javascript:void(0)" onclick="AuditDao(' + v + ')">审核</a>';
+            }
+        }
+        function exportPlan(parameters) {
+            search = "st=" + $('#StartDate').datebox("getValue") + "&" + "et=" + $('#EndDate').datebox("getValue");
+
+            var postUrl = "/Order/ExportDown/1";
+            jQuery.ajax({
+                url: "/PlanDao/ExportDao/",
+                type: "post",
+                data: search,
+                success: function (sss) {
+                    location.href = postUrl;
+                }
+            });
+        }
+    </script>
+    <div region="center">
+        <table id="dg">
+            <thead>
+                <tr>
+                    <th field="Id" width="100" formatter="showPrint">操作
+                    </th>
+                    <th field="PlanNo" width="100">采购计划编号
+                    </th>
+                    <th field="WName" width="100">仓库
+                    </th>
+                    <th field="SKU" width="100">采购SKU
+                    </th>
+                    <th field="Title" width="100">产品名称
+                    </th>
+                    <th field="BuyOn" width="100" formatter="getDate">采购时间
+                    </th>
+                    <th field="DaoOn" width="100" formatter="getDate">到货时间
+                    </th>
+
+                    <th field="PlanQty" width="100">采购数量
+                    </th>
+
+                    <th field="RealQty" width="100">实际数量
+                    </th>
+                     <th field="PlanQty" width="100">采购数量
+                    </th>
+                    <th field="Status" width="100">到货状态
+                    </th>
+                    <th field="Price" width="100">价格
+                    </th>
+                    <th field="UnitFristPrice" width="100">头程
+                    </th>
+                      <th field="UnitTariff" width="100">关税
+                    </th>
+                    <th field="CheckBy" width="100">清点人
+                    </th>
+
+                    <th field="PassRate" width="100">合格率
+                    </th>
+
+                    <th field="ValiBy" width="100">产品检验人
+                    </th>
+
+                    <th field="PlanMemo" width="100">采购备注
+                    </th>
+                    <th field="Memo" width="100">到货备注
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+               <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="allprint()">打印</a>
+                        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="allprintsingle()">打印单排SKU</a>
+
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="exportPlan()">导出</a>
+            地区<input type="text" name="FromArea" id="FromArea" />
+            开始:<input id="StartDate" />
+            结束:<input id="EndDate" />&nbsp&nbsp
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>PS:无法导出未审核的订单
+        </div>
+        <div id="mm" style="width: 120px">
+
+            <div data-options="name:'PlanNo'">采购计划编号</div>
+            <div data-options="name:'SKU'">采购SKU</div>
+            <div data-options="name:'Title'">产品名称</div>
+
+            <div data-options="name:'LogisticMode'">物流</div>
+            <div data-options="name:'TrackCode'">追踪号</div>
+            <div data-options="name:'Status'">到货状态</div>
+            <div data-options="name:'CheckBy'">清点人</div>
+            <div data-options="name:'PassRate'">合格率</div>
+            <div data-options="name:'ValiBy'">产品检验人</div>
+
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+
+    </div>
+     <input type="hidden" id="printdata" />
+</body>
+

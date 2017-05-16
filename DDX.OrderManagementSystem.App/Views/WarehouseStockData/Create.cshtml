@@ -1,0 +1,208 @@
+﻿@model HanRuiOMS.Domain.WarehouseStockDataType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+        $('#c_ProductionOn').datebox();
+
+
+        $('#c_ExpirationOn').datebox();
+
+        $('#c_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        $('#c_CreateOn').datebox();
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "StockInData", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"标识:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.InId,"入库ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.InId,new{@id="c_InId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.InNo,"入库序列号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.InNo,new{@id="c_InNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.State,"入库状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.State,new{@id="c_State"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PId,"产品ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PId,new{@id="c_PId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU,"产品SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.MainSKU,"产品名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MainSKU,new{@id="c_MainSKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WId,"仓库ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WId,new{@id="c_WId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WName,"仓库:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WName,new{@id="c_WName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Qty,"入库数量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.NowQty,"现有数量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.NowQty,new{@id="c_NowQty"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Remark,"备注:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Remark,new{@id="c_Remark"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Freight,"运费:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Freight,new{@id="c_Freight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Amount,"金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Amount,new{@id="c_Amount"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ProductionOn,"生产日期:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProductionOn,new{@id="c_ProductionOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExpirationOn,"到期时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExpirationOn,new{@id="c_ExpirationOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.InType,"入库类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.InType,new{@id="c_InType"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"创建人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

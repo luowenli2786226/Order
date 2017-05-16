@@ -1,0 +1,131 @@
+﻿@model DDX.OrderManagementSystem.Domain.LogisticsModeType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    var tid = '@ViewData["Id"]';
+    $(function () {
+
+        $('#countryTo').datagrid({
+            url: '/LogisticsAreaCountry/GetCountryByAreaCode',
+            title: '已选择的国家',
+            width: 350,
+            queryParams: { "id": tid },
+            singleSelect: true,
+            height: 400,
+            columns: [[
+               { field: 'CCountry', title: '中文', width: 100, sortable: "true" },
+               { field: 'ECountry', title: '英文', width: 120, sortable: "true" },
+               { field: 'CountryCode', title: '代码', width: 100, sortable: "true" }
+            ]],
+            onSelect: function (rowindex, rowData) {
+                if (rowindex == undefined) { return }
+                $('#countryForm').datagrid('appendRow', rowData);
+                removeCountry(rowData.Id);
+                $('#countryTo').datagrid('deleteRow', rowindex);
+                $('#countryTo').datagrid('deleteRow', unselectRow);
+            }
+        });
+
+        $('#countryForm').datagrid({
+            url: '/LogisticsAreaCountry/GetUnCountryByAreaCode',
+            title: '其他国家',
+            queryParams: { "id": tid },
+            width: 430,
+            singleSelect: true,
+            height: 400,
+            columns: [[
+               { field: 'CCountry', title: '中文', width: 100, sortable: "true" },
+               { field: 'ECountry', title: '英文', width: 120, sortable: "true" },
+               { field: 'CountryCode', title: '代码', width: 100, sortable: "true" },
+               { field: 'AreaName', title: '区域', width: 100 }
+            ]],
+            onSelect: function (rowindex, rowData) {
+                if (rowindex == undefined) {
+                    return;
+                }
+                $('#countryTo').datagrid('appendRow', rowData);
+                addCountry(rowData.Id);
+                $('#countryForm').datagrid('deleteRow', rowindex);
+                $('#countryForm').datagrid('deleteRow', unselectRow);
+            }
+        });
+        $('#dlgCountry').dialog('open').dialog('setTitle', '国家设置');
+
+    });
+    function addCountry(c) {
+        $.ajax({
+            type: 'post',
+            data: "id=" + c + "&tid=" + tid,
+            url: '/LogisticsAreaCountry/AddAreaCountry/'
+
+        });
+    }
+    function removeCountry(c) {
+        $.ajax({
+            type: 'post',
+            data: "id=" + c + "&tid=" + tid,
+            url: '/LogisticsAreaCountry/DelAreaCountry/'
+        });
+    }
+    function searchCountry(e) {
+        var keynum;
+        if (window.event) //IE
+        {
+            keynum = e.keyCode;
+        }
+        else if (e.which) //Netscape/Firefox/Opera
+        {
+            keynum = e.which;
+        }
+        if (keynum == 13) {
+          
+            $('#countryForm').datagrid({
+                url: '/LogisticsAreaCountry/GetUnCountryByAreaCode',
+                title: '其他国家',
+                queryParams: { "id": tid, "s": $('#txts').val() },
+                width: 430,
+                singleSelect: true,
+                height: 400,
+                columns: [[
+                   { field: 'CCountry', title: '中文', width: 100, sortable: "true" },
+                   { field: 'ECountry', title: '英文', width: 120, sortable: "true" },
+                   { field: 'CountryCode', title: '代码', width: 100, sortable: "true" },
+                   { field: 'AreaName', title: '区域', width: 100 }
+                ]],
+                onSelect: function (rowindex, rowData) {
+                    if (rowindex == undefined) {
+                        return;
+                    }
+                    $('#countryTo').datagrid('appendRow', rowData);
+                    addCountry(rowData.Id);
+                    $('#countryForm').datagrid('deleteRow', rowindex);
+                    $('#countryForm').datagrid('deleteRow', unselectRow);
+                }
+            });
+        }
+
+    }
+
+</script>
+
+
+    <fieldset>
+
+        <table border="0">
+            <tr>
+                <td>查询：<input id="txts" type="text" onkeydown="return searchCountry(event)">
+                    <table id='countryForm'>
+                    </table>
+                </td>
+                <td></td>
+                <td>
+                    <table id='countryTo'>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+    </fieldset>
+

@@ -1,0 +1,156 @@
+﻿@model DDX.OrderManagementSystem.Domain.StockInType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('#c_WId').combogrid({
+            required: true,
+            editable: false,
+            panelWidth: 410,
+            idField: 'Id',
+            textField: 'WName',
+            url: '/Warehouse/QList',
+            fit: true,
+            columns: [[
+                { field: 'Id', title: 'Id', width: 100 },
+                { field: 'WCode', title: '仓库代码', width: 100 },
+                { field: 'WName', title: '仓库名称', width: 100 },
+                { field: 'Address', title: '仓位地址', width: 100 }
+            ]]
+        });
+        $('#c_WId').combogrid("setValue", 1);
+
+        $('#c_SKU').combogrid({
+            panelWidth: 510,
+            mode: 'remote',
+            idField: 'SKU',
+            textField: 'SKU',
+            required: true,
+            url: '/Product/ListQ',
+            fit: true,
+            onSelect: function () {
+                //debugger;
+                var g = $('#c_SKU').combogrid('grid');	// get datagrid object
+                var r = g.datagrid('getSelected');	// get the selected row
+                //alert(r.Price);
+                //if (r != null) {
+                $('#c_Price').numberbox("setValue", r.Price);
+                $('#c_Price').focus().select();
+                //}
+            },
+            columns: [[
+                { field: 'SKU', title: 'SKU', width: 100 },
+                { field: 'ProductName', title: 'Title', width: 200 },
+                { field: 'Standard', title: '规格', width: 100 },
+                { field: 'Price', title: '单价', width: 100 }
+            ]]
+        });
+
+        $('#c_InType').combobox({
+            url: '@Url.Action("GetOptions", "DataDictionaryDetail")/StockIn',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            editable: false,
+            panelHeight: 'auto'
+        });
+        //$('#c_InType').combobox("setValue", "坏件出库");
+        $('#c_Price').numberbox({
+            precision: 2,
+            onChange: function () {
+                nozero();
+            }
+        });
+        $('#c_Price').numberbox("setValue", "0");
+        $('#c_Qty').numberbox({
+            required: true,
+            onChange: function () {
+                Qtynozero();
+            }
+        });
+
+    });
+    function nozero() {
+        var num = $('#c_Price').attr("value");
+        if (num != "" & num <= 0) {
+            alert("金额输入有误");
+            $('#c_Price').numberbox("setValue", "");
+        }
+    }
+    function Qtynozero() {
+       
+    }
+
+
+</script>
+
+@using (Html.BeginForm("Create", "StockIn", FormMethod.Post, new { id = "c_form" }))
+{
+    <fieldset>
+        <table class="editForm">
+
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.WId, "入库仓库:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.WId, new { @id = "c_WId" })
+                </td>
+                <td style="display: none">
+                    @Html.TextBoxFor(model => model.WName, new { @id = "c_WName" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.InType, "入库类型:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.InType, new { @id = "c_InType" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SKU, "商品:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SKU, new { @id = "c_SKU" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Qty, "数量:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Qty, new { @id = "c_Qty" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Price, "单价:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Price, new { @id = "c_Price" })
+                </td>
+            </tr>
+
+
+
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Memo, "备忘:")
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Memo, new { @id = "c_Memo", style = "resize:none" })
+                </td>
+            </tr>
+
+
+        </table>
+    </fieldset>
+}

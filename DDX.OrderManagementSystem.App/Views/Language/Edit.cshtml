@@ -1,0 +1,81 @@
+﻿@model DDX.OrderManagementSystem.Domain.LanguageType
+@{
+    Layout = null;
+}
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript">
+        $(function () {
+
+        });
+    </script>
+    <style type="text/css">
+        input {
+            width: 200px;
+        }
+
+        textarea {
+            width: 200px;
+            height: 60px;
+        }
+    </style>
+</head>
+<body>
+    @using (Html.BeginForm("Edit", "Language", FormMethod.Post, new { id = "e_form" }))
+    {
+        <fieldset>
+            <table class="editForm">
+                <tr>
+                    @*		<td>
+                            @Html.LabelFor(model => model.Id,"主键:")
+                        </td>*@
+                    <td style="display:none">
+                        @Html.TextBoxFor(model => model.Id, new { @id = "e_Id" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.Language, DDX.OrderManagementSystem.App.Language.GetString("语言") + ":")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.Language, new { @class = "width" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.NativeLanguage, DDX.OrderManagementSystem.App.Language.GetString("母语") + ":")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.NativeLanguage, new { @class = "width" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.Text, DDX.OrderManagementSystem.App.Language.GetString("文本") + ":")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.Text, new { @class = "width" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.Enable, DDX.OrderManagementSystem.App.Language.GetString("启用") + ":")
+                    </td>
+                    <td>
+                        @Html.CheckBoxFor(model => model.Enable, new { @class = "width" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.Note, DDX.OrderManagementSystem.App.Language.GetString("备注") + ":")
+                    </td>
+                    <td>
+                        @Html.TextAreaFor(model => model.Note, new { @class = "width" })
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    }
+</body>
+</html>

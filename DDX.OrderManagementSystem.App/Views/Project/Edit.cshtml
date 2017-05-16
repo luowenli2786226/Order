@@ -1,0 +1,39 @@
+﻿@model DDX.OrderManagementSystem.Domain.ProjectType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "Project", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Title, "项目标题:")  @Html.HiddenFor(model => model.Id, new { @id = "e_Id" })
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Title, new { @id = "e_Title" })
+		</td>
+	</tr>
+
+	<tr>
+	<td>
+            @Html.LabelFor(model => model.Content, "项目内容:")
+		</td>
+		<td>
+            @Html.TextAreaFor(model => model.Content, new { @id = "e_Content", @style = "width: 580px; height: 250px; resize: none;" })
+		</td>
+	</tr>
+
+	
+
+
+    
+</table>
+</fieldset>
+}

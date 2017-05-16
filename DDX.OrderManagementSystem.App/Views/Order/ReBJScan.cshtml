@@ -1,0 +1,139 @@
+﻿@{
+    ViewBag.Title = "转单北京小包";
+}
+@*<script src="/Scripts/Report/CreateControl.js" type="text/javascript"></script>*@
+
+<script type="text/javascript">
+    //CreateReport("Report");
+
+    ////在网页初始加载时向报表提供数据
+    //function window_onload() {
+    //    Report.LoadFromURL("/Home/PrintGrf/29");
+    //}
+
+    //function printgrf(v) {
+    //    Report.LoadDataFromURL("../data/xmlCustomer.txt");
+    //    Report.Print(true);
+
+    //}
+
+    //$(function () {
+    //    window_onload();
+    //})
+</script>
+<body class="easyui-layout">
+    <div region="center">
+        <fieldset>
+            <legend>
+                <label>
+                    <h2>转单北京小包</h2>
+                </label>
+            </legend>
+            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td colspan="4" align="left" valign="top" style="padding-top: 10px;">
+                        <table cellspacing="0" cellpadding="1" bordercolor="#eeeeee" border="1" width="100%">
+                            <tbody>
+                                <tr id="tr2">
+                                    <td width="" colspan="2">
+                                        <font style="color: Red; font-size: 30px"><span id="spanStatus">等待扫描<br />
+                                                                                      <br />      
+                                                                                      &nbsp;</span></font>
+                                    </td>
+                                </tr>
+                                <tr id="tr4">
+                                    <td colspan="2">
+                                        <span id="spanInfo"></span>
+                                    </td>
+                                </tr>
+
+                                <tr id="tr_ID">
+                                    <td height="25" width="22%">
+                                        <h2>
+                                            <b>扫描扫描</b></h2>
+                                    </td>
+                                    <td width="">
+                                        <input id="txt" onkeydown="return txt_keydown(event);" style="font-size: 50px; background-image: none; width: 511px" />
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+    <input type="hidden" id="printdata" />
+</body>
+<script>
+    var txt = document.getElementById("txt");
+    var spanStatus = document.getElementById("spanStatus");
+    var spanInfo = document.getElementById("spanInfo");
+
+    var oldstr = "";
+    function txt_keydown(e) {
+        var keynum;
+        if (window.event) //IE
+        {
+            keynum = e.keyCode;
+        }
+        else if (e.which) //Netscape/Firefox/Opera
+        {
+            keynum = e.which;
+        }
+        if (keynum == 13) {
+            if (txt.value == "") { Reset(); }
+
+            OutStock(txt.value);
+            txt.value = "";
+            return false;
+        }
+        return true;
+    }
+
+    function OutStock(str) {
+        jQuery.ajax({
+            url: "/Order/ReBJScanData/",
+            type: "post",
+            data: "o=" + str,
+            success: function (msg) {
+                if (msg.IsSuccess) {
+                    progress = 0;
+                    oldstr = "";
+                   // printgrf(msg.PrintId);
+                    $('#printdata').val(msg.PrintId);
+                    window.open('/Home/PrintDetail/29');
+                    ShowMessage(msg.Msg, "等待扫描", true);
+                } else {
+                    progress = 0;
+                    oldstr = "";
+                    ShowMessage(msg.Msg, "等待扫描", false);
+                }
+            }
+        });
+
+    }
+
+    //重置
+    function Reset() {
+        progress = 0;
+        txt.value = "";
+    }
+
+    function ShowMessage(msgInfo, msgStatus, isOk) {
+        if (msgInfo != null) {
+            spanInfo.innerHTML = msgInfo;
+        }
+        if (msgStatus != null) {
+            spanStatus.innerHTML = msgStatus;
+        }
+        if (isOk) {
+            spanInfo.style.color = "Blue";
+        }
+        else {
+            spanInfo.style.color = "Red";
+        }
+    }
+
+</script>
